@@ -57,7 +57,7 @@ public class DBHelpter extends SQLiteOpenHelper {
 
     }
 
-    public void insertNewMachine(String id, String name, String location){
+    public void insertNewMachine(String name, String location){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 //        values.put(MACHINES_ID, id);
@@ -98,7 +98,7 @@ public class DBHelpter extends SQLiteOpenHelper {
         return machinesList;
     }
 
-    public void insertNewIncome(String id, Double money, String date, String note){
+    public void insertNewIncome(Double money, String date, String note){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 //        values.put(INCOME_ID, id);
