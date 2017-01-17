@@ -82,16 +82,17 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<String> getAllMachines(){
-        ArrayList<String> machinesList = new ArrayList<>();
+    public ArrayList<MachinesClass> getAllMachines(){
+        ArrayList<MachinesClass> machinesList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_MACHINES, null);
+//        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_MACHINES, null);
 
-//        Cursor  cursor = db.query(TABLE_MACHINES, new String[]{MACHINES_COLUMN_NAME, MACHINES_COLUMN_LOCATION}, null, null, null, null, null);
+        Cursor  cursor = db.query(TABLE_MACHINES, new String[]{MACHINES_ID, MACHINES_COLUMN_NAME, MACHINES_COLUMN_LOCATION}, null, null, null, null, null);
         while (cursor.moveToNext()){
+            final long id = cursor.getLong(cursor.getColumnIndex(MACHINES_ID));
             final String name = cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_NAME));
             final String location = cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_LOCATION));
-            machinesList.add(location);
+            machinesList.add(new MachinesClass(id, name, location));
         }
         cursor.close();
         db.close();

@@ -8,33 +8,42 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHolder> {
+
+    private ArrayList<MachinesClass> machinesList;
+    private LayoutInflater mInflater;
+
+    public MachinesAdapter(Context context, ArrayList<MachinesClass> machinesList){
+        this.mInflater = LayoutInflater.from(context);
+        this.machinesList = machinesList;
+//        this.mDBHelpter = mDBHelper;
+    }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View machinesView = inflater.inflate(R.layout.machines_list, parent, false);
-
-        ViewHolder viewHolder = new ViewHolder(machinesView);
-        return viewHolder;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.machines_list, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        MachinesClass item = machinesList.get(position);
+        holder.mLocation.setText(item.location);
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return machinesList != null ? machinesList.size() : 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView mLocation;
-        public TextView mMoney;
+        public TextView mLocation, mMoney;
 
         public ViewHolder(View itemView) {
             super(itemView);

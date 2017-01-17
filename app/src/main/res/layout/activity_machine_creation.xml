@@ -26,14 +26,14 @@
         android:gravity="center_horizontal"
         android:ems="10"
         android:layout_centerHorizontal="true"
-        android:id="@+id/editText"/>
+        android:id="@+id/etName"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ubicación:"
-        android:id="@+id/Ubicacion"
+        android:id="@+id/tvUbicacion"
         android:textSize="20sp"
-        android:layout_below="@id/editText"/>
+        android:layout_below="@id/etName"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -42,14 +42,14 @@
         android:hint="Cedros / Caldas / Centenario"
         android:gravity="center_horizontal"
         android:ems="10"
-        android:layout_below="@+id/Ubicacion"
-        android:id="@+id/editText3"/>
+        android:layout_below="@+id/tvUbicacion"
+        android:id="@+id/etLocation"/>
 
     <Button
         android:text="Agregar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText3"
+        android:layout_below="@+id/etLocation"
         android:layout_centerHorizontal="true"
         android:id="@+id/button"/>
 
