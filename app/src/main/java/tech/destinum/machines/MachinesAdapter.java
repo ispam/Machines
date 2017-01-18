@@ -1,6 +1,7 @@
 package tech.destinum.machines;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -13,15 +14,13 @@ import java.util.Collections;
 
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHolder> {
 
-    private ArrayList<MachinesClass> machinesList;
+    private ArrayList<MachinesClass> machinesList = new ArrayList<MachinesClass>();
     private LayoutInflater mInflater;
 
     public MachinesAdapter(Context context, ArrayList<MachinesClass> machinesList){
         this.mInflater = LayoutInflater.from(context);
         this.machinesList = machinesList;
-//        this.mDBHelpter = mDBHelper;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -33,7 +32,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         MachinesClass item = machinesList.get(position);
         holder.mLocation.setText(item.location);
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
     }
 
     @Override
