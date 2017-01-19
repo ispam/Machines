@@ -13,7 +13,6 @@ public class MainActivity extends AppCompatActivity {
 
     private DBHelpter mDBHelpter;
     private RecyclerView mRecyclerView;
-    private ArrayList<MachinesClass> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
