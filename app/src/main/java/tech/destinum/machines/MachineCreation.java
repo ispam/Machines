@@ -23,7 +23,6 @@ public class MachineCreation extends AppCompatActivity {
         etLocation = (EditText) findViewById(R.id.etLocation);
         mButton = (Button) findViewById(R.id.button);
 
-
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

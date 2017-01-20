@@ -46,7 +46,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mDBHelpter.deleteMachine(machine.id);
-
+                                notifyDataSetChanged();
                             }
                         })
                         .setNegativeButton("No", null)

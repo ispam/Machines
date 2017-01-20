@@ -78,16 +78,16 @@ public class DBHelpter extends SQLiteOpenHelper {
 
     public void deleteMachine(long id){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_MACHINES, "id = ?", new String[]{id + ""});
+        db.delete(TABLE_MACHINES, MACHINES_ID + " = ?", new String[]{id + ""});
         db.close();
     }
 
     public ArrayList<MachinesClass> getAllMachines(){
         ArrayList<MachinesClass> machinesList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_MACHINES, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_MACHINES, null);
 
-        Cursor  cursor = db.query(TABLE_MACHINES, new String[]{MACHINES_ID, MACHINES_COLUMN_NAME, MACHINES_COLUMN_LOCATION}, null, null, null, null, null);
+//        Cursor  cursor = db.query(TABLE_MACHINES, new String[]{MACHINES_ID, MACHINES_COLUMN_NAME, MACHINES_COLUMN_LOCATION}, null, null, null, null, null);
         while (cursor.moveToNext()){
             final long id = cursor.getLong(cursor.getColumnIndex(MACHINES_ID));
             final String name = cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_NAME));
