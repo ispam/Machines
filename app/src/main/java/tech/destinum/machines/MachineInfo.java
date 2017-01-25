@@ -1,14 +1,28 @@
 package tech.destinum.machines;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.ContextThemeWrapper;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.Date;
 
 public class MachineInfo extends AppCompatActivity {
 
     private TextView mLocation, mMoney, mNotes;
     private DBHelpter mDBHelpter;
+    private FloatingActionButton mFAB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +34,18 @@ public class MachineInfo extends AppCompatActivity {
         mLocation = (TextView) findViewById(R.id.tvLocation);
         mMoney = (TextView) findViewById(R.id.tvMoney);
         mNotes = (TextView) findViewById(R.id.tvNotes);
+        mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
 
         Intent intent = getIntent();
         String location = intent.getStringExtra("location");
         mLocation.setText(location);
 
+        mFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), IncomeCreation.class);
+                startActivity(i);
+            }
+        });
     }
 }
