@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DBHelpter extends SQLiteOpenHelper {
 
@@ -23,6 +24,9 @@ public class DBHelpter extends SQLiteOpenHelper {
     public static final String INCOME_COLUMN_DATE = "date";
     public static final String INCOME_COLUMN_NOTE = "note";
     public static final String INCOME_ID = "id";
+    public static final String INCOME_COLUMN_MACHINES_ID = "machines_id";
+
+    private Context mContext;
 
     public DBHelpter(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -40,8 +44,9 @@ public class DBHelpter extends SQLiteOpenHelper {
             + INCOME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + INCOME_COLUMN_MONEY + " REAL NOT NULL, "
             + INCOME_COLUMN_DATE + " DATE NOT NULL, "
-            + INCOME_COLUMN_NOTE + " TEXT NOT NULL)",
-                TABLE_INCOME, INCOME_ID, INCOME_COLUMN_MONEY, INCOME_COLUMN_DATE, INCOME_COLUMN_NOTE);
+            + INCOME_COLUMN_NOTE + " TEXT NOT NULL, "
+            + INCOME_COLUMN_MACHINES_ID + " INTEGER NOT NULL)",
+                TABLE_INCOME, INCOME_ID, INCOME_COLUMN_MONEY, INCOME_COLUMN_DATE, INCOME_COLUMN_NOTE, INCOME_COLUMN_MACHINES_ID);
         db.execSQL(query1);
         db.execSQL(query2);
 
@@ -72,7 +77,7 @@ public class DBHelpter extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(MACHINES_COLUMN_NAME, name);
         values.put(MACHINES_COLUMN_LOCATION, location);
-        db.update(TABLE_MACHINES, values, "id = ?", new String[]{Long.toString(id)});
+        db.update(TABLE_MACHINES, values, MACHINES_ID + " = ?", new String[]{Long.toString(id)});
         db.close();
     }
 
@@ -82,11 +87,28 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.close();
     }
 
+    private String[] mAllColumns2 = {MACHINES_ID, MACHINES_COLUMN_NAME, MACHINES_COLUMN_LOCATION};
+    public MachinesClass getMachineById(long id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_MACHINES, mAllColumns2, MACHINES_ID + " = ?", new String[]{String.valueOf(id)}, null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        MachinesClass machine = new MachinesClass(cursor.getLong(cursor.getColumnIndex(MACHINES_ID)),
+                cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_NAME)),
+                cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_LOCATION)));
+
+        return machine;
+    }
+
+
+
     public ArrayList<MachinesClass> getAllMachines(){
         ArrayList<MachinesClass> machinesList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_MACHINES, null);
-
 //        Cursor  cursor = db.query(TABLE_MACHINES, new String[]{MACHINES_ID, MACHINES_COLUMN_NAME, MACHINES_COLUMN_LOCATION}, null, null, null, null, null);
         while (cursor.moveToNext()){
             final long id = cursor.getLong(cursor.getColumnIndex(MACHINES_ID));
@@ -138,4 +160,34 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.close();
         return incomeList;
     }
+
+    private String[] mAllColumns = {INCOME_ID, INCOME_COLUMN_MONEY, INCOME_COLUMN_NOTE, INCOME_COLUMN_DATE, INCOME_COLUMN_MACHINES_ID};
+    public List<IncomeClass> getIncomeOfMachine(long machineId){
+        List<IncomeClass> list_of_income = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_INCOME, mAllColumns, MACHINES_ID + " = ?", new String[]{String.valueOf(machineId)}, null, null, null);
+
+        while (cursor.moveToNext()){
+
+
+            long id = cursor.getLong(cursor.getColumnIndex(INCOME_ID));
+            String money = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_MONEY));
+            String note = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_NOTE));
+            String date = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_DATE));
+            long machines_id = cursor.getLong(cursor.getColumnIndex(INCOME_COLUMN_MACHINES_ID));
+
+
+            MachinesClass machine = getMachineById(machines_id);
+            if(machine != null) {
+                IncomeClass income = new IncomeClass(money, date, note, id);
+                income.setMachinesClass(machine);
+
+                list_of_income.add(income);
+            }
+        }
+        cursor.close();
+        db.close();
+        return list_of_income;
+    }
 }
+

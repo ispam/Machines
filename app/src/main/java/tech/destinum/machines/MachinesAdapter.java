@@ -30,14 +30,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
         this.machinesList = machinesList;
     }
 
-    public interface OnItemClickListener{
-        public void onItemClicked(int position);
-    }
-
-    public interface OnItemLongClickListener{
-        public void OnItemLongClicked(int position);
-    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.machines_list, parent, false);
