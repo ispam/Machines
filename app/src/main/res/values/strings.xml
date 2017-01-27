@@ -4,4 +4,5 @@
     <string name="money_hint">$130.500</string>
     <string name="money_explanation">Ingrese el dinero obtenido:</string>
     <string name="notes">Notas</string>
+    <string name="machine_name">Maquina 1</string>
 </resources>

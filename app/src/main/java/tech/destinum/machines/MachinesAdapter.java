@@ -2,6 +2,7 @@ package tech.destinum.machines;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
     private LayoutInflater mInflater;
     private DBHelpter mDBHelpter;
     private Context mContext;
+    public static final String PREFS_NAME = "MyPrefsFile";
 
 
     public MachinesAdapter(Context mContext, ArrayList<MachinesClass> machinesList){
@@ -38,6 +40,12 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                SharedPreferences mSharedPreferences = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+                mEditor.putString("location", machinesList.get(position).getLocation());
+                mEditor.commit();
+
                 Intent intent = new Intent(v.getContext(), MachineInfo.class);
                 intent.putExtra("location", machinesList.get(position).getLocation());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -65,7 +73,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
             mMoney = (TextView) v.findViewById(R.id.tvMoney);
 
             this.v = v;
-
         }
     }
 }

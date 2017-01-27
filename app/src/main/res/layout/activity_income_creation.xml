@@ -16,7 +16,14 @@
         android:layout_height="match_parent"
         android:id="@+id/rl">
 
-    <EditText
+        <TextView
+            android:text="@string/machine_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvMachineLocation"
+            android:textSize="20sp"/>
+
+        <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
@@ -30,9 +37,10 @@
         android:text="@string/money_explanation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_marginTop="8dp"
         android:id="@+id/tvMoneyHint"
+        android:layout_below="@id/tvMachineLocation"
         android:textSize="20sp"/>
 
     <TextView

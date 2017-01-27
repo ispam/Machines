@@ -121,13 +121,14 @@ public class DBHelpter extends SQLiteOpenHelper {
         return machinesList;
     }
 
-    public void insertNewIncome(Double money, String date, String note){
+    public void insertNewIncome(Double money, String date, String note, long machines_id){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 //        values.put(INCOME_ID, id);
         values.put(INCOME_COLUMN_MONEY, money);
         values.put(INCOME_COLUMN_DATE, date);
         values.put(INCOME_COLUMN_NOTE, note);
+        values.put(INCOME_COLUMN_MACHINES_ID, machines_id);
         db.insertWithOnConflict(TABLE_INCOME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
@@ -169,13 +170,11 @@ public class DBHelpter extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()){
 
-
             long id = cursor.getLong(cursor.getColumnIndex(INCOME_ID));
             String money = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_MONEY));
             String note = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_NOTE));
             String date = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_DATE));
             long machines_id = cursor.getLong(cursor.getColumnIndex(INCOME_COLUMN_MACHINES_ID));
-
 
             MachinesClass machine = getMachineById(machines_id);
             if(machine != null) {
