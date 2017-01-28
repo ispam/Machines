@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Date;
+
+import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
 public class MachineInfo extends AppCompatActivity {
 
@@ -36,13 +39,14 @@ public class MachineInfo extends AppCompatActivity {
         mNotes = (TextView) findViewById(R.id.tvNotes);
         mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
 
-//        Double money = intent.getDoubleExtra("money", defaultVa);
         if (getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
-
             mMoney.setText("$" + String.valueOf(bundle.getDouble("money")));
-            mLocation.setText(bundle.getString("location"));
         }
+
+        SharedPreferences mSharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String location = mSharedPreferences.getString("location", null);
+        mLocation.setText(location);
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override

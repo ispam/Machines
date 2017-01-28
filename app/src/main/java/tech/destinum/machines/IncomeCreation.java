@@ -93,8 +93,6 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
 
                 Bundle bundle = new Bundle();
                 bundle.putDouble("money", money);
-                String location = bundle.getString("location");
-                bundle.putString("location",location);
                 Intent i = new Intent(getApplicationContext(), MachineInfo.class);
                 i.putExtras(bundle);
                 startActivity(i);
