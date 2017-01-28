@@ -36,9 +36,13 @@ public class MachineInfo extends AppCompatActivity {
         mNotes = (TextView) findViewById(R.id.tvNotes);
         mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
 
-        Intent intent = getIntent();
-        String location = intent.getStringExtra("location");
-        mLocation.setText(location);
+//        Double money = intent.getDoubleExtra("money", defaultVa);
+        if (getIntent().getExtras() != null) {
+            Bundle bundle = getIntent().getExtras();
+
+            mMoney.setText("$" + String.valueOf(bundle.getDouble("money")));
+            mLocation.setText(bundle.getString("location"));
+        }
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,3 +53,4 @@ public class MachineInfo extends AppCompatActivity {
         });
     }
 }
+

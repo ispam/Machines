@@ -3,6 +3,7 @@ package tech.destinum.machines;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-//        MachinesClass item = machinesList.get(position);
         holder.mLocation.setText(machinesList.get(position).getLocation());
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,11 +44,14 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
                 SharedPreferences mSharedPreferences = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
                 SharedPreferences.Editor mEditor = mSharedPreferences.edit();
                 mEditor.putString("location", machinesList.get(position).getLocation());
+                mEditor.putLong("machines_id", machinesList.get(position).getId());
                 mEditor.commit();
 
+                Bundle bundle = new Bundle();
+                bundle.putString("location", machinesList.get(position).getLocation());
                 Intent intent = new Intent(v.getContext(), MachineInfo.class);
-                intent.putExtra("location", machinesList.get(position).getLocation());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtras(bundle);
                 mContext.startActivity(intent);
             }
         });

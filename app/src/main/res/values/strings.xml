@@ -5,4 +5,7 @@
     <string name="money_explanation">Ingrese el dinero obtenido:</string>
     <string name="notes">Notas</string>
     <string name="machine_name">Maquina 1</string>
+    <string name="date_hint">25/11/1992</string>
+    <string name="date">Fecha</string>
+    <string name="date_button">seleccionar fecha</string>
 </resources>

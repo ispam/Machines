@@ -104,7 +104,6 @@ public class DBHelpter extends SQLiteOpenHelper {
     }
 
 
-
     public ArrayList<MachinesClass> getAllMachines(){
         ArrayList<MachinesClass> machinesList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
