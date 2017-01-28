@@ -41,7 +41,7 @@ public class MachineInfo extends AppCompatActivity {
 
         if (getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
-            mMoney.setText("$" + String.valueOf(bundle.getDouble("money")));
+            mMoney.setText("$" + String.valueOf(String.format("%.3f", bundle.getDouble("money"))));
         }
 
         SharedPreferences mSharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);

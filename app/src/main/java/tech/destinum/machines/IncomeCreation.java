@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +48,8 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
         String location = mSharedPreferences.getString("location", "ejemplo");
         mLocation.setText(location);
 
+        mMoney.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(5,3)});
+
         mPickDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +73,14 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
     }
 
     @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        mDayFinal = dayOfMonth;
+        mMonthFinal = month + 1;
+        mYearFinal = year;
+        mDateHint.setText(mDayFinal+"/"+mMonthFinal+"/"+mYearFinal);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
@@ -85,8 +96,10 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
                     money = 0.0;
                 }
 
+                mCalendar = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                 String formattedDate = sdf.format(mCalendar.getTime());
+                Log.d("fecha:", formattedDate);
 
                 mDBHelpter.insertNewIncome(money, formattedDate, notes, machines_id);
                 Log.d("INCOME:", mDBHelpter.getIncomeOfMachine(machines_id).toString());
@@ -102,11 +115,5 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        mDayFinal = dayOfMonth;
-        mMonthFinal = month + 1;
-        mYearFinal = year;
-        mDateHint.setText(mDayFinal+"/"+mMonthFinal+"/"+mYearFinal);
-    }
+
 }
