@@ -77,7 +77,15 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
         mDayFinal = dayOfMonth;
         mMonthFinal = month + 1;
         mYearFinal = year;
-        mDateHint.setText(mDayFinal+"/"+mMonthFinal+"/"+mYearFinal);
+
+        SharedPreferences mSharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+        String date = mDayFinal+"/"+mMonthFinal+"/"+mYearFinal;
+        mEditor.putString("date", date);
+        mEditor.commit();
+
+        mDateHint.setText(date);
+
     }
 
     @Override
@@ -96,13 +104,10 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
                     money = 0.0;
                 }
 
-                mCalendar = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                String formattedDate = sdf.format(mCalendar.getTime());
+                String formattedDate = mSharedPreferences.getString("date", null);
                 Log.d("fecha:", formattedDate);
 
                 mDBHelpter.insertNewIncome(money, formattedDate, notes, machines_id);
-                Log.d("INCOME:", mDBHelpter.getIncomeOfMachine(machines_id).toString());
 
                 Bundle bundle = new Bundle();
                 bundle.putDouble("money", money);

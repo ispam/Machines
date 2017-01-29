@@ -39,12 +39,12 @@ public class MachineInfo extends AppCompatActivity {
         mNotes = (TextView) findViewById(R.id.tvNotes);
         mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
 
-        if (getIntent().getExtras() != null) {
-            Bundle bundle = getIntent().getExtras();
-            mMoney.setText("$" + String.valueOf(String.format("%.3f", bundle.getDouble("money"))));
-        }
-
         SharedPreferences mSharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        Long machines_id = mSharedPreferences.getLong("machines_id", 0);
+
+        double total_amount = mDBHelpter.getIncomeOfMachine(machines_id);
+        mMoney.setText(String.valueOf(total_amount));
+
         String location = mSharedPreferences.getString("location", null);
         mLocation.setText(location);
 

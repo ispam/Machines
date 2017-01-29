@@ -2,12 +2,15 @@ package tech.destinum.machines;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
 public class DBHelpter extends SQLiteOpenHelper {
 
@@ -65,7 +68,6 @@ public class DBHelpter extends SQLiteOpenHelper {
     public void insertNewMachine(String name, String location){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-//        values.put(MACHINES_ID, id);
         values.put(MACHINES_COLUMN_NAME, name);
         values.put(MACHINES_COLUMN_LOCATION, location);
         db.insertWithOnConflict(TABLE_MACHINES, null, values, SQLiteDatabase.CONFLICT_REPLACE);
@@ -108,7 +110,6 @@ public class DBHelpter extends SQLiteOpenHelper {
         ArrayList<MachinesClass> machinesList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_MACHINES, null);
-//        Cursor  cursor = db.query(TABLE_MACHINES, new String[]{MACHINES_ID, MACHINES_COLUMN_NAME, MACHINES_COLUMN_LOCATION}, null, null, null, null, null);
         while (cursor.moveToNext()){
             final long id = cursor.getLong(cursor.getColumnIndex(MACHINES_ID));
             final String name = cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_NAME));
@@ -123,7 +124,6 @@ public class DBHelpter extends SQLiteOpenHelper {
     public void insertNewIncome(Double money, String date, String note, long machines_id){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-//        values.put(INCOME_ID, id);
         values.put(INCOME_COLUMN_MONEY, money);
         values.put(INCOME_COLUMN_DATE, date);
         values.put(INCOME_COLUMN_NOTE, note);
@@ -161,31 +161,12 @@ public class DBHelpter extends SQLiteOpenHelper {
         return incomeList;
     }
 
-    private String[] mAllColumns = {INCOME_ID, INCOME_COLUMN_MONEY, INCOME_COLUMN_NOTE, INCOME_COLUMN_DATE, INCOME_COLUMN_MACHINES_ID};
-    public List<IncomeClass> getIncomeOfMachine(long machineId){
-        List<IncomeClass> list_of_income = new ArrayList<>();
+    public double getIncomeOfMachine(long machinesId){
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(TABLE_INCOME, mAllColumns, MACHINES_ID + " = ?", new String[]{String.valueOf(machineId)}, null, null, null);
-
-        while (cursor.moveToNext()){
-
-            long id = cursor.getLong(cursor.getColumnIndex(INCOME_ID));
-            String money = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_MONEY));
-            String note = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_NOTE));
-            String date = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_DATE));
-            long machines_id = cursor.getLong(cursor.getColumnIndex(INCOME_COLUMN_MACHINES_ID));
-
-            MachinesClass machine = getMachineById(machines_id);
-            if(machine != null) {
-                IncomeClass income = new IncomeClass(money, date, note, id);
-                income.setMachinesClass(machine);
-
-                list_of_income.add(income);
-            }
-        }
-        cursor.close();
-        db.close();
-        return list_of_income;
+        Cursor cursor = db.rawQuery("SELECT machines_id, SUM(money) AS total FROM income WHERE machines_id = "+machinesId+"", null);
+        cursor.moveToFirst();
+        double total_amount = cursor.getDouble(cursor.getColumnIndex("total"));
+        return total_amount;
     }
 }
 

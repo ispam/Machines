@@ -36,13 +36,15 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+
         holder.mLocation.setText(machinesList.get(position).getLocation());
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                SharedPreferences mSharedPreferences = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                SharedPreferences.Editor mEditor = mSharedPreferences.edit();
                 mEditor.putString("location", machinesList.get(position).getLocation());
                 mEditor.putLong("machines_id", machinesList.get(position).getId());
                 mEditor.commit();
@@ -55,6 +57,10 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
                 mContext.startActivity(intent);
             }
         });
+        Long machines_id = mSharedPreferences.getLong("machines_id", 0);
+
+        double total_amount = mDBHelpter.getIncomeOfMachine(machines_id);
+        holder.mMoney.setText(String.valueOf(total_amount));
     }
 
     @Override
