@@ -89,23 +89,6 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.close();
     }
 
-    private String[] mAllColumns2 = {MACHINES_ID, MACHINES_COLUMN_NAME, MACHINES_COLUMN_LOCATION};
-    public MachinesClass getMachineById(long id){
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(TABLE_MACHINES, mAllColumns2, MACHINES_ID + " = ?", new String[]{String.valueOf(id)}, null, null, null);
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-
-        MachinesClass machine = new MachinesClass(cursor.getLong(cursor.getColumnIndex(MACHINES_ID)),
-                cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_NAME)),
-                cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_LOCATION)));
-
-        return machine;
-    }
-
-
     public ArrayList<MachinesClass> getAllMachines(){
         ArrayList<MachinesClass> machinesList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
