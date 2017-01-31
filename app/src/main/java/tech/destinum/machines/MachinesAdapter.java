@@ -38,8 +38,10 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
+        mDBHelpter = new DBHelpter(mContext);
+
         holder.mLocation.setText(machinesList.get(position).getLocation());
-        holder.mMoney.setText(String.valueOf(mDBHelpter.getIncomeOfMachine(machinesList.get(position).getId())));
+        holder.mMoney.setText(String.format("%.3f", mDBHelpter.getIncomeOfMachine(machinesList.get(position).getId())));
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

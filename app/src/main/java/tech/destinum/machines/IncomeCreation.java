@@ -35,6 +35,8 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_income_creation);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mDBHelpter = new DBHelpter(this);
 
         mMoney = (EditText) findViewById(R.id.etMoney);
@@ -115,9 +117,11 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
                 startActivity(i);
 
                 break;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 }

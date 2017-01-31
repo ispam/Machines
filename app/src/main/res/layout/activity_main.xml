@@ -20,9 +20,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            app:fabSize="mini"
+            app:fabSize="normal"
             app:srcCompat="@mipmap/ic_add_black_24dp"
-            android:id="@+id/floatingActionButton"
+            android:id="@+id/fabAddMachine"
             android:layout_gravity="bottom|right"/>
 
         <android.support.v7.widget.RecyclerView

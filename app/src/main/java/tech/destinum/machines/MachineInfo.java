@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,6 +23,8 @@ public class MachineInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_machine_info);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mDBHelpter = new DBHelpter(getApplicationContext());
 
         mLocation = (TextView) findViewById(R.id.tvLocation);
@@ -33,7 +36,7 @@ public class MachineInfo extends AppCompatActivity {
         Long machines_id = mSharedPreferences.getLong("machines_id", 0);
 
         double total_amount = mDBHelpter.getIncomeOfMachine(machines_id);
-        mMoney.setText(String.valueOf(total_amount));
+        mMoney.setText(String.format("%.3f",total_amount));
 
         String location = mSharedPreferences.getString("location", null);
         mLocation.setText(location);
@@ -46,5 +49,6 @@ public class MachineInfo extends AppCompatActivity {
             }
         });
     }
+
 }
 
