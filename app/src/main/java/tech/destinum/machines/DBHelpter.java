@@ -130,13 +130,14 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.delete(TABLE_INCOME, "id = ?", new String[]{Long.toString(id)});
     }
 
-    public ArrayList<String> getAllIncomes(){
-        ArrayList<String> incomeList = new ArrayList<>();
+    public ArrayList<Long> getAllIncomesOfAllMachines(long position){
+        ArrayList<Long> incomeList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_INCOME, null);
+        Cursor cursor = db.rawQuery("SELECT machines_id, SUM(money) AS total FROM income GROUP BY machines_id", null);
 
+        cursor.moveToFirst();
         while(cursor.moveToNext()){
-            final String money = cursor.getString(cursor.getColumnIndex(INCOME_COLUMN_MONEY));
+            Long money = cursor.getLong(cursor.getColumnIndex("total"));
             incomeList.add(money);
         }
         cursor.close();

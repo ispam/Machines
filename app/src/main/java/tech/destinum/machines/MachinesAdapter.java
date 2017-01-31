@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,11 +36,10 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-
-
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         holder.mLocation.setText(machinesList.get(position).getLocation());
+        holder.mMoney.setText(String.valueOf(mDBHelpter.getIncomeOfMachine(machinesList.get(position).getId())));
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,8 +56,10 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtras(bundle);
                 mContext.startActivity(intent);
+
             }
         });
+
 
     }
 
@@ -75,6 +77,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
         public ViewHolder(View v) {
             super(v);
+
             mLinearLayout = (LinearLayout) v.findViewById(R.id.linearLayout);
             mLocation = (TextView) v.findViewById(R.id.tvLocation);
             mMoney = (TextView) v.findViewById(R.id.tvMoney);
