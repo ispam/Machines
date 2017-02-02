@@ -8,7 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
@@ -16,6 +19,8 @@ public class MachineInfo extends AppCompatActivity {
 
     private TextView mLocation, mMoney, mNotes;
     private DBHelpter mDBHelpter;
+    private ListView mNotesList;
+    private ListAdapter mListAdapter;
     private FloatingActionButton mFAB;
 
     @Override
@@ -31,12 +36,17 @@ public class MachineInfo extends AppCompatActivity {
         mMoney = (TextView) findViewById(R.id.tvMoney);
         mNotes = (TextView) findViewById(R.id.tvNotes);
         mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
+        mNotesList = (ListView) findViewById(R.id.lvNotes);
 
         SharedPreferences mSharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         Long machines_id = mSharedPreferences.getLong("machines_id", 0);
 
         double total_amount = mDBHelpter.getIncomeOfMachine(machines_id);
         mMoney.setText(String.format("%.3f",total_amount));
+
+        ArrayList<String> note = mDBHelpter.getNotesFromMachine(machines_id);
+        mListAdapter = new ListAdapter(getApplicationContext(), mDBHelpter, note);
+        mNotesList.setAdapter(mListAdapter);
 
         String location = mSharedPreferences.getString("location", null);
         mLocation.setText(location);
