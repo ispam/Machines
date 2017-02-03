@@ -15,18 +15,18 @@ import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 public class DBHelpter extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "machines.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     public static final String TABLE_MACHINES = "machines";
     public static final String MACHINES_COLUMN_NAME = "name";
     public static final String MACHINES_COLUMN_LOCATION = "location";
-    public static final String MACHINES_ID = "id";
+    public static final String MACHINES_ID = "_id";
 
     public static final String TABLE_INCOME = "income";
     public static final String INCOME_COLUMN_MONEY = "money";
     public static final String INCOME_COLUMN_DATE = "date";
     public static final String INCOME_COLUMN_NOTE = "note";
-    public static final String INCOME_ID = "id";
+    public static final String INCOME_ID = "_id";
     public static final String INCOME_COLUMN_MACHINES_ID = "machines_id";
 
     private Context mContext;
@@ -115,13 +115,13 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateIncome(long id, Double money, String date, String note){
+    public void updateIncome(Double money, String date, String note, long machines_id){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(INCOME_COLUMN_MONEY, money);
         values.put(INCOME_COLUMN_DATE, date);
         values.put(INCOME_COLUMN_NOTE, note);
-        db.update(TABLE_INCOME, values, "id = ?", new String[]{Long.toString(id)});
+        db.update(TABLE_INCOME, values, "_id = ?", new String[]{Long.toString(machines_id)});
         db.close();
     }
 
@@ -138,7 +138,7 @@ public class DBHelpter extends SQLiteOpenHelper {
         return total_amount;
     }
 
-    public ArrayList<String> getNotesFromMachine(long machinesId){
+    public ArrayList<String> getInfoFromMachine(long machinesId){
         ArrayList<String> all_notes = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT note, date FROM income WHERE machines_id = "+machinesId+"",null);

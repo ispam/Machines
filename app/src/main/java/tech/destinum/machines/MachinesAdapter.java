@@ -61,8 +61,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
             }
         });
-
-
     }
 
     @Override

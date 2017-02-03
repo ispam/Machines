@@ -1,72 +1,42 @@
 package tech.destinum.machines;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
-public class ListAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private DBHelpter mDBHelpter;
-    private ArrayList<String> mList;
+public class ListAdapter extends CursorAdapter {
 
-    public ListAdapter(Context mContext, DBHelpter mDBHelper, ArrayList<String> mList){
-        this.mContext = mContext;
-        this.mDBHelpter = mDBHelper;
-        this.mList = mList;
+
+    public ListAdapter(Context context, Cursor c) {
+        super(context, c);
+    }
+
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        return LayoutInflater.from(context).inflate(R.layout.notes_list, parent, false);
     }
 
     @Override
-    public int getCount() {
-        return mList != null ? mList.size(): 0;
+    public void bindView(View view, Context context, Cursor cursor) {
+
+        TextView mNote = (TextView) view.findViewById(R.id.tvNote);
+        TextView mNotesDate = (TextView) view.findViewById(R.id.tvNoteDate);
+
+        String note = cursor.getString(cursor.getColumnIndex("note"));
+        String date = cursor.getString(cursor.getColumnIndex("date"));
+
+        mNote.setText(note);
+        mNotesDate.setText(date);
+
     }
 
-    @Override
-    public Object getItem(int position) {
-        return mList.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        mDBHelpter = new DBHelpter(mContext);
-        ViewHolder viewHolder;
-
-        if (convertView == null){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.notes_list, parent, false);
-            viewHolder = new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
-        IncomeClass currentNote = (IncomeClass) getItem(position);
-//        Cursor info = mDBHelpter.getNotesFromMachine(currentNote.getId());
-        viewHolder.mNote.setText(mDBHelpter.getNotesFromMachine(currentNote.getId()).toString());
-//        viewHolder.mNoteDate.setText(mDBHelpter.getNotesFromMachine(currentNote.getId()).toString());
-
-        return convertView;
-    }
-
-    private class ViewHolder {
-        private TextView mNote, mNoteDate;
-
-        public ViewHolder(View view){
-            mNote = (TextView) view.findViewById(R.id.tvNote);
-            mNoteDate = (TextView) view.findViewById(R.id.tvNoteDate);
-
-        }
-    }
 }
