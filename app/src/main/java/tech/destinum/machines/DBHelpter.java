@@ -125,8 +125,10 @@ public class DBHelpter extends SQLiteOpenHelper {
 
     public void deleteIncome(long id){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_INCOME, "id = ?", new String[]{Long.toString(id)});
+        db.delete(TABLE_INCOME, INCOME_ID+ "=?", new String[]{id + ""});
+        db.close();
     }
+
 
     public double getIncomeOfMachine(long machinesId){
         SQLiteDatabase db = getReadableDatabase();
@@ -134,6 +136,12 @@ public class DBHelpter extends SQLiteOpenHelper {
         cursor.moveToFirst();
         double total_amount = cursor.getDouble(cursor.getColumnIndex("total"));
         return total_amount;
+    }
+
+    public Cursor getInfoOfMachine(long machinesId){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT _id, note, date, money FROM income WHERE machines_id = "+machinesId+" ORDER BY date ASC",null);
+        return cursor;
     }
 }
 

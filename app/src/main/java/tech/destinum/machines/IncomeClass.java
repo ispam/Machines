@@ -2,11 +2,12 @@ package tech.destinum.machines;
 
 public class IncomeClass {
 
-    private String money, date, note;
+    private String date, note;
+    private Double money;
     private long id;
     private MachinesClass mMachinesClass;
 
-    public IncomeClass(String money, String date, String note, long id){
+    public IncomeClass(double money, String date, String note, long id){
         this.money = money;
         this.date = date;
         this.note = note;
@@ -37,12 +38,12 @@ public class IncomeClass {
         this.note = note;
     }
 
-    public String getMoney() {
+    public Double getMoney() {
 
         return money;
     }
 
-    public void setMoney(String money) {
+    public void setMoney(Double money) {
         this.money = money;
     }
 

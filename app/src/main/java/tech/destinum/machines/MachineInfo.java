@@ -1,13 +1,19 @@
 package tech.destinum.machines;
 
+import android.app.AlertDialog;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +31,8 @@ public class MachineInfo extends AppCompatActivity {
     private FloatingActionButton mFAB;
     private SQLiteDatabase db;
     private Cursor mCursor;
+    private ListAdapter adapter;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,22 +50,20 @@ public class MachineInfo extends AppCompatActivity {
         mNotesList = (ListView) findViewById(R.id.lvNotes);
 
         SharedPreferences mSharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        Long machines_id = mSharedPreferences.getLong("machines_id", 0);
+        final Long machines_id = mSharedPreferences.getLong("machines_id", 0);
 
         double total_amount = mDBHelpter.getIncomeOfMachine(machines_id);
-//        mMoney.setText(String.format("%.3f",total_amount));
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
         String formatted = formatter.format(total_amount);
         mMoney.setText(formatted);
 
-
         String location = mSharedPreferences.getString("location", null);
         mLocation.setText(location);
 
-        mCursor = db.rawQuery("SELECT _id, note, date, money FROM income WHERE machines_id = "+machines_id+"",null);
-        ListAdapter adapter = new ListAdapter(this, mCursor);
+        adapter = new ListAdapter(this, mDBHelpter.getInfoOfMachine(machines_id));
+        adapter.notifyDataSetChanged();
         mNotesList.setAdapter(adapter);
-        db.close();
+
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +72,6 @@ public class MachineInfo extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
     }
 }
 
