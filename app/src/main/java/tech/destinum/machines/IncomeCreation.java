@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,7 +49,6 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
         mLocation.setText(location);
 
 //        mMoney.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(4,3)});
-
 
         mPickDate.setOnClickListener(new View.OnClickListener() {
             @Override

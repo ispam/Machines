@@ -137,22 +137,5 @@ public class DBHelpter extends SQLiteOpenHelper {
         double total_amount = cursor.getDouble(cursor.getColumnIndex("total"));
         return total_amount;
     }
-
-    public ArrayList<String> getInfoFromMachine(long machinesId){
-        ArrayList<String> all_notes = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT note, date FROM income WHERE machines_id = "+machinesId+"",null);
-        cursor.moveToFirst();
-        while (cursor.moveToNext()){
-            String note = cursor.getString(cursor.getColumnIndex("note"));
-            String date = cursor.getString(cursor.getColumnIndex("date"));
-            all_notes.add(date);
-            all_notes.add(note);
-        }
-        db.close();
-        cursor.close();
-        return all_notes;
-    }
-
 }
 

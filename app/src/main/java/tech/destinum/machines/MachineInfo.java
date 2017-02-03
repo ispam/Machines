@@ -8,22 +8,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 
 import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
 public class MachineInfo extends AppCompatActivity {
 
-    private TextView mLocation, mMoney, mNotes;
+    private TextView mLocation, mMoney;
     private DBHelpter mDBHelpter;
     private ListView mNotesList;
     private FloatingActionButton mFAB;
@@ -42,7 +36,6 @@ public class MachineInfo extends AppCompatActivity {
 
         mLocation = (TextView) findViewById(R.id.tvLocation);
         mMoney = (TextView) findViewById(R.id.tvMoney);
-        mNotes = (TextView) findViewById(R.id.tvNotes);
         mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
         mNotesList = (ListView) findViewById(R.id.lvNotes);
 
@@ -50,12 +43,12 @@ public class MachineInfo extends AppCompatActivity {
         Long machines_id = mSharedPreferences.getLong("machines_id", 0);
 
         double total_amount = mDBHelpter.getIncomeOfMachine(machines_id);
-        mMoney.setText(String.format("%.3f",total_amount));
+        mMoney.setText("$"+String.format("%.3f",total_amount));
 
         String location = mSharedPreferences.getString("location", null);
         mLocation.setText(location);
 
-        mCursor = db.rawQuery("SELECT _id, note, date FROM income WHERE machines_id = "+machines_id+"",null);
+        mCursor = db.rawQuery("SELECT _id, note, date, money FROM income WHERE machines_id = "+machines_id+"",null);
         ListAdapter adapter = new ListAdapter(this, mCursor);
         mNotesList.setAdapter(adapter);
         db.close();
