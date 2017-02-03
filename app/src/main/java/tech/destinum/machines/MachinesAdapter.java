@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHolder>  {
@@ -40,7 +41,9 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
         mDBHelpter = new DBHelpter(mContext);
 
         holder.mLocation.setText(machinesList.get(position).getLocation());
-        holder.mMoney.setText(String.format("%.3f", mDBHelpter.getIncomeOfMachine(machinesList.get(position).getId())));
+        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+        String formatted = formatter.format(mDBHelpter.getIncomeOfMachine(machinesList.get(position).getId()));
+        holder.mMoney.setText(formatted);
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -29,8 +29,6 @@ public class DBHelpter extends SQLiteOpenHelper {
     public static final String INCOME_ID = "_id";
     public static final String INCOME_COLUMN_MACHINES_ID = "machines_id";
 
-    private Context mContext;
-
     public DBHelpter(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }

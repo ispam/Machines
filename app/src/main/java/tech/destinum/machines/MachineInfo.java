@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
+import java.text.DecimalFormat;
+
 import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
 public class MachineInfo extends AppCompatActivity {
@@ -43,7 +45,11 @@ public class MachineInfo extends AppCompatActivity {
         Long machines_id = mSharedPreferences.getLong("machines_id", 0);
 
         double total_amount = mDBHelpter.getIncomeOfMachine(machines_id);
-        mMoney.setText("$"+String.format("%.3f",total_amount));
+//        mMoney.setText(String.format("%.3f",total_amount));
+        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+        String formatted = formatter.format(total_amount);
+        mMoney.setText(formatted);
+
 
         String location = mSharedPreferences.getString("location", null);
         mLocation.setText(location);

@@ -49,7 +49,8 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
         mLocation.setText(location);
 
 //        mMoney.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(4,3)});
-
+//        mMoney.addTextChangedListener(new NumberTextWatcher(mMoney));
+        
         mPickDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +104,6 @@ public class IncomeCreation extends AppCompatActivity implements DatePickerDialo
                 } catch (NumberFormatException e){
                     money = 0.0;
                 }
-
 
                 String formattedDate = mSharedPreferences.getString("date", null);
                 Log.d("fecha:", formattedDate);
