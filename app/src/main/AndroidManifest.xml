@@ -17,9 +17,16 @@
         </activity>
         <activity android:name=".MachineCreation">
         </activity>
-        <activity android:name=".MachineInfo" android:parentActivityName=".MainActivity">
+        <activity
+            android:name=".MachineInfo"
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity android:name=".IncomeCreation">
+        </activity>
+        <activity
+            android:name=".Tabs"
+            android:label="@string/title_activity_tabs"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
     </application>
 

@@ -8,4 +8,7 @@
     <string name="date_hint">Ej: 25/11/1992</string>
     <string name="date">Fecha</string>
     <string name="date_button">seleccionar fecha</string>
+    <string name="title_activity_tabs">Tabs</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
