@@ -19,13 +19,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private DBHelpter mDBHelpter;
-    private RecyclerView mRecyclerView;
     private FloatingActionButton mFAB;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -34,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        setContentView(R.layout.activity_tabs);
 
         mFAB = (FloatingActionButton) findViewById(R.id.fabAddMachine);
 
@@ -52,12 +50,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                tabLayout.setupWithViewPager(mViewPager);
-            }
-        });
+        tabLayout.setupWithViewPager(mViewPager);
 
     }
 
@@ -65,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public static class PlaceholderFragment extends Fragment {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private RecyclerView mRecyclerView;
 
         public PlaceholderFragment() {
         }
@@ -77,26 +71,56 @@ public class MainActivity extends AppCompatActivity {
             return fragment;
         }
 
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            View rootView = inflater.inflate(R.layout.fragment_tabs, container, false);
+            View rootView = inflater.inflate(R.layout.activity_main, container, false);
             DBHelpter mDBHelper = new DBHelpter(getContext());
 
-//            RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rvNew);
-//
-//            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//            mRecyclerView.setHasFixedSize(true);
-//            MachinesAdapter mAdapter = new MachinesAdapter(getContext(), mDBHelper.getAllMachines());
-//            mRecyclerView.setAdapter(mAdapter);
-//            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//            RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-//            mRecyclerView.addItemDecoration(itemDecoration);
+            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rvNew);
+            MachinesAdapter mAdapter = new MachinesAdapter(getContext(), mDBHelper.getAllMachines());
+
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            mRecyclerView.setHasFixedSize(true);
+
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
+            RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+            mRecyclerView.addItemDecoration(itemDecoration);
+
+            return rootView;
+        }
+    }
+
+    public static class Fragment2 extends Fragment {
+
+        private static final String ARG_SECTION_NUMBER = "section_number";
+        private TextView mTextView;
+        private Button mButton;
+
+        public Fragment2() {
+        }
+
+        public static Fragment2 newInstance(int sectionNumber) {
+            Fragment2 fragment = new Fragment2();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
 
 
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            View rootView = inflater.inflate(R.layout.fragment_2, container, false);
+            mTextView = (TextView) rootView.findViewById(R.id.textView);
+            mButton = (Button) rootView.findViewById(R.id.button2);
+
             return rootView;
         }
     }
@@ -110,7 +134,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return PlaceholderFragment.newInstance(position + 1);
+            switch (position){
+                case 0:
+                    return PlaceholderFragment.newInstance(position + 1);
+                case 1:
+                    return Fragment2.newInstance(position + 1);
+            }
+            return null;
         }
 
         @Override

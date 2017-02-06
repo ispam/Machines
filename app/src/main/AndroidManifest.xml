@@ -25,11 +25,6 @@
         </activity>
         <activity android:name=".IncomeCreation">
         </activity>
-        <activity
-            android:name=".Tabs"
-            android:label="@string/title_activity_tabs"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
     </application>
 
 </manifest>
