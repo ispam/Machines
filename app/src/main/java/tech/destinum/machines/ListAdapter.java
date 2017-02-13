@@ -34,7 +34,6 @@ public class ListAdapter extends CursorAdapter {
         TextView mNote = (TextView) view.findViewById(R.id.tvNote);
         TextView mNotesDate = (TextView) view.findViewById(R.id.tvFecha);
         TextView mMoney = (TextView) view.findViewById(R.id.tvMoney);
-        RelativeLayout mRelativeLayout = (RelativeLayout) view.findViewById(R.id.rlNotesList);
 
         final Long id = cursor.getLong(cursor.getColumnIndex("_id"));
         String note = cursor.getString(cursor.getColumnIndex("note"));

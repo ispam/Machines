@@ -2,6 +2,7 @@ package tech.destinum.machines;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentProvider;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,7 +25,7 @@ import java.text.DecimalFormat;
 
 import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
-public class MachineInfo extends AppCompatActivity {
+public class MachineInfo extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private TextView mLocation, mMoney;
     private DBHelpter mDBHelpter;
@@ -31,8 +33,9 @@ public class MachineInfo extends AppCompatActivity {
     private FloatingActionButton mFAB;
     private SQLiteDatabase db;
     private Cursor mCursor;
-    private ListAdapter adapter;
+    private ListAdapter mAdapter;
     private Context mContext;
+    private static final int LOADER_INTEGER = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +63,11 @@ public class MachineInfo extends AppCompatActivity {
         String location = mSharedPreferences.getString("location", null);
         mLocation.setText(location);
 
-        adapter = new ListAdapter(this, mDBHelpter.getInfoOfMachine(machines_id));
-        adapter.notifyDataSetChanged();
-        mNotesList.setAdapter(adapter);
+        mAdapter = new ListAdapter(this, mDBHelpter.getInfoOfMachine(machines_id));
+        mAdapter.notifyDataSetChanged();
+        mNotesList.setAdapter(mAdapter);
 
+        getLoaderManager().initLoader(LOADER_INTEGER, null, this);
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +76,22 @@ public class MachineInfo extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this, IncomeClass.CON, projection, null, null, null );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
     }
 }
 
