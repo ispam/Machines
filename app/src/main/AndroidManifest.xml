@@ -26,7 +26,7 @@
         <activity android:name=".IncomeCreation">
         </activity>
         <provider
-            android:name=".IncomeProvider"
+            android:name="IncomeProvider"
             android:authorities="tech.destinum.machines.incomeprovider" >
         </provider>
     </application>

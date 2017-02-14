@@ -16,19 +16,20 @@ public class IncomeProvider extends ContentProvider {
     private static final int INCOME = 1;
     private static final int INCOME_ID = 2;
     private static final String PROVIDER = "tech.destinum.machines.incomeprovider";
-    private static final Uri CONTENT_URI = Uri.parse("content://"+ PROVIDER + "/income");
+    static final Uri CONTENT_URI = Uri.parse("content://"+ PROVIDER + "/income");
     public static final UriMatcher mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static{
         mUriMatcher.addURI(PROVIDER, "income", INCOME);
         mUriMatcher.addURI(PROVIDER, "income/#", INCOME_ID);
     }
     private DBHelpter mDBHelper;
+    private SQLiteDatabase db;
 
 
     @Override
     public boolean onCreate() {
         Context context = getContext();
-        DBHelpter mDBHelper = new DBHelpter(context);
+        mDBHelper = new DBHelpter(context);
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         return (db == null)? false:true;
     }
@@ -43,7 +44,6 @@ public class IncomeProvider extends ContentProvider {
             case INCOME:
                 break;
             case INCOME_ID:
-                // adding the ID to the original query
                 queryBuilder.appendWhere(DBHelpter.INCOME_ID + "="
                         + uri.getLastPathSegment());
                 break;
@@ -51,7 +51,7 @@ public class IncomeProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        db = mDBHelper.getWritableDatabase();
         Cursor cursor = queryBuilder.query(db, projection, selection,
                 selectionArgs, null, null, sortOrder);
 

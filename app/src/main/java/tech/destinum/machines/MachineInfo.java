@@ -81,7 +81,9 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, IncomeClass.CON, projection, null, null, null );
+//        String[] projection = { DBHelpter.INCOME_ID, DBHelpter.INCOME_COLUMN_MONEY, DBHelpter.INCOME_COLUMN_NOTE,
+//                DBHelpter.INCOME_COLUMN_DATE, DBHelpter.INCOME_COLUMN_MACHINES_ID };
+        return new CursorLoader(this, IncomeProvider.CONTENT_URI, null, null, null, null );
     }
 
     @Override
