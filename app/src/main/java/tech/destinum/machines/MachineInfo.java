@@ -43,6 +43,7 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
         setContentView(R.layout.activity_machine_info);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getLoaderManager().initLoader(LOADER_INTEGER, null, this);
 
         mDBHelpter = new DBHelpter(getApplicationContext());
         db = mDBHelpter.getWritableDatabase();
@@ -64,10 +65,7 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
         mLocation.setText(location);
 
         mAdapter = new ListAdapter(this, mDBHelpter.getInfoOfMachine(machines_id));
-        mAdapter.notifyDataSetChanged();
         mNotesList.setAdapter(mAdapter);
-
-        getLoaderManager().initLoader(LOADER_INTEGER, null, this);
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,12 +76,9 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
         });
     }
 
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//        String[] projection = { DBHelpter.INCOME_ID, DBHelpter.INCOME_COLUMN_MONEY, DBHelpter.INCOME_COLUMN_NOTE,
-//                DBHelpter.INCOME_COLUMN_DATE, DBHelpter.INCOME_COLUMN_MACHINES_ID };
-        return new CursorLoader(this, IncomeProvider.CONTENT_URI, null, null, null, null );
+        return new CursorLoader(this, IncomeProvider.CONTENT_URI, null, null, null, null);
     }
 
     @Override

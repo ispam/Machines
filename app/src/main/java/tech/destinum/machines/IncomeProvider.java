@@ -3,6 +3,7 @@ package tech.destinum.machines;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,8 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
+import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
 public class IncomeProvider extends ContentProvider {
 
@@ -51,7 +54,12 @@ public class IncomeProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
+        SharedPreferences mSharedPreferences = getContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        final Long machines_id = mSharedPreferences.getLong("machines_id", 0);
         db = mDBHelper.getWritableDatabase();
+        projection = new String[]{"_id", "note", "date", "money"};
+        selection = "machines_id = "+machines_id;
+        sortOrder = "date ASC";
         Cursor cursor = queryBuilder.query(db, projection, selection,
                 selectionArgs, null, null, sortOrder);
 

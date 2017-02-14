@@ -57,6 +57,7 @@ public class ListAdapter extends CursorAdapter {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mDBHelper.deleteIncome(id);
+                                context.getApplicationContext().getContentResolver().delete(IncomeProvider.CONTENT_URI, "machines_id = "+id, null);
                                 notifyDataSetChanged();
                             }
                         })
