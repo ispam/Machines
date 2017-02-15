@@ -1,6 +1,9 @@
 package tech.destinum.machines;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,6 +21,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.ChartData;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -96,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
         private TextView mTextView;
-        private Button mButton;
+        private PieChart mPieChart;
+        private DBHelpter mDBHelpter;
 
         public Fragment2() {
         }
@@ -113,9 +134,41 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
+            mDBHelpter = new DBHelpter(getContext());
+
             View rootView = inflater.inflate(R.layout.fragment_2, container, false);
-            mTextView = (TextView) rootView.findViewById(R.id.textView);
-            mButton = (Button) rootView.findViewById(R.id.button2);
+            mPieChart = (PieChart) rootView.findViewById(R.id.pieChart);
+
+            ArrayList<PieEntry> yData = new ArrayList<>();
+            for (int i = 0; i < mDBHelpter.yData().size(); i++){
+                yData.add(new PieEntry(mDBHelpter.yData().get(i), i));
+            }
+            ArrayList<String> xData = new ArrayList<>();
+            for (int i = 0; i < mDBHelpter.xData().size(); i++){
+                xData.add(mDBHelpter.xData().get(i));
+            }
+
+            ArrayList<Integer> colors = new ArrayList<>();
+            colors.add(Color.rgb(112, 46, 90));
+            colors.add(Color.rgb(46, 49, 112));
+            colors.add(Color.rgb(46, 98, 112));
+            colors.add(Color.rgb(46, 112, 76));
+            colors.add(Color.rgb(111, 112, 46));
+            colors.add(Color.rgb(112, 76, 46));
+            colors.add(Color.rgb(112, 46, 46));
+
+            PieDataSet pieDataSet = new PieDataSet(yData, "Maquinas");
+
+            pieDataSet.setColors(colors);
+
+            PieData pieData =  new PieData(pieDataSet);
+            mPieChart.setCenterText("Maquinas");
+            mPieChart.setCenterTextSize(20);
+            mPieChart.setHoleRadius(30);
+            mPieChart.setTransparentCircleAlpha(0);
+            mPieChart.setRotationEnabled(false);
+            mPieChart.setData(pieData);
+            mPieChart.invalidate();
 
             return rootView;
         }

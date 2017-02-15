@@ -15,18 +15,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
-        android:text="Holaaaaaaa"
+    <com.github.mikephil.charting.charts.PieChart
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:id="@+id/textView"
-        android:layout_below="@id/appbar"/>
-
-    <Button
-        android:text="Button"
-        android:layout_below="@id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button2"/>
+        android:layout_height="400dp"
+        android:id="@+id/pieChart"
+        android:layout_below="@id/appbar"></com.github.mikephil.charting.charts.PieChart>
 </RelativeLayout>

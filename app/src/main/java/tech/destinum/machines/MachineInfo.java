@@ -1,5 +1,6 @@
 package tech.destinum.machines;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentProvider;
@@ -61,6 +62,9 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
         String formatted = formatter.format(total_amount);
         mMoney.setText(formatted);
 
+//        Intent i = new Intent(this, MachinesAdapter.class);
+//        ((Activity) mContext).startActivityForResult(i, 1);
+
         String location = mSharedPreferences.getString("location", null);
         mLocation.setText(location);
 
@@ -75,6 +79,19 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
             }
         });
     }
+
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//        if (requestCode == 1){
+//            if (resultCode == Activity.RESULT_OK){
+//                String total_amount = data.getStringExtra("total_amount");
+//                mMoney.setText(total_amount);
+//
+//            }
+//        }
+//    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

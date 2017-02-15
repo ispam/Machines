@@ -12,14 +12,15 @@
         android:layout_weight="1"
         android:id="@+id/tvLocation"
         android:layout_centerVertical="true"
-        android:textSize="36sp"
+        android:textSize="34sp"
+        android:textStyle="bold"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingLeft="5dp"/>
 
     <TextView
         android:text="$ 0.0"
-        android:textSize="30sp"
+        android:textSize="26sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"

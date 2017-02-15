@@ -1,5 +1,6 @@
 package tech.destinum.machines;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
     private LayoutInflater mInflater;
     private DBHelpter mDBHelpter;
     private Context mContext;
+    private static final int REQUEST_CODE = 1;
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
@@ -43,6 +45,12 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
         holder.mLocation.setText(machinesList.get(position).getLocation());
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
         String formatted = formatter.format(mDBHelpter.getIncomeOfMachine(machinesList.get(position).getId()));
+
+//        Intent i = new Intent();
+//        i.putExtra("total_amount", formatted);
+//        ((Activity) mContext).setResult(Activity.RESULT_OK, i);
+//        ((Activity) mContext).finish();
+
         holder.mMoney.setText(formatted);
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +72,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
             }
         });
     }
+
 
     @Override
     public int getItemCount() {
