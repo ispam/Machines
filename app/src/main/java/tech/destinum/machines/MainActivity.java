@@ -158,13 +158,16 @@ public class MainActivity extends AppCompatActivity {
             colors.add(Color.rgb(112, 46, 46));
 
             PieDataSet pieDataSet = new PieDataSet(yData, "Maquinas");
+            pieDataSet.setValueTextSize(25f);
+            pieDataSet.setValueTextColor(Color.WHITE);
+            pieDataSet.setSliceSpace(3f);
+            pieDataSet.setHighlightEnabled(true);
 
             pieDataSet.setColors(colors);
 
+
             PieData pieData =  new PieData(pieDataSet);
-            mPieChart.setCenterText("Maquinas");
-            mPieChart.setCenterTextSize(20);
-            mPieChart.setHoleRadius(30);
+            mPieChart.setHoleRadius(20);
             mPieChart.setTransparentCircleAlpha(0);
             mPieChart.setRotationEnabled(false);
             mPieChart.setData(pieData);

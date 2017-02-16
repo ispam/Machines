@@ -20,7 +20,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textCapSentences"
         android:layout_below="@id/Nombre"
         android:hint="Ej: Maquina 1"
         android:gravity="center_horizontal"
@@ -38,7 +38,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textCapSentences"
         android:hint="Cedros / Caldas / Centenario"
         android:gravity="center_horizontal"
         android:ems="10"
