@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.ChartData;
@@ -65,6 +66,30 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position){
+                    case 0:
+                        mFAB.show();
+                        break;
+                    case 1:
+                        mFAB.hide();
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -162,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
             pieDataSet.setValueTextColor(Color.WHITE);
             pieDataSet.setSliceSpace(3f);
             pieDataSet.setHighlightEnabled(true);
+            pieDataSet.setDrawValues(true);
+
 
             pieDataSet.setColors(colors);
 
@@ -171,7 +198,9 @@ public class MainActivity extends AppCompatActivity {
             mPieChart.setTransparentCircleAlpha(0);
             mPieChart.setRotationEnabled(false);
             mPieChart.setData(pieData);
+            mPieChart.getLegend().setEnabled(false);
             mPieChart.invalidate();
+
 
             return rootView;
         }
@@ -211,5 +240,4 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
 }
