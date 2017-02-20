@@ -1,8 +1,9 @@
 package tech.destinum.machines;
-
-import android.content.Context;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -19,26 +20,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.ChartData;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -97,10 +86,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
         private static final String ARG_SECTION_NUMBER = "section_number";
         private RecyclerView mRecyclerView;
+        MachinesAdapter mAdapter;
+        private int LOADER_ID = 1;
 
         public PlaceholderFragment() {
         }
@@ -121,8 +112,10 @@ public class MainActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.activity_main, container, false);
             DBHelpter mDBHelper = new DBHelpter(getContext());
 
+            getLoaderManager().initLoader(LOADER_ID, null, this);
+
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rvNew);
-            MachinesAdapter mAdapter = new MachinesAdapter(getContext(), mDBHelper.getAllMachines());
+            mAdapter = new MachinesAdapter(getContext(), mDBHelper.getAllMachines());
 
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
             mRecyclerView.setHasFixedSize(true);
@@ -134,6 +127,21 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.addItemDecoration(itemDecoration);
 
             return rootView;
+        }
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            return new CursorLoader(getContext(), MachinesProvider.CONTENT_URI, null, null, null, null);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            mAdapter.swapCursor(data);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+            mAdapter.swapCursor(null);
         }
     }
 
@@ -188,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
             pieDataSet.setSliceSpace(3f);
             pieDataSet.setHighlightEnabled(true);
             pieDataSet.setDrawValues(true);
+            pieDataSet.notifyDataSetChanged();
 
 
             pieDataSet.setColors(colors);
@@ -199,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
             mPieChart.setRotationEnabled(false);
             mPieChart.setData(pieData);
             mPieChart.getLegend().setEnabled(false);
+            mPieChart.notifyDataSetChanged();
             mPieChart.invalidate();
 
 

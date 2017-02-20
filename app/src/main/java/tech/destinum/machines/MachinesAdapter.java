@@ -1,11 +1,18 @@
 package tech.destinum.machines;
 
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +29,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
     private DBHelpter mDBHelpter;
     private Context mContext;
     private static final int REQUEST_CODE = 1;
+    private Cursor mCursor;
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
@@ -71,6 +79,37 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
             }
         });
+
+        holder.v.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+                dialog.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> "+machinesList.get(position).getLocation()))
+                        .setNegativeButton("No", null)
+                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mDBHelpter.deleteMachine(machinesList.get(position).getId());
+                                notifyDataSetChanged();
+                            }
+                        });
+                dialog.create();
+                dialog.show();
+                return true;
+            }
+        });
+    }
+
+    public Cursor swapCursor(Cursor cursor) {
+        if (mCursor == cursor) {
+            return null;
+        }
+        Cursor oldCursor = mCursor;
+        this.mCursor = cursor;
+        if (cursor != null) {
+            this.notifyDataSetChanged();
+        }
+        return oldCursor;
     }
 
 

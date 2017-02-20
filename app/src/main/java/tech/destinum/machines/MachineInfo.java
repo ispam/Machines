@@ -1,22 +1,16 @@
 package tech.destinum.machines;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.content.ContentProvider;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
