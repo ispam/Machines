@@ -1,4 +1,4 @@
-package tech.destinum.machines;
+package tech.destinum.machines.ACTIVITIES;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -17,6 +17,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Calendar;
+
+import tech.destinum.machines.DB.DBHelpter;
+import tech.destinum.machines.R;
 
 public class IncomeCreation extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 

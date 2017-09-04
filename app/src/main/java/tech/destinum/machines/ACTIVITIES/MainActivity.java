@@ -1,4 +1,4 @@
-package tech.destinum.machines;
+package tech.destinum.machines.ACTIVITIES;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -28,6 +28,11 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
 import java.util.ArrayList;
+
+import tech.destinum.machines.ADAPTERS.MachinesAdapter;
+import tech.destinum.machines.DB.DBHelpter;
+import tech.destinum.machines.MachinesProvider;
+import tech.destinum.machines.R;
 
 
 public class MainActivity extends AppCompatActivity {

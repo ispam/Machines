@@ -1,4 +1,4 @@
-package tech.destinum.machines;
+package tech.destinum.machines.ADAPTERS;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,10 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
+
+import tech.destinum.machines.DB.DBHelpter;
+import tech.destinum.machines.IncomeProvider;
+import tech.destinum.machines.R;
 
 
 public class ListAdapter extends CursorAdapter {

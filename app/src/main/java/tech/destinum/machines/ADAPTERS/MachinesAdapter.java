@@ -1,12 +1,8 @@
-package tech.destinum.machines;
+package tech.destinum.machines.ADAPTERS;
 
-import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,6 +18,11 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import tech.destinum.machines.DB.DBHelpter;
+import tech.destinum.machines.ACTIVITIES.MachineInfo;
+import tech.destinum.machines.POJO.MachinesClass;
+import tech.destinum.machines.R;
+
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHolder>  {
 
     private ArrayList<MachinesClass> machinesList;
@@ -34,15 +35,13 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
 
     public MachinesAdapter(Context mContext, ArrayList<MachinesClass> machinesList){
-//        this.mInflater = LayoutInflater.from(mContext);
         this.mContext = mContext;
         this.machinesList = machinesList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.machines_list, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.machines_list, parent, false));
     }
 
     @Override

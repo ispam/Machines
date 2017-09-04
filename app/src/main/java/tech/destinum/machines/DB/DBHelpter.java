@@ -1,22 +1,19 @@
-package tech.destinum.machines;
+package tech.destinum.machines.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
+import tech.destinum.machines.POJO.MachinesClass;
 
 public class DBHelpter extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "machines.db";
     private static final int DB_VERSION = 2;
-    private static DBHelpter mInstance = null;
 
     public static final String TABLE_MACHINES = "machines";
     public static final String MACHINES_COLUMN_NAME = "name";
@@ -30,16 +27,6 @@ public class DBHelpter extends SQLiteOpenHelper {
     public static final String INCOME_ID = "_id";
     public static final String INCOME_COLUMN_MACHINES_ID = "machines_id";
 
-    public static DBHelpter getInstance(Context ctx) {
-
-        // Use the application context, which will ensure that you
-        // don't accidentally leak an Activity's context.
-        // See this article for more information: http://bit.ly/6LRzfx
-        if (mInstance == null) {
-            mInstance = new DBHelpter(ctx.getApplicationContext());
-        }
-        return mInstance;
-    }
 
     public DBHelpter(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

@@ -1,4 +1,4 @@
-package tech.destinum.machines;
+package tech.destinum.machines.ACTIVITIES;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import tech.destinum.machines.DB.DBHelpter;
+import tech.destinum.machines.R;
 
 public class MachineCreation extends AppCompatActivity {
 

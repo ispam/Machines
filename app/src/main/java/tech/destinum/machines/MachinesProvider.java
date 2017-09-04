@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import tech.destinum.machines.DB.DBHelpter;
+
 public class MachinesProvider extends ContentProvider {
 
     private static final int MACHINES = 1;

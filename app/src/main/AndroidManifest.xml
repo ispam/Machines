@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
         <activity
-            android:name=".MainActivity"
+            android:name=".ACTIVITIES.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -17,13 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".MachineCreation">
+        <activity android:name=".ACTIVITIES.MachineCreation">
         </activity>
         <activity
-            android:name=".MachineInfo"
-            android:parentActivityName=".MainActivity">
+            android:name=".ACTIVITIES.MachineInfo"
+            android:parentActivityName=".ACTIVITIES.MainActivity">
         </activity>
-        <activity android:name=".IncomeCreation">
+        <activity android:name=".ACTIVITIES.IncomeCreation">
         </activity>
         <provider
             android:name="IncomeProvider"

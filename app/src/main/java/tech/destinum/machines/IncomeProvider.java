@@ -12,7 +12,9 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
+import tech.destinum.machines.DB.DBHelpter;
+
+import static tech.destinum.machines.ADAPTERS.MachinesAdapter.PREFS_NAME;
 
 public class IncomeProvider extends ContentProvider {
 

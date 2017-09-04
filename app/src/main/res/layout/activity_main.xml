@@ -6,7 +6,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tech.destinum.machines.MainActivity"
+    tools:context="tech.destinum.machines.ACTIVITIES.MainActivity"
     android:layout_marginBottom="@dimen/activity_vertical_margin">
 
     <android.support.design.widget.AppBarLayout

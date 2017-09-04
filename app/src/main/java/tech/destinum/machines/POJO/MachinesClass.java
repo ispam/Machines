@@ -1,4 +1,4 @@
-package tech.destinum.machines;
+package tech.destinum.machines.POJO;
 
 public class MachinesClass {
     private long id;

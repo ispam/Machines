@@ -1,4 +1,4 @@
-package tech.destinum.machines;
+package tech.destinum.machines.ACTIVITIES;
 
 import android.app.LoaderManager;
 import android.content.Context;
@@ -18,7 +18,11 @@ import android.widget.TextView;
 
 import java.text.DecimalFormat;
 
-import static tech.destinum.machines.MachinesAdapter.PREFS_NAME;
+import tech.destinum.machines.ADAPTERS.ListAdapter;
+import tech.destinum.machines.ADAPTERS.MachinesAdapter;
+import tech.destinum.machines.DB.DBHelpter;
+import tech.destinum.machines.IncomeProvider;
+import tech.destinum.machines.R;
 
 public class MachineInfo extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -48,7 +52,7 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
         mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
         mNotesList = (ListView) findViewById(R.id.lvNotes);
 
-        SharedPreferences mSharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences mSharedPreferences = getSharedPreferences(MachinesAdapter.PREFS_NAME, Context.MODE_PRIVATE);
         final Long machines_id = mSharedPreferences.getLong("machines_id", 0);
 
         double total_amount = mDBHelpter.getIncomeOfMachine(machines_id);
