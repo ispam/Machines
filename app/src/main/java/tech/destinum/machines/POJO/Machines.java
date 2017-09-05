@@ -1,13 +1,12 @@
 package tech.destinum.machines.POJO;
 
-public class MachinesClass {
+public class Machines {
     private long id;
-    private String name, location;
+    private String name;
 
-    public MachinesClass(long id, String name, String location) {
+    public Machines(long id, String name) {
         this.id = id;
         this.name = name;
-        this.location = location;
     }
 
     public long getId(){
@@ -26,11 +25,4 @@ public class MachinesClass {
         this.name = name;
     }
 
-    public String getLocation(){
-        return location;
-    }
-
-    public void setLocation(String location){
-        this.location = location;
-    }
 }

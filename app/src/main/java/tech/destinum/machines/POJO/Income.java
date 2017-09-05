@@ -1,13 +1,13 @@
 package tech.destinum.machines.POJO;
 
-public class IncomeClass {
+public class Income {
 
     private String date, note;
     private Double money;
     private long id;
-    private MachinesClass mMachinesClass;
+    private Machines mMachines;
 
-    public IncomeClass(double money, String date, String note, long id){
+    public Income(double money, String date, String note, long id){
         this.money = money;
         this.date = date;
         this.note = note;
@@ -47,12 +47,12 @@ public class IncomeClass {
         this.money = money;
     }
 
-    public MachinesClass getMachinesClass(){
-        return mMachinesClass;
+    public Machines getMachines(){
+        return mMachines;
     }
 
-    public void setMachinesClass(MachinesClass mMachinesClass){
-        this.mMachinesClass = mMachinesClass;
+    public void setMachines(Machines mMachines){
+        this.mMachines = mMachines;
     }
 
 }

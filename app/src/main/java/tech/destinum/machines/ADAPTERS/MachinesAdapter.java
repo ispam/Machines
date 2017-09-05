@@ -20,21 +20,18 @@ import java.util.ArrayList;
 
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
-import tech.destinum.machines.POJO.MachinesClass;
+import tech.destinum.machines.POJO.Machines;
 import tech.destinum.machines.R;
 
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHolder>  {
 
-    private ArrayList<MachinesClass> machinesList;
-    private LayoutInflater mInflater;
+    private ArrayList<Machines> machinesList;
     private DBHelpter mDBHelpter;
     private Context mContext;
-    private static final int REQUEST_CODE = 1;
-    private Cursor mCursor;
     public static final String PREFS_NAME = "MyPrefsFile";
 
 
-    public MachinesAdapter(Context mContext, ArrayList<MachinesClass> machinesList){
+    public MachinesAdapter(Context mContext, ArrayList<Machines> machinesList){
         this.mContext = mContext;
         this.machinesList = machinesList;
     }
@@ -49,7 +46,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
         mDBHelpter = new DBHelpter(mContext);
 
-        holder.mLocation.setText(machinesList.get(position).getLocation());
+        holder.mLocation.setText(machinesList.get(position).getName());
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
         String formatted = formatter.format(mDBHelpter.getIncomeOfMachine(machinesList.get(position).getId()));
 
@@ -65,12 +62,10 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
                 SharedPreferences mSharedPreferences = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
                 SharedPreferences.Editor mEditor = mSharedPreferences.edit();
-                mEditor.putString("location", machinesList.get(position).getLocation());
                 mEditor.putLong("machines_id", machinesList.get(position).getId());
                 mEditor.commit();
 
                 Bundle bundle = new Bundle();
-                bundle.putString("location", machinesList.get(position).getLocation());
                 Intent intent = new Intent(v.getContext(), MachineInfo.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtras(bundle);
@@ -83,7 +78,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-                dialog.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> "+machinesList.get(position).getLocation()))
+                dialog.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> "+machinesList.get(position).getName()))
                         .setNegativeButton("No", null)
                         .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             @Override
@@ -98,19 +93,11 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
             }
         });
     }
-
-    public Cursor swapCursor(Cursor cursor) {
-        if (mCursor == cursor) {
-            return null;
-        }
-        Cursor oldCursor = mCursor;
-        this.mCursor = cursor;
-        if (cursor != null) {
-            this.notifyDataSetChanged();
-        }
-        return oldCursor;
+    public synchronized void refreshAdapter(ArrayList<Machines> mNewMachines){
+        machinesList.clear();
+        machinesList.addAll(mNewMachines);
+        notifyDataSetChanged();
     }
-
 
     @Override
     public int getItemCount() {

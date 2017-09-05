@@ -8,16 +8,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
-import tech.destinum.machines.POJO.MachinesClass;
+import tech.destinum.machines.POJO.Machines;
 
 public class DBHelpter extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "machines.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     public static final String TABLE_MACHINES = "machines";
     public static final String MACHINES_COLUMN_NAME = "name";
-    public static final String MACHINES_COLUMN_LOCATION = "location";
     public static final String MACHINES_ID = "_id";
 
     public static final String TABLE_INCOME = "income";
@@ -36,9 +35,8 @@ public class DBHelpter extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String query1 = String.format("CREATE TABLE " + TABLE_MACHINES + "("
             + MACHINES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + MACHINES_COLUMN_NAME + " TEXT NOT NULL, "
-            + MACHINES_COLUMN_LOCATION + " TEXT NOT NULL)",
-                TABLE_MACHINES, MACHINES_COLUMN_NAME, MACHINES_COLUMN_LOCATION, MACHINES_ID);
+            + MACHINES_COLUMN_NAME + " TEXT NOT NULL)",
+                TABLE_MACHINES, MACHINES_COLUMN_NAME,  MACHINES_ID);
 
         String query2 = String.format("CREATE TABLE " + TABLE_INCOME + "("
             + INCOME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -62,20 +60,18 @@ public class DBHelpter extends SQLiteOpenHelper {
 
     }
 
-    public void insertNewMachine(String name, String location){
+    public void insertNewMachine(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(MACHINES_COLUMN_NAME, name);
-        values.put(MACHINES_COLUMN_LOCATION, location);
         db.insertWithOnConflict(TABLE_MACHINES, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
 
-    public void updateMachine(long id, String name, String location){
+    public void updateMachine(long id, String name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(MACHINES_COLUMN_NAME, name);
-        values.put(MACHINES_COLUMN_LOCATION, location);
         db.update(TABLE_MACHINES, values, MACHINES_ID + " = ?", new String[]{Long.toString(id)});
         db.close();
     }
@@ -86,15 +82,14 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<MachinesClass> getAllMachines(){
-        ArrayList<MachinesClass> machinesList = new ArrayList<>();
+    public ArrayList<Machines> getAllMachines(){
+        ArrayList<Machines> machinesList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_MACHINES, null);
         while (cursor.moveToNext()){
             final long id = cursor.getLong(cursor.getColumnIndex(MACHINES_ID));
             final String name = cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_NAME));
-            final String location = cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_LOCATION));
-            machinesList.add(new MachinesClass(id, name, location));
+            machinesList.add(new Machines(id, name));
         }
         cursor.close();
         db.close();

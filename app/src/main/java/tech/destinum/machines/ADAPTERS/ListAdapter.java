@@ -14,7 +14,6 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 
 import tech.destinum.machines.DB.DBHelpter;
-import tech.destinum.machines.IncomeProvider;
 import tech.destinum.machines.R;
 
 
@@ -60,7 +59,7 @@ public class ListAdapter extends CursorAdapter {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mDBHelper.deleteIncome(id);
-                                context.getApplicationContext().getContentResolver().delete(IncomeProvider.CONTENT_URI, "machines_id = "+id, null);
+//                                context.getApplicationContext().getContentResolver().delete(IncomeProvider.CONTENT_URI, "machines_id = "+id, null);
                                 notifyDataSetChanged();
                             }
                         })

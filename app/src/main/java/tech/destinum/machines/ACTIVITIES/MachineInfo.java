@@ -21,10 +21,9 @@ import java.text.DecimalFormat;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.DB.DBHelpter;
-import tech.destinum.machines.IncomeProvider;
 import tech.destinum.machines.R;
 
-public class MachineInfo extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MachineInfo extends AppCompatActivity {
 
     private TextView mLocation, mMoney;
     private DBHelpter mDBHelpter;
@@ -34,7 +33,6 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
     private Cursor mCursor;
     private ListAdapter mAdapter;
     private Context mContext;
-    private static final int LOADER_INTEGER = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,6 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
         setContentView(R.layout.activity_machine_info);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getLoaderManager().initLoader(LOADER_INTEGER, null, this);
 
         mDBHelpter = new DBHelpter(getApplicationContext());
         db = mDBHelpter.getWritableDatabase();
@@ -91,19 +88,5 @@ public class MachineInfo extends AppCompatActivity implements LoaderManager.Load
 //        }
 //    }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, IncomeProvider.CONTENT_URI, null, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mAdapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-    }
 }
 

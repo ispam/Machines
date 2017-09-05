@@ -1,10 +1,4 @@
-package UTILS;
-
-import android.text.InputFilter;
-import android.text.Spanned;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+package tech.destinum.machines.UTILS;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;

@@ -10,14 +10,12 @@
         android:theme="@style/Theme.AppCompat.Light">
         <activity
             android:name=".ACTIVITIES.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".ACTIVITIES.MachineCreation">
         </activity>
         <activity
             android:name=".ACTIVITIES.MachineInfo"
@@ -25,10 +23,6 @@
         </activity>
         <activity android:name=".ACTIVITIES.IncomeCreation">
         </activity>
-        <provider
-            android:name="IncomeProvider"
-            android:authorities="tech.destinum.machines.incomeprovider" >
-        </provider>
     </application>
 
 </manifest>
