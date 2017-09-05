@@ -1,73 +1,61 @@
 package tech.destinum.machines.ADAPTERS;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.database.Cursor;
-import android.text.Html;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import tech.destinum.machines.DB.DBHelpter;
+import tech.destinum.machines.POJO.Income;
 import tech.destinum.machines.R;
 
 
-public class ListAdapter extends CursorAdapter {
+public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
+    private Context mContext;
+    private DBHelpter mDBHelpter;
+    private ArrayList<Income> mIncomeArrayList;
 
-    public ListAdapter(Context context, Cursor c) {
-        super(context, c);
-    }
-
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.notes_list, parent, false);
+    public ListAdapter(Context context, ArrayList<Income> incomeArrayList) {
+        mContext = context;
+        mIncomeArrayList = incomeArrayList;
     }
 
     @Override
-    public void bindView(View view, final Context context, final Cursor cursor) {
+    public ListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_list, parent, false));
+    }
 
-        final DBHelpter mDBHelper = new DBHelpter(context);
+    @Override
+    public void onBindViewHolder(ListAdapter.ViewHolder holder, int position) {
 
-        TextView mNote = (TextView) view.findViewById(R.id.tvNote);
-        TextView mNotesDate = (TextView) view.findViewById(R.id.tvFecha);
-        TextView mMoney = (TextView) view.findViewById(R.id.tvMoney);
+        Income income = mIncomeArrayList.get(position);
 
-        final Long id = cursor.getLong(cursor.getColumnIndex("_id"));
-        String note = cursor.getString(cursor.getColumnIndex("note"));
-        String date = cursor.getString(cursor.getColumnIndex("date"));
-        double money = cursor.getDouble(cursor.getColumnIndex("money"));
+        holder.mNote.setText("");
+        holder.mMoney.setText("");
+        holder.mDate.setText("");
 
-        mNote.setText(note);
-        mNotesDate.setText(date);
-        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-        String formatted = formatter.format(money);
-        mMoney.setText(formatted);
+    }
 
-        mNote.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AlertDialog alertDialog = new AlertDialog.Builder(v.getContext())
-                        .setTitle("Confirmación")
-                        .setMessage(Html.fromHtml("Segura de "+"<b>"+"BORRAR"+"</b>"+" la información?"))
-                        .setNegativeButton("No", null)
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mDBHelper.deleteIncome(id);
-//                                context.getApplicationContext().getContentResolver().delete(IncomeProvider.CONTENT_URI, "machines_id = "+id, null);
-                                notifyDataSetChanged();
-                            }
-                        })
-                        .create();
-                alertDialog.show();
-                return true;
-            }
-        });
+    @Override
+    public int getItemCount() {
+        return mIncomeArrayList != null ? mIncomeArrayList.size(): 0;
+    }
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView mNote, mMoney, mDate;
+
+        public ViewHolder(View v) {
+            super(v);
+
+            mNote = (TextView) v.findViewById(R.id.notes_list_note);
+            mMoney = (TextView) v.findViewById(R.id.notes_list_money);
+            mDate = (TextView) v.findViewById(R.id.notes_list_date);
+        }
     }
 }

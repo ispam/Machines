@@ -8,12 +8,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
+import tech.destinum.machines.POJO.Income;
 import tech.destinum.machines.POJO.Machines;
 
 public class DBHelpter extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "machines.db";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
 
     public static final String TABLE_MACHINES = "machines";
     public static final String MACHINES_COLUMN_NAME = "name";
@@ -41,7 +42,7 @@ public class DBHelpter extends SQLiteOpenHelper {
         String query2 = String.format("CREATE TABLE " + TABLE_INCOME + "("
             + INCOME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + INCOME_COLUMN_MONEY + " REAL NOT NULL, "
-            + INCOME_COLUMN_DATE + " DATE NOT NULL, "
+            + INCOME_COLUMN_DATE + " TEXT NOT NULL, "
             + INCOME_COLUMN_NOTE + " TEXT NOT NULL, "
             + INCOME_COLUMN_MACHINES_ID + " INTEGER NOT NULL)",
                 TABLE_INCOME, INCOME_ID, INCOME_COLUMN_MONEY, INCOME_COLUMN_DATE, INCOME_COLUMN_NOTE, INCOME_COLUMN_MACHINES_ID);
@@ -125,17 +126,25 @@ public class DBHelpter extends SQLiteOpenHelper {
 
 
     public double getIncomeOfMachine(long machinesId){
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT machines_id, SUM(money) AS total FROM income WHERE machines_id = "+machinesId+"", null);
         cursor.moveToFirst();
         double total_amount = cursor.getDouble(cursor.getColumnIndex("total"));
         return total_amount;
     }
 
-    public Cursor getInfoOfMachine(long machinesId){
-        SQLiteDatabase db = getReadableDatabase();
+    public ArrayList<Income> getInfoOfMachine(long machinesId){
+        ArrayList<Income> machines = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT _id, note, date, money FROM income WHERE machines_id = "+machinesId+" ORDER BY date ASC",null);
-        return cursor;
+        while (cursor.moveToNext()){
+            Long id = cursor.getLong(cursor.getColumnIndex("_id"));
+            String note = cursor.getString(cursor.getColumnIndex("note"));
+            String date = cursor.getString(cursor.getColumnIndex("date"));
+            Double money = cursor.getDouble(cursor.getColumnIndex("money"));
+            machines.add(new Income(money, date, note, id));
+        }
+        return machines;
     }
 
     public ArrayList<String> xData(){

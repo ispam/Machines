@@ -6,14 +6,15 @@
                 android:id="@+id/rlNotesList">
 
     <TextView
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:text="voy a escribir una cosa larga haber como resulta"
         android:lines="2"
         android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/notes_list_date"
+        android:layout_toStartOf="@+id/notes_list_date"
         android:layout_width="wrap_content"
-        android:layout_toLeftOf="@id/tvMoney"
         android:layout_height="wrap_content"
-        android:id="@+id/tvNote"
+        android:id="@+id/notes_list_note"
         />
 
     <TextView
@@ -23,14 +24,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:id="@+id/tvMoney"
-        android:layout_weight="1"/>
+        android:id="@+id/notes_list_money"/>
+
     <TextView
         android:textSize="19sp"
         android:text="21/3/17"
-        android:id="@+id/tvFecha"
+        android:id="@+id/notes_list_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/tvMoney"/>
+        android:layout_below="@id/notes_list_money"/>
+
 </RelativeLayout>

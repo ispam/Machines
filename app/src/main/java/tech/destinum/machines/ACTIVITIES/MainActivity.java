@@ -40,6 +40,26 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mAdapter);
 
+//        if (mDBHelpter.getAllMachines().size() == 0){
+//            mLayout.setVisibility(View.VISIBLE);
+//            mRecyclerViewDetails.setVisibility(View.GONE);
+//
+//            mAdd.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(final View v) {
+//
+//                    Intent intent = new Intent(Home.this, Selection.class);
+//                    startActivity(intent);
+//
+//                }
+//            });
+//
+//        } else {
+//            mLayout.setVisibility(View.GONE);
+//            mRecyclerViewDetails.setVisibility(View.VISIBLE);
+//        }
+
+
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

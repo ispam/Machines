@@ -3,16 +3,12 @@ package tech.destinum.machines.ADAPTERS;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
@@ -28,7 +24,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
     private ArrayList<Machines> machinesList;
     private DBHelpter mDBHelpter;
     private Context mContext;
-    public static final String PREFS_NAME = "MyPrefsFile";
 
 
     public MachinesAdapter(Context mContext, ArrayList<Machines> machinesList){
@@ -46,30 +41,22 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
         mDBHelpter = new DBHelpter(mContext);
 
-        holder.mLocation.setText(machinesList.get(position).getName());
+        Machines machines = machinesList.get(position);
+        holder.mName.setText(machines.getName());
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-        String formatted = formatter.format(mDBHelpter.getIncomeOfMachine(machinesList.get(position).getId()));
-
-//        Intent i = new Intent();
-//        i.putExtra("total_amount", formatted);
-//        ((Activity) mContext).setResult(Activity.RESULT_OK, i);
-//        ((Activity) mContext).finish();
+        String formatted = formatter.format(mDBHelpter.getIncomeOfMachine(machines.getId()));
 
         holder.mMoney.setText(formatted);
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                SharedPreferences mSharedPreferences = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                SharedPreferences.Editor mEditor = mSharedPreferences.edit();
-                mEditor.putLong("machines_id", machinesList.get(position).getId());
-                mEditor.commit();
-
-                Bundle bundle = new Bundle();
                 Intent intent = new Intent(v.getContext(), MachineInfo.class);
+                intent.putExtra("id", machinesList.get(position).getId());
+                intent.putExtra("name", machinesList.get(position).getName());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtras(bundle);
-                mContext.startActivity(intent);
+                v.getContext().startActivity(intent);
+
 
             }
         });
@@ -84,7 +71,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mDBHelpter.deleteMachine(machinesList.get(position).getId());
-                                notifyDataSetChanged();
                             }
                         });
                 dialog.create();
@@ -106,16 +92,14 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mLocation, mMoney;
-        public LinearLayout mLinearLayout;
+        public TextView mName, mMoney;
         public View v;
 
         public ViewHolder(View v) {
             super(v);
 
-            mLinearLayout = (LinearLayout) v.findViewById(R.id.linearLayout);
-            mLocation = (TextView) v.findViewById(R.id.tvLocation);
-            mMoney = (TextView) v.findViewById(R.id.tvMoney);
+            mName = (TextView) v.findViewById(R.id.machines_list_name);
+            mMoney = (TextView) v.findViewById(R.id.machines_list_total);
 
             this.v = v;
         }
