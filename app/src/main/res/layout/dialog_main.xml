@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/dialog_et"
             android:ems="10"
+            android:inputType="textCapSentences"
             android:hint="Nombre de la Maquina"
             android:gravity="center_horizontal"/>
 

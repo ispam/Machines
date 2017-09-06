@@ -21,8 +21,6 @@
             android:name=".ACTIVITIES.MachineInfo"
             android:parentActivityName=".ACTIVITIES.MainActivity">
         </activity>
-        <activity android:name=".ACTIVITIES.IncomeCreation">
-        </activity>
     </application>
 
 </manifest>
