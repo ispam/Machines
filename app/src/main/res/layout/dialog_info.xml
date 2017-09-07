@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/dialog_info_notes_et"
         android:ems="8"
+        android:inputType="textLongMessage"
         android:layout_below="@id/dialog_info_notes_tv"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"/>

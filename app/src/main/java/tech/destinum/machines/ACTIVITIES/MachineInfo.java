@@ -9,7 +9,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +28,7 @@ import java.util.Calendar;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.R;
+import tech.destinum.machines.UTILS.NumberTextWatcher;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -37,7 +41,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private Calendar mCalendar;
     private TextView info_date;
     private int mDay, mMonth, mYear, mDayFinal, mMonthFinal, mYearFinal;
-    private static final String PREFS_NAME = "MachineInfo";
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +59,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
         Bundle bundle = getIntent().getExtras();
         String location = bundle.getString("name");
-        long id = bundle.getLong("id");
+        final long id = bundle.getLong("id");
         double total_amount = mDBHelpter.getIncomeOfMachine(id);
 
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
@@ -65,6 +69,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mName.setText(location);
 
         mAdapter = new ListAdapter(this, mDBHelpter.getInfoOfMachine(id));
+        mNotesList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mNotesList.setAdapter(mAdapter);
 
         mFAB.setOnClickListener(new View.OnClickListener() {
@@ -73,8 +78,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_info, null, true);
-                EditText editText = (EditText) view.findViewById(R.id.dialog_info_et);
-                EditText editText2 = (EditText) view.findViewById(R.id.dialog_info_notes_et);
+                final EditText editText = (EditText) view.findViewById(R.id.dialog_info_et);
+//                editText.addTextChangedListener(new NumberTextWatcher(editText));
+                final EditText editText2 = (EditText) view.findViewById(R.id.dialog_info_notes_et);
                 info_date = (TextView) view.findViewById(R.id.dialog_info_date_tv);
                 Button button = (Button) view.findViewById(R.id.dialog_info_date_btn);
                 button.setOnClickListener(new View.OnClickListener() {
@@ -93,13 +99,23 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-//                        mDBHelpter.insertNewIncome();
+                        String notes = editText2.getText().toString();
+                        Double money;
+                        try {
+                            money = new Double(editText.getText().toString());
+                        } catch (NumberFormatException e){
+                            money = 0.0;
+                        }
 
-//                        View view = v.getRootView();
-//                        if (view != null) {
-//                            InputMethodManager inputManager = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-//                        }
+                        mDBHelpter.insertNewIncome(money, date, notes, id);
+
+                        mAdapter.refreshAdapter(mDBHelpter.getInfoOfMachine(id));
+
+                        View view = v.getRootView();
+                        if (view != null) {
+                            InputMethodManager inputManager = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                        }
 
                     }
                 }).setView(view).show();
@@ -113,11 +129,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mMonthFinal = month + 1;
         mYearFinal = year;
 
-        SharedPreferences mSharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
-        String date = mDayFinal+"/"+mMonthFinal+"/"+mYearFinal;
-        mEditor.putString("date", date);
-        mEditor.commit();
+        date = mDayFinal+"/"+mMonthFinal+"/"+mYearFinal;
 
         info_date.setText(date);
     }

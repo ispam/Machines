@@ -33,17 +33,24 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ListAdapter.ViewHolder holder, int position) {
 
+        mDBHelpter = new DBHelpter(mContext);
         Income income = mIncomeArrayList.get(position);
 
-        holder.mNote.setText("");
-        holder.mMoney.setText("");
-        holder.mDate.setText("");
+        holder.mNote.setText(income.getNote());
+        holder.mMoney.setText(income.getMoney().toString());
+        holder.mDate.setText(income.getDate());
 
     }
 
     @Override
     public int getItemCount() {
         return mIncomeArrayList != null ? mIncomeArrayList.size(): 0;
+    }
+
+    public synchronized void refreshAdapter(ArrayList<Income> mNewIncomeArrayList){
+        mIncomeArrayList.clear();
+        mIncomeArrayList.addAll(mNewIncomeArrayList);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
