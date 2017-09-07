@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import tech.destinum.machines.DB.DBHelpter;
@@ -33,11 +34,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ListAdapter.ViewHolder holder, int position) {
 
-        mDBHelpter = new DBHelpter(mContext);
         Income income = mIncomeArrayList.get(position);
 
+        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+        String formatted = formatter.format(income.getMoney());
+
         holder.mNote.setText(income.getNote());
-        holder.mMoney.setText(income.getMoney().toString());
+        holder.mMoney.setText(formatted);
         holder.mDate.setText(income.getDate());
 
     }

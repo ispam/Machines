@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
@@ -108,9 +109,14 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                         }
 
                         mDBHelpter.insertNewIncome(money, date, notes, id);
-
                         mAdapter.refreshAdapter(mDBHelpter.getInfoOfMachine(id));
 
+                        double total_amount = mDBHelpter.getIncomeOfMachine(id);
+                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                        String formatted = formatter.format(total_amount);
+                        mMoney.setText(formatted);
+
+                        //Hide Softkeyboard
                         View view = v.getRootView();
                         if (view != null) {
                             InputMethodManager inputManager = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -36,15 +36,15 @@ public class DBHelpter extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String query1 = String.format("CREATE TABLE " + TABLE_MACHINES + "("
             + MACHINES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + MACHINES_COLUMN_NAME + " TEXT NOT NULL)",
+            + MACHINES_COLUMN_NAME + " TEXT)",
                 TABLE_MACHINES, MACHINES_COLUMN_NAME,  MACHINES_ID);
 
         String query2 = String.format("CREATE TABLE " + TABLE_INCOME + "("
             + INCOME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + INCOME_COLUMN_MONEY + " REAL NOT NULL, "
-            + INCOME_COLUMN_DATE + " TEXT NOT NULL, "
-            + INCOME_COLUMN_NOTE + " TEXT NOT NULL, "
-            + INCOME_COLUMN_MACHINES_ID + " INTEGER NOT NULL)",
+            + INCOME_COLUMN_MONEY + " DOUBLE, "
+            + INCOME_COLUMN_DATE + " TEXT, "
+            + INCOME_COLUMN_NOTE + " TEXT, "
+            + INCOME_COLUMN_MACHINES_ID + " INTEGER)",
                 TABLE_INCOME, INCOME_ID, INCOME_COLUMN_MONEY, INCOME_COLUMN_DATE, INCOME_COLUMN_NOTE, INCOME_COLUMN_MACHINES_ID);
         db.execSQL(query1);
         db.execSQL(query2);
