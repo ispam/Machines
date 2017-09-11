@@ -21,6 +21,8 @@
             android:name=".ACTIVITIES.MachineInfo"
             android:parentActivityName=".ACTIVITIES.MainActivity">
         </activity>
+        <activity android:name=".ACTIVITIES.Graph">
+        </activity>
     </application>
 
 </manifest>
