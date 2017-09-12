@@ -45,7 +45,7 @@ public class Graph extends AppCompatActivity {
             float newTotal = (float) total;
             entries.add(new BarEntry(id, newTotal));
         }
-        cursor.close();
+
 
         BarDataSet set = new BarDataSet(entries, "Maquinas");
         BarData data = new BarData(set);

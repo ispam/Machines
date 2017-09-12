@@ -62,16 +62,24 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mNotesList = (RecyclerView) findViewById(R.id.lvNotes);
 
         Bundle bundle = getIntent().getExtras();
-        String location = bundle.getString("name");
-        final long id = bundle.getLong("id");
-        this.id = id;
-        double total_amount = mDBHelpter.getIncomeOfMachine(id);
+        if(bundle!=null){
 
-        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-        String formatted = formatter.format(total_amount);
+            String location = bundle.getString("name");
+            final long id = bundle.getLong("id");
+            this.id = id;
+            double total_amount = mDBHelpter.getIncomeOfMachine(id);
 
-        mMoney.setText(formatted);
-        mName.setText(location);
+            DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+            String formatted = formatter.format(total_amount);
+
+            mMoney.setText(formatted);
+            mName.setText(location);
+
+        }else{
+            finish();
+        }
+
+
 
         mAdapter = new ListAdapter(this, mDBHelpter.getInfoOfMachine(id));
         mNotesList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
@@ -154,11 +162,11 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
-            case R.menu.menu_line_chart:
+            case R.id.menu_line_chart:
 
                 Intent intent = new Intent(MachineInfo.this, LineChart.class);
-//                intent.putExtra("id", id);
-                startActivity(intent);
+                intent.putExtra("id", id);
+                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
                 break;
         }

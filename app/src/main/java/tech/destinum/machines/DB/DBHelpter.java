@@ -151,8 +151,6 @@ public class DBHelpter extends SQLiteOpenHelper {
     public Cursor incomeCursor(long machinesId){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT _id, money from income where machines_id = "+machinesId+"", null);
-        db.close();
-        cursor.close();
         return cursor;
     }
 

@@ -35,14 +35,18 @@ public class LineChart extends AppCompatActivity {
         List<Entry> entries = new ArrayList<>();
 
         Bundle bundle = getIntent().getExtras();
-        Cursor cursor = mDBHelpter.incomeCursor(bundle.getLong("id"));
-        while (cursor.moveToNext()) {
-            double total = cursor.getDouble(cursor.getColumnIndex("total"));
-            float id = cursor.getLong(cursor.getColumnIndex("_id"));
-            float newTotal = (float) total;
-            entries.add(new Entry(id, newTotal));
+        if (bundle!= null){
+            Cursor cursor = mDBHelpter.incomeCursor(bundle.getLong("id"));
+            while (cursor.moveToNext()) {
+                double total = cursor.getDouble(cursor.getColumnIndex("money"));
+                float id = cursor.getLong(cursor.getColumnIndex("_id"));
+                float newTotal = (float) total;
+                entries.add(new Entry(id, newTotal));
+            }
+            cursor.close();
+        } else {
+            finish();
         }
-        cursor.close();
 
         LineDataSet set = new LineDataSet(entries, "Maquinas");
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
