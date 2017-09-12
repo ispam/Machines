@@ -44,24 +44,8 @@ public class Graph extends AppCompatActivity {
             float id = cursor.getLong(cursor.getColumnIndex("machines_id"));
             float newTotal = (float) total;
             entries.add(new BarEntry(id, newTotal));
-
         }
-
-
-//        final List<Document> list = mDBHelper.getAllDocuments();
-//        String [] symbols = new String[list.size()];
-//
-//        for (int i = 0; i< list.size(); i++){
-//            symbols[i] = list.get(i).getSymbol();
-//        }
-
-//        entries.add(new BarEntry(0f, 450.000f));
-//        entries.add(new BarEntry(1f, 225.000f));
-//        entries.add(new BarEntry(2f, 375.456f));
-//        entries.add(new BarEntry(3f, 125.050f));
-//        // gap of 2f
-//        entries.add(new BarEntry(5f, 654.070f));
-//        entries.add(new BarEntry(6f, 485.060f));
+        cursor.close();
 
         BarDataSet set = new BarDataSet(entries, "Maquinas");
         BarData data = new BarData(set);
@@ -71,8 +55,8 @@ public class Graph extends AppCompatActivity {
         mChart.setFitBars(true);
         data.setValueTextSize(16f);
         set.setColors(ColorTemplate.COLORFUL_COLORS);
-        mChart.invalidate();
         mChart.setData(data);
+        mChart.invalidate();
     }
 
 

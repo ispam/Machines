@@ -138,10 +138,28 @@ public class DBHelpter extends SQLiteOpenHelper {
         return total_amount;
     }
 
+    public double getIncomeByMonth(long machinesId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT strftime('%m', date), sum(total) from income where machines_id = "+machinesId+"", null);
+        cursor.moveToFirst();
+        double total_amount = cursor.getDouble(cursor.getColumnIndex("total"));
+        db.close();
+        cursor.close();
+        return total_amount;
+    }
+
+    public Cursor incomeCursor(long machinesId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT _id, money from income where machines_id = "+machinesId+"", null);
+        db.close();
+        cursor.close();
+        return cursor;
+    }
+
     public ArrayList<Income> getInfoOfMachine(long machinesId){
         ArrayList<Income> machines = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT _id, note, date, money FROM income WHERE machines_id = "+machinesId+" ORDER BY date ASC",null);
+        Cursor cursor = db.rawQuery("SELECT _id, note, date, money FROM income WHERE machines_id = "+machinesId+"",null);
         while (cursor.moveToNext()){
             Long id = cursor.getLong(cursor.getColumnIndex("_id"));
             String note = cursor.getString(cursor.getColumnIndex("note"));
@@ -149,7 +167,10 @@ public class DBHelpter extends SQLiteOpenHelper {
             Double money = cursor.getDouble(cursor.getColumnIndex("money"));
             machines.add(new Income(money, date, note, id));
         }
+        db.close();
+        cursor.close();
         return machines;
+
     }
 
 }

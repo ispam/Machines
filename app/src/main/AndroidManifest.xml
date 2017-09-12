@@ -21,8 +21,12 @@
             android:name=".ACTIVITIES.MachineInfo"
             android:parentActivityName=".ACTIVITIES.MainActivity">
         </activity>
-        <activity android:name=".ACTIVITIES.Graph"
+        <activity
+            android:name=".ACTIVITIES.Graph"
             android:parentActivityName=".ACTIVITIES.MainActivity">
+        </activity>
+        <activity android:name=".ACTIVITIES.LineChart"
+            android:parentActivityName=".ACTIVITIES.MachineInfo">
         </activity>
     </application>
 

@@ -14,6 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -43,6 +45,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private TextView info_date;
     private int mDay, mMonth, mYear, mDayFinal, mMonthFinal, mYearFinal;
     private String date;
+    private long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         Bundle bundle = getIntent().getExtras();
         String location = bundle.getString("name");
         final long id = bundle.getLong("id");
+        this.id = id;
         double total_amount = mDBHelpter.getIncomeOfMachine(id);
 
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
@@ -138,6 +142,27 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         date = mDayFinal+"/"+mMonthFinal+"/"+mYearFinal;
 
         info_date.setText(date);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_line_chart, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.menu.menu_line_chart:
+
+                Intent intent = new Intent(MachineInfo.this, LineChart.class);
+//                intent.putExtra("id", id);
+                startActivity(intent);
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 
