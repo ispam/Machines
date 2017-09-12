@@ -107,6 +107,11 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.insertWithOnConflict(TABLE_INCOME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
     }
+    public Cursor getAllMachinesIncome(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT machines_id, SUM(money) AS total FROM income group by machines_id", null);
+        return cursor;
+    }
 
     public void updateIncome(Double money, String date, String note, long machines_id){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -147,28 +152,5 @@ public class DBHelpter extends SQLiteOpenHelper {
         return machines;
     }
 
-    public ArrayList<String> xData(){
-        SQLiteDatabase db = getReadableDatabase();
-        ArrayList<String> xNames = new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT location FROM machines", null);
-        while (cursor.moveToNext()){
-            xNames.add(cursor.getString(cursor.getColumnIndex("location")));
-        }
-        cursor.close();
-        db.close();
-        return xNames;
-    }
-
-    public ArrayList<Float> yData(){
-        SQLiteDatabase db = getReadableDatabase();
-        ArrayList<Float> xTotalAmount = new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT machines_id, SUM(money) AS total FROM income GROUP BY machines_id", null);
-        while (cursor.moveToNext()){
-            xTotalAmount.add(cursor.getFloat(cursor.getColumnIndex("total")));
-        }
-        cursor.close();
-        db.close();
-        return xTotalAmount;
-    }
 }
 
