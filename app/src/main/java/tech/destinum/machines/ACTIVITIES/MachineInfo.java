@@ -44,8 +44,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private Calendar mCalendar;
     private TextView info_date;
     private int mDay, mMonth, mYear, mDayFinal, mMonthFinal, mYearFinal;
-    private String date;
+    private String date, name;
     private long id;
+    private Boolean showMenu = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +68,17 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             String location = bundle.getString("name");
             final long id = bundle.getLong("id");
             this.id = id;
+            name = location;
             double total_amount = mDBHelpter.getIncomeOfMachine(id);
 
             DecimalFormat formatter = new DecimalFormat("$#,##0.000");
             String formatted = formatter.format(total_amount);
 
+            if (total_amount <= 0){
+                showMenu = false;
+            } else {
+                showMenu = true;
+            }
             mMoney.setText(formatted);
             mName.setText(location);
 
@@ -128,6 +135,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                         String formatted = formatter.format(total_amount);
                         mMoney.setText(formatted);
 
+                        invalidateOptionsMenu();
                         //Hide Softkeyboard
                         View view = v.getRootView();
                         if (view != null) {
@@ -154,9 +162,14 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if (showMenu == true){
         getMenuInflater().inflate(R.menu.menu_line_chart, menu);
-        return super.onCreateOptionsMenu(menu);
+            return super.onCreateOptionsMenu(menu);
+        } else {
+            return false;
+        }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -166,11 +179,13 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
                 Intent intent = new Intent(MachineInfo.this, LineChart.class);
                 intent.putExtra("id", id);
-                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                intent.putExtra("name", name);
+                startActivity(intent);
 
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
 

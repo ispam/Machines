@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Machines</string>
+    <string name="app_name">Maquinas</string>
     <string name="notes_hint">Ej: Se repara boquilla dañada</string>
     <string name="money_hint">$130.500</string>
     <string name="money_explanation">Ingrese el dinero obtenido:</string>

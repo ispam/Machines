@@ -37,6 +37,7 @@ public class LineChart extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle!= null){
             Cursor cursor = mDBHelpter.incomeCursor(bundle.getLong("id"));
+            setTitle(bundle.getString("name", ""));
             while (cursor.moveToNext()) {
                 double total = cursor.getDouble(cursor.getColumnIndex("money"));
                 float id = cursor.getLong(cursor.getColumnIndex("_id"));

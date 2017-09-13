@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.menu_graph:
                 Intent intent = new Intent(MainActivity.this, Graph.class);
-                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(intent);
                 break;
 
         }
