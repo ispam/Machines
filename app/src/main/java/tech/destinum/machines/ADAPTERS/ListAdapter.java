@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 
 import java.text.DecimalFormat;
@@ -37,9 +36,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final ListAdapter.ViewHolder holder, final int position) {
 
-        Income income = mIncomeArrayList.get(position);
+        final Income income = mIncomeArrayList.get(position);
 
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
         String formatted = formatter.format(income.getMoney());
@@ -48,7 +47,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.mMoney.setText(formatted);
         holder.mDate.setText(income.getDate());
         holder.mSwipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
-        holder.mSwipeLayout.addDrag(SwipeLayout.DragEdge.Left, holder.mBottom);
+//        holder.mSwipeLayout.addDrag(SwipeLayout.DragEdge.Left, holder.mBottom);
+//        holder.mSwipeLayout.setRightSwipeEnabled(true);
         holder.mSwipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
             @Override
             public void onStartOpen(SwipeLayout layout) {
@@ -78,6 +78,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             @Override
             public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
 
+            }
+        });
+
+        holder.mDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDBHelpter = new DBHelpter(v.getContext());
+                mDBHelpter.deleteIncome(income.getId());
+                refreshAdapter(mIncomeArrayList);
             }
         });
     }

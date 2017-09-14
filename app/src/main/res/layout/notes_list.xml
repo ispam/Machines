@@ -1,53 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-            android:id="@+id/swipe_notes_list"
-            app:leftEdgeSwipeOffset="0dp"
-            app:rightEdgeSwipeOffset="0dp">
+        android:id="@+id/swipe_notes_list"
+        app:leftEdgeSwipeOffset="0dp"
+        app:rightEdgeSwipeOffset="0dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:background="#FF5534"
         android:id="@+id/notes_list_bottom">
 
         <ImageView
-            android:id="@+id/trash"
-            android:layout_width="70dp"
-            android:layout_height="80dp"
-            android:src="@android:drawable/ic_menu_delete"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"/>
+                android:id="@+id/trash"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/delete_white"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete Item?"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:id="@+id/notes_list_confirmation"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/trash"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Borrar Ingreso?"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:id="@+id/notes_list_confirmation"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/trash"/>
 
         <Button
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:text="Yes,Delete"
-            android:textColor="#FF5534"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@id/notes_list_confirmation"/>
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:text="Si, Borrar"
+                android:textColor="#FF5534"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/notes_list_confirmation"/>
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:id="@+id/rlNotesList">
 
         <TextView
@@ -69,8 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:id="@+id/notes_list_money"
-            android:layout_centerVertical="true"/>
+            android:id="@+id/notes_list_money"/>
 
         <TextView
             android:textSize="19sp"
@@ -80,11 +78,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/notes_list_money"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="10dp"/>
 
     </RelativeLayout>
-
-
-
 
 </com.daimajia.swipe.SwipeLayout>
