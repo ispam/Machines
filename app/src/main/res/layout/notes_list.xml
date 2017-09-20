@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -9,12 +9,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:id="@+id/rlNotesList">
+        android:id="@+id/rl_NotesList">
 
         <TextView
-            android:textSize="22sp"
+            android:textSize="20sp"
             android:text="voy a escribir una cosa larga haber como resulta"
-            android:lines="2"
+            android:paddingLeft="4dp"
+            android:paddingStart="4dp"
             android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/notes_list_date"
             android:layout_toStartOf="@+id/notes_list_date"
@@ -24,8 +25,10 @@
             android:layout_centerVertical="true"/>
 
         <TextView
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:text="$300.000"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
             android:gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,8 +36,9 @@
             android:id="@+id/notes_list_money"/>
 
         <TextView
-            android:textSize="19sp"
-            android:text="21/3/17"
+            android:textSize="18sp"
+            android:layout_marginEnd="4dp"
+            android:text="21/03/17"
             android:id="@+id/notes_list_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,4 +48,4 @@
 
     </RelativeLayout>
 
-</RelativeLayout>
+</android.support.v7.widget.CardView>
