@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+                      android:layout_height="70dp"
+        android:background="#FF5534">
+
+        <ImageView
+            android:id="@+id/trash"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/delete_white"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Borrar Ingreso?"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:id="@+id/notes_list_confirmation"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/trash"/>
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:text="Si, Borrar"
+            android:textColor="#FF5534"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/notes_list_confirmation"/>
+
+</RelativeLayout>
+

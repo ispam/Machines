@@ -4,34 +4,40 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.RectF;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputFilter;
-import android.util.Log;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.R;
-import tech.destinum.machines.UTILS.NumberTextWatcher;
+import tech.destinum.machines.UTILS.SwipeController;
+import tech.destinum.machines.UTILS.SwipeControllerActions;
+
+import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
+import static android.support.v7.widget.helper.ItemTouchHelper.RIGHT;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -47,6 +53,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private String date, name;
     private long id;
     private Boolean showMenu = false;
+    private SwipeController mSwipeController = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +94,28 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         }
 
 
-
         mAdapter = new ListAdapter(this, mDBHelpter.getInfoOfMachine(id));
         mNotesList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mNotesList.setAdapter(mAdapter);
+
+        mSwipeController = new SwipeController(new SwipeControllerActions() {
+            @Override
+            public void onRightClicked(int position) {
+                mAdapter.mIncomeArrayList.remove(position);
+                mAdapter.notifyItemRemoved(position);
+                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+            }
+        });
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSwipeController);
+        itemTouchHelper.attachToRecyclerView(mNotesList);
+        
+        mNotesList.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                mSwipeController.onDraw(c);
+            }
+        });
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,6 +173,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             }
         });
     }
+
+
+
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
