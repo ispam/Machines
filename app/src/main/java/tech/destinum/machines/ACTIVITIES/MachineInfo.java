@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -34,10 +37,6 @@ import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.R;
 import tech.destinum.machines.UTILS.SwipeController;
-import tech.destinum.machines.UTILS.SwipeControllerActions;
-
-import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
-import static android.support.v7.widget.helper.ItemTouchHelper.RIGHT;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -53,7 +52,10 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private String date, name;
     private long id;
     private Boolean showMenu = false;
+    private Boolean swipeBack = false;
     private SwipeController mSwipeController = null;
+    private ItemTouchHelper itemTouchHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mMoney = (TextView) findViewById(R.id.machine_info_money);
         mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
         mNotesList = (RecyclerView) findViewById(R.id.lvNotes);
+
 
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null){
@@ -97,25 +100,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mAdapter = new ListAdapter(this, mDBHelpter.getInfoOfMachine(id));
         mNotesList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mNotesList.setAdapter(mAdapter);
-
-        mSwipeController = new SwipeController(new SwipeControllerActions() {
-            @Override
-            public void onRightClicked(int position) {
-                mAdapter.mIncomeArrayList.remove(position);
-                mAdapter.notifyItemRemoved(position);
-                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
-            }
-        });
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSwipeController);
-        itemTouchHelper.attachToRecyclerView(mNotesList);
-        
-        mNotesList.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                mSwipeController.onDraw(c);
-            }
-        });
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,8 +159,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     }
 
 
-
-
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         mDayFinal = dayOfMonth;
@@ -184,14 +166,13 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mYearFinal = year;
 
         date = mDayFinal+"/"+mMonthFinal+"/"+mYearFinal;
-
         info_date.setText(date);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (showMenu == true){
-        getMenuInflater().inflate(R.menu.menu_line_chart, menu);
+            getMenuInflater().inflate(R.menu.menu_line_chart, menu);
             return super.onCreateOptionsMenu(menu);
         } else {
             return false;
