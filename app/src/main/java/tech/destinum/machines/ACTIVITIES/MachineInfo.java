@@ -4,30 +4,21 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import java.text.DecimalFormat;
@@ -36,7 +27,6 @@ import java.util.Calendar;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.R;
-import tech.destinum.machines.UTILS.SwipeController;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -52,9 +42,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private String date, name;
     private long id;
     private Boolean showMenu = false;
-    private Boolean swipeBack = false;
-    private SwipeController mSwipeController = null;
-    private ItemTouchHelper itemTouchHelper;
 
 
     @Override
@@ -74,7 +61,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null){
-
             String location = bundle.getString("name");
             final long id = bundle.getLong("id");
             this.id = id;

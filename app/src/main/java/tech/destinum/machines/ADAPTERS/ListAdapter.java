@@ -1,6 +1,7 @@
 package tech.destinum.machines.ADAPTERS;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -89,7 +90,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.mShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Share", Toast.LENGTH_SHORT).show();
+                String subject = income.getDate();
+                String body = String.valueOf(income.getMoney());
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.setType("text/plain");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, body);
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                v.getContext().startActivity(Intent.createChooser(sendIntent, "Compartir"));
             }
         });
 
@@ -97,6 +105,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Toast.makeText(v.getContext(), "Delete", Toast.LENGTH_SHORT).show();
+                mDBHelpter.deleteIncome(income.getId());
+                refreshAdapter(mIncomeArrayList);
             }
         });
     }
