@@ -177,6 +177,19 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 startActivity(intent);
 
                 break;
+            case R.id.share_info:
+
+                double total_amount = mDBHelpter.getIncomeOfMachine(id);
+                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                String formatted = formatter.format(total_amount);
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.setType("text/plain");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, name + " ha recaudado en total: "+formatted);
+                startActivity(Intent.createChooser(sendIntent, "Compartir"));
+
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

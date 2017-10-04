@@ -10,6 +10,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,10 @@ public class LineChart extends AppCompatActivity {
         dataSets.add(set);
 
         LineData data = new LineData(dataSets);
+        data.setValueTextSize(16f);
+        set.setCircleRadius(8f);
+        set.setCircleHoleRadius(4f);
+        set.setCircleColors(ColorTemplate.MATERIAL_COLORS);
         mLineChart.setData(data);
         mLineChart.invalidate();
 

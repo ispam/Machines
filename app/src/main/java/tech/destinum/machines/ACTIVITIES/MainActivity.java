@@ -3,6 +3,7 @@ package tech.destinum.machines.ACTIVITIES;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.github.mikephil.charting.data.BarEntry;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.DB.DBHelpter;
@@ -93,8 +99,21 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_graph:
                 Intent intent = new Intent(MainActivity.this, Graph.class);
                 startActivity(intent);
+
                 break;
 
+            case R.id.share_machines:
+
+//                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+//                String formatted = formatter.format(total_amount);
+//
+//                Intent sendIntent = new Intent();
+//                sendIntent.setAction(Intent.ACTION_SEND);
+//                sendIntent.setType("text/plain");
+//                sendIntent.putExtra(Intent.EXTRA_TEXT, name + " ha recaudado en total: "+formatted);
+//                startActivity(Intent.createChooser(sendIntent, "Compartir"));
+
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

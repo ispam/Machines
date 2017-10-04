@@ -4,4 +4,7 @@
 
     <item android:title="Ver Gráfica"
         android:id="@+id/menu_graph"/>
+
+    <item android:title="Compartir Máquinas"
+          android:id="@+id/share_machines"/>
 </menu>

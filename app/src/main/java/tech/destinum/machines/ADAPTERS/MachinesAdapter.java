@@ -43,10 +43,11 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
         Machines machines = machinesList.get(position);
         holder.mName.setText(machines.getName());
+
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
         String formatted = formatter.format(mDBHelpter.getIncomeOfMachine(machines.getId()));
-
         holder.mMoney.setText(formatted);
+
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +57,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
                 intent.putExtra("name", machinesList.get(position).getName());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 v.getContext().startActivity(intent);
-
 
             }
         });
@@ -79,6 +79,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
             }
         });
     }
+
     public synchronized void refreshAdapter(ArrayList<Machines> mNewMachines){
         machinesList.clear();
         machinesList.addAll(mNewMachines);
