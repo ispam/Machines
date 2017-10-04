@@ -144,12 +144,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                                     refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
                                     dialog.dismiss();
                                 }
-
-
                             }
                         });
                 dialog.setView(dialogView).show();
-
             }
         });
     }
