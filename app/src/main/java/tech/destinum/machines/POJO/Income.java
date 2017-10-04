@@ -4,15 +4,15 @@ public class Income {
 
     private String date, note;
     private Double money;
-    private long id;
-    private Machines mMachines;
+    private long id, mMachines_id;
 
-    public Income(double money, String date, String note, long id){
-        this.money = money;
+    public Income(Double money, String date, String note, long id) {
         this.date = date;
         this.note = note;
+        this.money = money;
         this.id = id;
     }
+
 
     public long getId() {
         return id;
@@ -47,12 +47,12 @@ public class Income {
         this.money = money;
     }
 
-    public Machines getMachines(){
-        return mMachines;
+    public long getMachines_id() {
+        return mMachines_id;
     }
 
-    public void setMachines(Machines mMachines){
-        this.mMachines = mMachines;
+    public void setMachines_id(long machines_id) {
+        mMachines_id = machines_id;
     }
-
 }
+

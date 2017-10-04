@@ -7,6 +7,7 @@
                 android:layout_margin="1dp"
                                     app:leftEdgeSwipeOffset="0dp"
                                    app:rightEdgeSwipeOffset="0dp">
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="70dp"
@@ -29,6 +30,15 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/trash"
             android:background="#388E3C"/>
+
+        <ImageView
+            android:id="@+id/edit"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/white_edit"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/share"
+            android:background="#1d90dd"/>
 
     </RelativeLayout>
 
@@ -73,9 +83,5 @@
             android:layout_marginBottom="5dp"/>
 
     </RelativeLayout>
-
-
-
-
 
 </com.daimajia.swipe.SwipeLayout>

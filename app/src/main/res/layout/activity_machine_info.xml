@@ -35,7 +35,7 @@
         android:id="@+id/machine_info_money"/>
 
     <TextView
-        android:text="@string/notes"
+        android:text="Notas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

@@ -1,13 +1,17 @@
 package tech.destinum.machines.ADAPTERS;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import com.daimajia.swipe.SwipeLayout;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import tech.destinum.machines.ACTIVITIES.MachineInfo;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.POJO.Income;
 import tech.destinum.machines.R;
@@ -29,6 +34,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private Context mContext;
     private DBHelpter mDBHelpter;
     public ArrayList<Income> mIncomeArrayList;
+    private MachineInfo mMachineInfo;
 
     public ListAdapter(Context context, ArrayList<Income> incomeArrayList) {
         mContext = context;
@@ -102,9 +108,48 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Delete", Toast.LENGTH_SHORT).show();
                 mDBHelpter.deleteIncome(income.getId());
-                refreshAdapter(mIncomeArrayList);
+                refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
+
+            }
+        });
+
+        holder.mEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                final AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
+
+                LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View dialogView =inflater.inflate(R.layout.dialog_income, null, true);
+                final EditText edt = (EditText) dialogView.findViewById(R.id.dialog_edt_date);
+                TextView msg = (TextView) dialogView.findViewById(R.id.dialog_tv_msg) ;
+
+                msg.setText("Esta remplazando el ingreso de la fecha: "+ income.getDate());
+
+                dialog.setNegativeButton("Cancelar", null)
+                        .setPositiveButton("Cambiar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if (edt.getText().equals("") || edt.getText().length() < 6){
+                                    Toast.makeText(v.getContext(), "Necesitamos algun dato", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Double money;
+                                    try {
+                                        money = new Double(edt.getText().toString());
+                                    } catch (NumberFormatException e){
+                                        money = 0.0;
+                                    }
+                                    mDBHelpter.updateIncome(money, income.getDate(), income.getDate(), income.getId());
+                                    refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
+                                    dialog.dismiss();
+                                }
+
+
+                            }
+                        });
+                dialog.setView(dialogView).show();
+
             }
         });
     }
@@ -125,7 +170,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         public TextView mNote, mMoney, mDate;
         public SwipeLayout mSwipeLayout;
         public RelativeLayout mRelativeLayout;
-        public ImageView mDelete, mShare;
+        public ImageView mDelete, mShare, mEdit;
 
         public ViewHolder(View v) {
             super(v);
@@ -135,6 +180,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             mDate = (TextView) v.findViewById(R.id.notes_list_date);
             mDelete = (ImageView) v.findViewById(R.id.trash);
             mShare = (ImageView) v.findViewById(R.id.share);
+            mEdit = (ImageView) v.findViewById(R.id.edit);
             mSwipeLayout = (SwipeLayout) v.findViewById(R.id.swipe_notes_list);
             mRelativeLayout = (RelativeLayout) v.findViewById(R.id.background);
         }

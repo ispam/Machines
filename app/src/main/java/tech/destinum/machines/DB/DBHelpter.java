@@ -113,13 +113,13 @@ public class DBHelpter extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void updateIncome(Double money, String date, String note, long machines_id){
+    public void updateIncome(Double money, String date, String note, long id){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(INCOME_COLUMN_MONEY, money);
         values.put(INCOME_COLUMN_DATE, date);
         values.put(INCOME_COLUMN_NOTE, note);
-        db.update(TABLE_INCOME, values, "_id = ?", new String[]{Long.toString(machines_id)});
+        db.update(TABLE_INCOME, values, "_id = ?", new String[]{Long.toString(id)});
         db.close();
     }
 
@@ -138,15 +138,6 @@ public class DBHelpter extends SQLiteOpenHelper {
         return total_amount;
     }
 
-    public double getIncomeByMonth(long machinesId){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT strftime('%m', date), sum(total) from income where machines_id = "+machinesId+"", null);
-        cursor.moveToFirst();
-        double total_amount = cursor.getDouble(cursor.getColumnIndex("total"));
-        db.close();
-        cursor.close();
-        return total_amount;
-    }
 
     public Cursor incomeCursor(long machinesId){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -168,8 +159,6 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.close();
         cursor.close();
         return machines;
-
     }
-
 }
 
