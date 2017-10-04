@@ -109,15 +109,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 mDBHelpter.deleteIncome(income.getId());
-                refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
-
+                mIncomeArrayList.remove(income);
+                notifyDataSetChanged();
+//                refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
             }
         });
 
         holder.mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                final AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
+                AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
 
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View dialogView =inflater.inflate(R.layout.dialog_income, null, true);
@@ -141,7 +142,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                                         money = 0.0;
                                     }
                                     mDBHelpter.updateIncome(money, income.getDate(), income.getDate(), income.getId());
-                                    refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
+//                                    refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
                                     dialog.dismiss();
                                 }
                             }
