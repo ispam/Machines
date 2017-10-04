@@ -58,15 +58,14 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
         mNotesList = (RecyclerView) findViewById(R.id.lvNotes);
 
-
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null){
             String location = bundle.getString("name");
             final long id = bundle.getLong("id");
             this.id = id;
             name = location;
-            double total_amount = mDBHelpter.getIncomeOfMachine(id);
 
+            double total_amount = mDBHelpter.getIncomeOfMachine(id);
             DecimalFormat formatter = new DecimalFormat("$#,##0.000");
             String formatted = formatter.format(total_amount);
 

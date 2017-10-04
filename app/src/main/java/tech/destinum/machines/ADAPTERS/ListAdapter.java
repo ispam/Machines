@@ -47,7 +47,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         final Income income = mIncomeArrayList.get(position);
 
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-        String formatted = formatter.format(income.getMoney());
+        final String formatted = formatter.format(income.getMoney());
 
         holder.mNote.setText(income.getNote());
         holder.mMoney.setText(formatted);
@@ -90,13 +90,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.mShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String subject = income.getDate();
-                String body = String.valueOf(income.getMoney());
+                String date = income.getDate();
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.setType("text/plain");
-                sendIntent.putExtra(Intent.EXTRA_TEXT, body);
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "Fecha: "+date+"\n"+"Recaudado: "+formatted);
                 v.getContext().startActivity(Intent.createChooser(sendIntent, "Compartir"));
             }
         });
