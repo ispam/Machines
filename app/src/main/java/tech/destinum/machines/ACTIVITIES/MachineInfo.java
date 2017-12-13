@@ -142,7 +142,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 }).setView(view).show();
             }
         });
+
     }
+
 
 
     @Override

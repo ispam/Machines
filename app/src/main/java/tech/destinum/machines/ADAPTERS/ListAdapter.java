@@ -141,7 +141,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                                     } catch (NumberFormatException e){
                                         money = 0.0;
                                     }
-                                    mDBHelpter.updateIncome(money, income.getDate(), income.getDate(), income.getId());
+                                    mDBHelpter.updateIncome(money, income.getDate(), income.getNote(), income.getId());
 //                                    refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
                                     dialog.dismiss();
                                 }
