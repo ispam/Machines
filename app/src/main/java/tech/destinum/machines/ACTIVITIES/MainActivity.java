@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
         mDBHelpter = new DBHelpter(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_main);
-        mFAB = (FloatingActionButton) findViewById(R.id.fabAddMachine);
+        mRecyclerView = findViewById(R.id.recycler_view_main);
+        mFAB = findViewById(R.id.fabAddMachine);
 
         mAdapter = new MachinesAdapter(this, mDBHelpter.getAllMachines());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_main, null, true);
-                final EditText mEditText = (EditText) view.findViewById(R.id.dialog_et);
+                final EditText mEditText =   view.findViewById(R.id.dialog_et);
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                 dialog.setNegativeButton("Cancelar", null).setPositiveButton("Crear", new DialogInterface.OnClickListener() {
                     @Override

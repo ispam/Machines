@@ -1,25 +1,41 @@
 package tech.destinum.machines.POJO;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
+@Entity(tableName = "incomes")
 public class Income {
 
-    private String date, note;
-    private Double money;
-    private long id, mMachines_id;
+    @PrimaryKey(autoGenerate = true)
+    private long _id;
 
-    public Income(Double money, String date, String note, long id) {
+    @ColumnInfo(name = "date")
+    private String date;
+
+    @ColumnInfo(name = "note")
+    private String note;
+
+    @ColumnInfo(name = "money")
+    private Double money;
+
+    @ColumnInfo(name = "machines_id")
+    private long mMachines_id;
+
+    public Income(long _id, String date, String note, Double money, long machines_id) {
+        this._id = _id;
         this.date = date;
         this.note = note;
         this.money = money;
-        this.id = id;
+        mMachines_id = machines_id;
     }
 
-
-    public long getId() {
-        return id;
+    public long get_id() {
+        return _id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void set_id(long _id) {
+        this._id = _id;
     }
 
     public String getDate() {
@@ -39,7 +55,6 @@ public class Income {
     }
 
     public Double getMoney() {
-
         return money;
     }
 

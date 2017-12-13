@@ -108,7 +108,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.mDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDBHelpter.deleteIncome(income.getId());
+                mDBHelpter.deleteIncome(income.get_id());
                 mIncomeArrayList.remove(income);
                 notifyDataSetChanged();
 //                refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
@@ -122,8 +122,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View dialogView =inflater.inflate(R.layout.dialog_income, null, true);
-                final EditText edt = (EditText) dialogView.findViewById(R.id.dialog_edt_date);
-                TextView msg = (TextView) dialogView.findViewById(R.id.dialog_tv_msg) ;
+                final EditText edt = dialogView.findViewById(R.id.dialog_edt_date);
+                TextView msg = dialogView.findViewById(R.id.dialog_tv_msg) ;
 
                 msg.setText("Esta remplazando el ingreso de la fecha: "+ income.getDate());
 
@@ -141,7 +141,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                                     } catch (NumberFormatException e){
                                         money = 0.0;
                                     }
-                                    mDBHelpter.updateIncome(money, income.getDate(), income.getNote(), income.getId());
+                                    mDBHelpter.updateIncome(money, income.getDate(), income.getNote(), income.get_id());
 //                                    refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
                                     dialog.dismiss();
                                 }

@@ -54,10 +54,10 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
         mDBHelpter = new DBHelpter(getApplicationContext());
 
-        mName = (TextView) findViewById(R.id.machine_info_name);
-        mMoney = (TextView) findViewById(R.id.machine_info_money);
-        mFAB = (FloatingActionButton) findViewById(R.id.fabAddIncome);
-        mNotesList = (RecyclerView) findViewById(R.id.lvNotes);
+        mName = findViewById(R.id.machine_info_name);
+        mMoney = findViewById(R.id.machine_info_money);
+        mFAB =  findViewById(R.id.fabAddIncome);
+        mNotesList = findViewById(R.id.lvNotes);
 
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null){
@@ -93,11 +93,11 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_info, null, true);
-                final EditText editText = (EditText) view.findViewById(R.id.dialog_info_et);
+                final EditText editText = view.findViewById(R.id.dialog_info_et);
 //                editText.addTextChangedListener(new NumberTextWatcher(editText));
-                final EditText editText2 = (EditText) view.findViewById(R.id.dialog_info_notes_et);
-                info_date = (TextView) view.findViewById(R.id.dialog_info_date_tv);
-                Button button = (Button) view.findViewById(R.id.dialog_info_date_btn);
+                final EditText editText2 = view.findViewById(R.id.dialog_info_notes_et);
+                info_date = view.findViewById(R.id.dialog_info_date_tv);
+                Button button = view.findViewById(R.id.dialog_info_date_btn);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

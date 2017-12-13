@@ -31,7 +31,7 @@ public class LineChart extends AppCompatActivity {
         mDBHelpter = new DBHelpter(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mLineChart = (com.github.mikephil.charting.charts.LineChart) findViewById(R.id.line_chart);
+        mLineChart = findViewById(R.id.line_chart);
 
         List<Entry> entries = new ArrayList<>();
 
