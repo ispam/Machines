@@ -145,20 +145,20 @@ public class DBHelpter extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public ArrayList<Income> getInfoOfMachine(long machinesId){
-        ArrayList<Income> machines = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT _id, note, date, money FROM income WHERE machines_id = "+machinesId+"",null);
-        while (cursor.moveToNext()){
-            Long id = cursor.getLong(cursor.getColumnIndex("_id"));
-            String note = cursor.getString(cursor.getColumnIndex("note"));
-            String date = cursor.getString(cursor.getColumnIndex("date"));
-            Double money = cursor.getDouble(cursor.getColumnIndex("money"));
-            machines.add(new Income(money, date, note, id));
-        }
-        db.close();
-        cursor.close();
-        return machines;
-    }
+//    public ArrayList<Income> getInfoOfMachine(long machinesId){
+//        ArrayList<Income> machines = new ArrayList<>();
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor cursor = db.rawQuery("SELECT _id, note, date, money FROM income WHERE machines_id = "+machinesId+"",null);
+//        while (cursor.moveToNext()){
+//            Long id = cursor.getLong(cursor.getColumnIndex("_id"));
+//            String note = cursor.getString(cursor.getColumnIndex("note"));
+//            String date = cursor.getString(cursor.getColumnIndex("date"));
+//            Double money = cursor.getDouble(cursor.getColumnIndex("money"));
+//            machines.add(new Income(money, date, note, id));
+//        }
+//        db.close();
+//        cursor.close();
+//        return machines;
+//    }
 }
 

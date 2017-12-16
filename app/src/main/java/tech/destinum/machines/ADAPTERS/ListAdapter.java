@@ -34,7 +34,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private Context mContext;
     private DBHelpter mDBHelpter;
     public ArrayList<Income> mIncomeArrayList;
-    private MachineInfo mMachineInfo;
 
     public ListAdapter(Context context, ArrayList<Income> incomeArrayList) {
         mContext = context;
