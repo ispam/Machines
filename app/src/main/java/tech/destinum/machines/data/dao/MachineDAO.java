@@ -20,7 +20,7 @@ public interface MachineDAO {
     Cursor getAllMachinesIncomeCursor();
 
     @Query("select * from machines")
-    Flowable<Machine> getAllMachines();
+    Flowable<List<Machine>> getAllMachines();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addMachine(Machine machines);
@@ -29,5 +29,5 @@ public interface MachineDAO {
     void updateMachine(Machine machines);
 
     @Delete
-    void deleteMachine(Machine machines);
+    void deleteMachine(Machine... machines);
 }

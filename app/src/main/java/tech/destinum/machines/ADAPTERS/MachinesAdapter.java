@@ -18,17 +18,18 @@ import java.util.List;
 import io.reactivex.Flowable;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
+import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.R;
 
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHolder>  {
 
-    private List<Machine> machinesList = new ArrayList<>();
-    private DBHelpter mDBHelpter;
+    public List<Machine> machinesList = new ArrayList<>();
     private Context mContext;
+    private MachinesDB mDB;
 
-
-    public MachinesAdapter(Context mContext){
+    public MachinesAdapter(List<Machine> machinesList, Context mContext) {
+        this.machinesList = machinesList;
         this.mContext = mContext;
     }
 
@@ -44,7 +45,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
         holder.mName.setText(machines.getName());
 
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-        String formatted = formatter.format(mDBHelpter.getIncomeOfMachine(machines.getId()));
+        String formatted = formatter.format(mDB.getIncomeDAO().getIncomeOfMachine(machines.getId()));
         holder.mMoney.setText(formatted);
 
         holder.v.setOnClickListener(v -> {
@@ -62,7 +63,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
             dialogg.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> " + machinesList.get(position).getName()))
                     .setNegativeButton("No", null)
                     .setPositiveButton("Si", (dialog, which)-> {
-                            mDBHelpter.deleteMachine(machinesList.get(position).getId());
+                            mDB.getMachineDAO().deleteMachine(machines);
                     });
             dialogg.create();
             dialogg.show();

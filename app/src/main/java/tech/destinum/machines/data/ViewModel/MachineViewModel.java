@@ -10,7 +10,7 @@ import tech.destinum.machines.data.POJO.Machine;
 public class MachineViewModel {
 
     @Inject
-    private MachinesDB machinesDB;
+    MachinesDB machinesDB;
 
     public MachineViewModel(MachinesDB machinesDB) {
         this.machinesDB = machinesDB;

@@ -9,15 +9,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.MachinesDB;
+import tech.destinum.machines.data.POJO.Machine;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,25 +34,33 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MachinesAdapter mAdapter;
     private MachinesDB mDB;
+    private CompositeDisposable disposable = new CompositeDisposable();
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ((App) getApplication()).getComponent().injectMainActivity(this);
-
-        
+        ((App) getApplication()).getComponent().inject(this);
 
         mRecyclerView = findViewById(R.id.recycler_view_main);
         mFAB = findViewById(R.id.fabAddMachine);
 
-        mAdapter = new MachinesAdapter(this);
-//        mAdapter = new MachinesAdapter(this, mDB.getMachineDAO().getAllMachines());
+        disposable.add(mDB.getMachineDAO().getAllMachines()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(machines -> {
+                            if (machines != null) {
+                                mAdapter = new MachinesAdapter(machines, MainActivity.this);
+                                mRecyclerView.setAdapter(mAdapter);
+                                mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+                            }
+                        }, throwable -> {
+                            Log.e(TAG, "onCreate: Unable to get machines", throwable);
+                }));
 
-        mAdapter.refreshAdapter(mDB.getMachineDAO().getAllMachines());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setAdapter(mAdapter);
+
 
 //        if (mDBHelpter.getAllMachines().size() == 0){
 //            mLayout.setVisibility(View.VISIBLE);
@@ -83,6 +99,14 @@ public class MainActivity extends AppCompatActivity {
                 }).setView(view).show();
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (disposable != null && !disposable.isDisposed()){
+            disposable.clear();
+        }
     }
 
     @Override
