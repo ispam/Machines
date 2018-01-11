@@ -18,6 +18,8 @@ import android.widget.EditText;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -33,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton mFAB;
     private RecyclerView mRecyclerView;
     private MachinesAdapter mAdapter;
-    private MachinesDB mDB;
+
+    @Inject
+    MachinesDB mDB;
+
     private CompositeDisposable disposable = new CompositeDisposable();
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -47,20 +52,22 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycler_view_main);
         mFAB = findViewById(R.id.fabAddMachine);
 
-        disposable.add(mDB.getMachineDAO().getAllMachines()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(machines -> {
-                            if (machines != null) {
-                                mAdapter = new MachinesAdapter(machines, MainActivity.this);
-                                mRecyclerView.setAdapter(mAdapter);
-                                mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-                            }
-                        }, throwable -> {
-                            Log.e(TAG, "onCreate: Unable to get machines", throwable);
-                }));
+        if (mDB.getMachineDAO().getAllMachines().equals(0)){
 
-
+        } else {
+            disposable.add(mDB.getMachineDAO().getAllMachines()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(machines -> {
+                        if (machines != null) {
+                            mAdapter = new MachinesAdapter(machines, MainActivity.this);
+                            mRecyclerView.setAdapter(mAdapter);
+                        }
+                    }, throwable -> {
+                        Log.e(TAG, "onCreate: Unable to get machines", throwable);
+                    }));
+        }
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
 //        if (mDBHelpter.getAllMachines().size() == 0){
 //            mLayout.setVisibility(View.VISIBLE);
@@ -82,22 +89,16 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
 
-        mFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
+        mFAB.setOnClickListener(v -> {
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_main, null, true);
                 final EditText mEditText =   view.findViewById(R.id.dialog_et);
-                AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
-                dialog.setNegativeButton("Cancelar", null).setPositiveButton("Crear", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                        mDB.getInstance(v.getContext()).getMachineDAO().addMachine(new Machine(mEditText.getText().toString()));
-//                        mDBHelpter.insertNewMachine(mEditText.getText().toString());
-//                        mAdapter.refreshAdapter(mDBHelpter.getAllMachines());
-                    }
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
+                alertDialog.setNegativeButton("Cancelar", null).setPositiveButton("Crear", (dialog, which) -> {
+                        mDB.getInstance(v.getContext()).getMachineDAO().addMachine(new Machine(mEditText.getText().toString()));
+                        mDBHelpter.insertNewMachine(mEditText.getText().toString());
+                        mAdapter.refreshAdapter(mDBHelpter.getAllMachines());
                 }).setView(view).show();
-            }
         });
     }
 
