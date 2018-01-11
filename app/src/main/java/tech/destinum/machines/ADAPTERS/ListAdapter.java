@@ -3,11 +3,8 @@ package tech.destinum.machines.ADAPTERS;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +19,10 @@ import com.daimajia.swipe.SwipeLayout;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
-import tech.destinum.machines.ACTIVITIES.MachineInfo;
 import tech.destinum.machines.DB.DBHelpter;
-import tech.destinum.machines.POJO.Income;
+import tech.destinum.machines.data.POJO.Income;
 import tech.destinum.machines.R;
 
 
@@ -33,9 +30,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private Context mContext;
     private DBHelpter mDBHelpter;
-    public ArrayList<Income> mIncomeArrayList;
+    public List<Income> mIncomeArrayList;
 
-    public ListAdapter(Context context, ArrayList<Income> incomeArrayList) {
+    public ListAdapter(Context context, List<Income> incomeArrayList) {
         mContext = context;
         mIncomeArrayList = incomeArrayList;
     }

@@ -13,22 +13,23 @@ import android.widget.TextView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
+import io.reactivex.Flowable;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
-import tech.destinum.machines.POJO.Machines;
+import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.R;
 
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHolder>  {
 
-    private ArrayList<Machines> machinesList;
+    private List<Machine> machinesList = new ArrayList<>();
     private DBHelpter mDBHelpter;
     private Context mContext;
 
 
-    public MachinesAdapter(Context mContext, ArrayList<Machines> machinesList){
+    public MachinesAdapter(Context mContext){
         this.mContext = mContext;
-        this.machinesList = machinesList;
     }
 
     @Override
@@ -39,48 +40,38 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        mDBHelpter = new DBHelpter(mContext);
-
-        Machines machines = machinesList.get(position);
+        Machine machines = machinesList.get(position);
         holder.mName.setText(machines.getName());
 
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
         String formatted = formatter.format(mDBHelpter.getIncomeOfMachine(machines.getId()));
         holder.mMoney.setText(formatted);
 
-        holder.v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.v.setOnClickListener(v -> {
 
-                Intent intent = new Intent(v.getContext(), MachineInfo.class);
-                intent.putExtra("id", machinesList.get(position).getId());
-                intent.putExtra("name", machinesList.get(position).getName());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                v.getContext().startActivity(intent);
+            Intent intent = new Intent(v.getContext(), MachineInfo.class);
+            intent.putExtra("id", machinesList.get(position).getId());
+            intent.putExtra("name", machinesList.get(position).getName());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            v.getContext().startActivity(intent);
 
-            }
         });
 
-        holder.v.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-                dialog.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> "+machinesList.get(position).getName()))
-                        .setNegativeButton("No", null)
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mDBHelpter.deleteMachine(machinesList.get(position).getId());
-                            }
-                        });
-                dialog.create();
-                dialog.show();
-                return true;
-            }
+        holder.v.setOnLongClickListener(v -> {
+            AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
+            dialogg.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> " + machinesList.get(position).getName()))
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Si", (dialog, which)-> {
+                            mDBHelpter.deleteMachine(machinesList.get(position).getId());
+                    });
+            dialogg.create();
+            dialogg.show();
+            return true;
         });
     }
 
-    public synchronized void refreshAdapter(ArrayList<Machines> mNewMachines){
+
+    public synchronized void refreshAdapter(List<Machine> mNewMachines){
         machinesList.clear();
         machinesList.addAll(mNewMachines);
         notifyDataSetChanged();
@@ -99,8 +90,8 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
         public ViewHolder(View v) {
             super(v);
 
-            mName = (TextView) v.findViewById(R.id.machines_list_name);
-            mMoney = (TextView) v.findViewById(R.id.machines_list_total);
+            mName = v.findViewById(R.id.machines_list_name);
+            mMoney = v.findViewById(R.id.machines_list_total);
 
             this.v = v;
         }

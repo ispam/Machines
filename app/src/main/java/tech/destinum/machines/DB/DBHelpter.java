@@ -6,11 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.ArrayList;
-
-import tech.destinum.machines.POJO.Income;
-import tech.destinum.machines.POJO.Machines;
-
 public class DBHelpter extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "machines.db";
@@ -83,19 +78,19 @@ public class DBHelpter extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<Machines> getAllMachines(){
-        ArrayList<Machines> machinesList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_MACHINES, null);
-        while (cursor.moveToNext()){
-            final long id = cursor.getLong(cursor.getColumnIndex(MACHINES_ID));
-            final String name = cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_NAME));
-            machinesList.add(new Machines(id, name));
-        }
-        cursor.close();
-        db.close();
-        return machinesList;
-    }
+//    public ArrayList<Machine> getAllMachines(){
+//        ArrayList<Machine> machinesList = new ArrayList<>();
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_MACHINES, null);
+//        while (cursor.moveToNext()){
+//            final long id = cursor.getLong(cursor.getColumnIndex(MACHINES_ID));
+//            final String name = cursor.getString(cursor.getColumnIndex(MACHINES_COLUMN_NAME));
+//            machinesList.add(new Machine(id, name));
+//        }
+//        cursor.close();
+//        db.close();
+//        return machinesList;
+//    }
 
     public void insertNewIncome(Double money, String date, String note, long machines_id){
         SQLiteDatabase db = this.getWritableDatabase();

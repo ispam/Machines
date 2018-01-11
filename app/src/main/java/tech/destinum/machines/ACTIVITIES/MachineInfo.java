@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -26,13 +25,13 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 
 import tech.destinum.machines.ADAPTERS.ListAdapter;
-import tech.destinum.machines.DB.DBHelpter;
+import tech.destinum.machines.data.POJO.Income;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.MachinesDB;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     private TextView mName, mMoney;
-    private DBHelpter mDBHelpter;
     private RecyclerView mNotesList;
     private FloatingActionButton mFAB;
     private ListAdapter mAdapter;
@@ -43,6 +42,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private String date, name;
     private long id;
     private Boolean showMenu = false;
+    private MachinesDB mDB;
 
 
     @Override
@@ -51,8 +51,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         setContentView(R.layout.activity_machine_info);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mDBHelpter = new DBHelpter(getApplicationContext());
 
         mName = findViewById(R.id.machine_info_name);
         mMoney = findViewById(R.id.machine_info_money);
@@ -66,7 +64,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             this.id = id;
             name = location;
 
-            double total_amount = mDBHelpter.getIncomeOfMachine(id);
+//            double total_amount = mDB.getInstance(this).getIncomeDAO().getIncomeOfMachine(id).getMoney();
+            double total_amount = 222.222;
             DecimalFormat formatter = new DecimalFormat("$#,##0.000");
             String formatted = formatter.format(total_amount);
 
@@ -83,9 +82,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         }
 
 
-        mAdapter = new ListAdapter(this, mDBHelpter.getInfoOfMachine(id));
-        mNotesList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mNotesList.setAdapter(mAdapter);
+//        mAdapter = new ListAdapter(this, mDB.getInstance(this).getIncomeDAO().getInfoOfMachine(id));
+//        mNotesList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+//        mNotesList.setAdapter(mAdapter);
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,10 +121,11 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             money = 0.0;
                         }
 
-                        mDBHelpter.insertNewIncome(money, date, notes, id);
-                        mAdapter.refreshAdapter(mDBHelpter.getInfoOfMachine(id));
-
-                        double total_amount = mDBHelpter.getIncomeOfMachine(id);
+                        mDB.getIncomeDAO().addIncome(new Income(date, notes, money, id));
+//                        mDBHelpter.insertNewIncome(money, date, notes, id);
+//                        mAdapter.refreshAdapter(mDBHelpter.getInfoOfMachine(id));
+//                        mDB.getInstance(v.getContext()).getIncomeDAO().getIncomeOfMachine(id).getMoney();
+                        double total_amount = 222.222;
                         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                         String formatted = formatter.format(total_amount);
                         mMoney.setText(formatted);
@@ -182,7 +182,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 break;
             case R.id.share_info:
 
-                double total_amount = mDBHelpter.getIncomeOfMachine(id);
+//                double total_amount = mDB.getInstance(this).getIncomeDAO().getIncomeOfMachine(id).getMoney();
+                double total_amount = 222.222;
                 DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                 String formatted = formatter.format(total_amount);
 

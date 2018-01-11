@@ -1,4 +1,4 @@
-package tech.destinum.machines.data;
+package tech.destinum.machines.data.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -10,23 +10,24 @@ import android.database.Cursor;
 
 import java.util.List;
 
-import tech.destinum.machines.POJO.Machines;
+import io.reactivex.Flowable;
+import tech.destinum.machines.data.POJO.Machine;
 
 @Dao
 public interface MachineDAO {
 
-    @Query("select machines_id, sum(money) as total from income group by machines_id")
+    @Query("select machines_id, sum(money) as total from incomes group by machines_id")
     Cursor getAllMachinesIncomeCursor();
 
     @Query("select * from machines")
-    List<Machines> getAllMachines();
+    Flowable<Machine> getAllMachines();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addMachine(Machines machines);
+    void addMachine(Machine machines);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateMachine(Machines machines);
+    void updateMachine(Machine machines);
 
     @Delete
-    void deleteMachine(Machines machines);
+    void deleteMachine(Machine machines);
 }

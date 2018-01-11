@@ -1,4 +1,4 @@
-package tech.destinum.machines.POJO;
+package tech.destinum.machines.data.POJO;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
@@ -20,14 +20,14 @@ public class Income {
     private Double money;
 
     @ColumnInfo(name = "machines_id")
-    private long mMachines_id;
+    private long machines_id;
 
-    public Income(long _id, String date, String note, Double money, long machines_id) {
+    public Income(String date, String note, Double money, long machines_id) {
         this._id = _id;
         this.date = date;
         this.note = note;
         this.money = money;
-        mMachines_id = machines_id;
+        this.machines_id = machines_id;
     }
 
     public long get_id() {
@@ -63,11 +63,11 @@ public class Income {
     }
 
     public long getMachines_id() {
-        return mMachines_id;
+        return machines_id;
     }
 
     public void setMachines_id(long machines_id) {
-        mMachines_id = machines_id;
+        machines_id = machines_id;
     }
 }
 

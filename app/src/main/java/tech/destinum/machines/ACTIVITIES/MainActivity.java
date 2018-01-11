@@ -3,49 +3,46 @@ package tech.destinum.machines.ACTIVITIES;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-
-import com.github.mikephil.charting.data.BarEntry;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 import tech.destinum.machines.ADAPTERS.MachinesAdapter;
-import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.MachinesDB;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton mFAB;
-    private DBHelpter mDBHelpter;
     private RecyclerView mRecyclerView;
     private MachinesAdapter mAdapter;
+    private MachinesDB mDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDBHelpter = new DBHelpter(this);
+        ((App) getApplication()).getComponent().injectMainActivity(this);
+
+        
 
         mRecyclerView = findViewById(R.id.recycler_view_main);
         mFAB = findViewById(R.id.fabAddMachine);
 
-        mAdapter = new MachinesAdapter(this, mDBHelpter.getAllMachines());
+        mAdapter = new MachinesAdapter(this);
+//        mAdapter = new MachinesAdapter(this, mDB.getMachineDAO().getAllMachines());
+
+        mAdapter.refreshAdapter(mDB.getMachineDAO().getAllMachines());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mAdapter);
 
@@ -71,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_main, null, true);
                 final EditText mEditText =   view.findViewById(R.id.dialog_et);
@@ -79,8 +76,9 @@ public class MainActivity extends AppCompatActivity {
                 dialog.setNegativeButton("Cancelar", null).setPositiveButton("Crear", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mDBHelpter.insertNewMachine(mEditText.getText().toString());
-                        mAdapter.refreshAdapter(mDBHelpter.getAllMachines());
+//                        mDB.getInstance(v.getContext()).getMachineDAO().addMachine(new Machine(mEditText.getText().toString()));
+//                        mDBHelpter.insertNewMachine(mEditText.getText().toString());
+//                        mAdapter.refreshAdapter(mDBHelpter.getAllMachines());
                     }
                 }).setView(view).show();
             }

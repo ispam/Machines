@@ -1,16 +1,16 @@
-package tech.destinum.machines.POJO;
+package tech.destinum.machines.data.POJO;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "machines")
-public class Machines {
+public class Machine {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
     private String name;
 
-    public Machines(long id, String name) {
+    public Machine(String name) {
         this.id = id;
         this.name = name;
     }
