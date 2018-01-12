@@ -14,19 +14,30 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.ViewModel.MachineViewModel;
 
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHolder>  {
 
     public List<Machine> machinesList = new ArrayList<>();
     private Context mContext;
-    private MachinesDB mDB;
+
+    @Inject
+    MachineViewModel machineViewModel;
+
+    private Single single;
 
     public MachinesAdapter(List<Machine> machinesList, Context mContext) {
         this.machinesList = machinesList;
@@ -41,12 +52,29 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        Machine machines = machinesList.get(position);
-        holder.mName.setText(machines.getName());
+        Machine machine = machinesList.get(position);
+        holder.mName.setText(machine.getName());
 
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-        String formatted = formatter.format(mDB.getIncomeDAO().getIncomeOfMachine(machines.getId()));
-        holder.mMoney.setText(formatted);
+
+        single = machineViewModel.getIncomeOfMachine(machine.getId());
+        single.fromCallable(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return null;
+            }
+        });
+        single.flatMap(money -> {
+            String formatted = formatter.format(machineViewModel.getIncomeOfMachine(machine.getId()));
+            holder.mMoney.setText(formatted);
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+        if (machineViewModel.getIncomeOfMachine(machine.getId()) == null){
+            holder.mMoney.setText("$XXX.XXX");
+        } else {
+
+        }
 
         holder.v.setOnClickListener(v -> {
 
@@ -63,7 +91,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
             dialogg.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> " + machinesList.get(position).getName()))
                     .setNegativeButton("No", null)
                     .setPositiveButton("Si", (dialog, which)-> {
-                            mDB.getMachineDAO().deleteMachine(machines);
+                            machineViewModel.deleteMachine(machine);
                     });
             dialogg.create();
             dialogg.show();

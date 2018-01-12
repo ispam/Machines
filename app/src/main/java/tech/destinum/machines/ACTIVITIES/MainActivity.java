@@ -15,19 +15,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Machine;
+import tech.destinum.machines.data.ViewModel.MachineViewModel;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,7 +45,11 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     MachinesDB mDB;
 
+    @Inject
+    MachineViewModel viewModel;
+
     private CompositeDisposable disposable = new CompositeDisposable();
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
@@ -52,21 +62,18 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycler_view_main);
         mFAB = findViewById(R.id.fabAddMachine);
 
-        if (mDB.getMachineDAO().getAllMachines().equals(0)){
+        disposable.add(mDB.getMachineDAO().getAllMachines()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(machines -> {
+                    if (machines != null) {
+                        mAdapter = new MachinesAdapter(machines, MainActivity.this);
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
+                }, throwable -> {
+                    Log.e(TAG, "onCreate: Unable to get machines", throwable);
+                }));
 
-        } else {
-            disposable.add(mDB.getMachineDAO().getAllMachines()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(machines -> {
-                        if (machines != null) {
-                            mAdapter = new MachinesAdapter(machines, MainActivity.this);
-                            mRecyclerView.setAdapter(mAdapter);
-                        }
-                    }, throwable -> {
-                        Log.e(TAG, "onCreate: Unable to get machines", throwable);
-                    }));
-        }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
 //        if (mDBHelpter.getAllMachines().size() == 0){
@@ -94,12 +101,21 @@ public class MainActivity extends AppCompatActivity {
                 View view = inflater.inflate(R.layout.dialog_main, null, true);
                 final EditText mEditText =   view.findViewById(R.id.dialog_et);
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
-                alertDialog.setNegativeButton("Cancelar", null).setPositiveButton("Crear", (dialog, which) -> {
-                        mDB.getInstance(v.getContext()).getMachineDAO().addMachine(new Machine(mEditText.getText().toString()));
-                        mDBHelpter.insertNewMachine(mEditText.getText().toString());
-                        mAdapter.refreshAdapter(mDBHelpter.getAllMachines());
+                alertDialog.setNegativeButton("Cancelar", null)
+                        .setPositiveButton("Crear", (dialog, which) -> {
+                            String machine = mEditText.getText().toString();
+                            disposable.add(viewModel.addMachine(machine)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(emitter -> {
+                                        mAdapter.notifyDataSetChanged();
+                                    }, throwable -> {
+                                        Log.e(TAG, "onCreate: MACHINE NOT CREATED");
+                                    }));
+
                 }).setView(view).show();
         });
+
     }
 
     @Override
@@ -125,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 break;
-
             case R.id.share_machines:
 
 //                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
