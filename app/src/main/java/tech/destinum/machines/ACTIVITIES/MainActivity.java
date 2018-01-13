@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
                                         mAdapter.notifyDataSetChanged();
                                     }, throwable -> {
                                         Log.e(TAG, "onCreate: MACHINE NOT CREATED");
+                                    }, () -> {
+
                                     }));
 
                 }).setView(view).show();

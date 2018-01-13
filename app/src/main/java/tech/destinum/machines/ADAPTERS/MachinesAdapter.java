@@ -6,21 +6,33 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
@@ -31,13 +43,13 @@ import tech.destinum.machines.data.ViewModel.MachineViewModel;
 
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHolder>  {
 
+    private static final String TAG = MachinesAdapter.class.getSimpleName();
     public List<Machine> machinesList = new ArrayList<>();
     private Context mContext;
+    private CompositeDisposable disposable;
 
     @Inject
     MachineViewModel machineViewModel;
-
-    private Single single;
 
     public MachinesAdapter(List<Machine> machinesList, Context mContext) {
         this.machinesList = machinesList;
@@ -57,24 +69,50 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
 
-        single = machineViewModel.getIncomeOfMachine(machine.getId());
-        single.fromCallable(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return null;
-            }
-        });
-        single.flatMap(money -> {
-            String formatted = formatter.format(machineViewModel.getIncomeOfMachine(machine.getId()));
-            holder.mMoney.setText(formatted);
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
-        if (machineViewModel.getIncomeOfMachine(machine.getId()) == null){
-            holder.mMoney.setText("$XXX.XXX");
-        } else {
+//        disposable.add(machineViewModel.getIncomeOfMachine(machine.getId())
+//                .distinct()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(money -> {
+//                            String formatted = formatter.format(money);
+//                            holder.mMoney.setText(formatted);
+//                        }, throwable -> {
+//                    Log.e(TAG, "MachinesAdapter: Error on Adapter");
+//                }));
 
-        }
+        io.reactivex.Observable.fromCallable(new Callable<Maybe>() {
+            @Override
+            public Maybe call() throws Exception {
+                return machineViewModel.getIncomeOfMachine(machine.getId());
+            }
+        }).subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(money -> {
+            String formatted = formatter.format(money);
+            holder.mMoney.setText(formatted);
+        }, throwable -> {
+            holder.mMoney.setText("$XXX.XXX");
+        });
+
+//        disposable.add(machineViewModel.getIncomeOfMachine(machine.getId())
+//        .subscribeOn(Schedulers.io())
+//        .observeOn(AndroidSchedulers.mainThread())
+//        .subscribe(money -> {
+//            String formatted = formatter.format(money);
+//            holder.mMoney.setText(formatted);
+//        }));
+//        RxTextView.textChanges(holder.mMoney)
+//                .distinct()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(money -> {
+//                    money = machineViewModel.getIncomeOfMachine(machine.getId()).compose();
+//                    String formatted = formatter.format(money);
+//                    holder.mMoney.setText(formatted);
+//                }, throwable -> {
+//                    Log.e(TAG, "MachinesAdapter: ", throwable);
+//                });
+
 
         holder.v.setOnClickListener(v -> {
 
@@ -99,6 +137,14 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
         });
     }
 
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+
+        if (disposable != null && !disposable.isDisposed()){
+            disposable.clear();
+        }
+    }
 
     public synchronized void refreshAdapter(List<Machine> mNewMachines){
         machinesList.clear();

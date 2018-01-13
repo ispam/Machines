@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import tech.destinum.machines.data.MachinesDB;
@@ -30,11 +32,16 @@ public class MachineViewModel {
         };
     }
 
-    public Single getIncomeOfMachine(long id){
-        return new Single() {
+    public Maybe getIncomeOfMachine(long id){
+        return new Maybe() {
             @Override
-            protected void subscribeActual(SingleObserver observer) {
-                machinesDB.getIncomeDAO().getIncomeOfMachine(id);
+            protected void subscribeActual(MaybeObserver observer) {
+
+                if (machinesDB.getIncomeDAO().getIncomeOfMachine(id) == null){
+
+                } else {
+                    machinesDB.getIncomeDAO().getIncomeOfMachine(id);
+                }
             }
         };
     }
@@ -44,6 +51,15 @@ public class MachineViewModel {
             @Override
             protected void subscribeActual(CompletableObserver s) {
                 machinesDB.getMachineDAO().deleteMachine(machine);
+            }
+        };
+    }
+
+    public Flowable getAllMachines(){
+        return new Flowable() {
+            @Override
+            protected void subscribeActual(Subscriber s) {
+                machinesDB.getMachineDAO().getAllMachines();
             }
         };
     }

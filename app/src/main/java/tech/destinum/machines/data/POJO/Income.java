@@ -17,7 +17,7 @@ public class Income {
     private String note;
 
     @ColumnInfo(name = "money")
-    private Double money;
+    private Double money = 0.0;
 
     @ColumnInfo(name = "machines_id")
     private long machines_id;
