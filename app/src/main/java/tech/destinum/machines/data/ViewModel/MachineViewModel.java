@@ -36,12 +36,7 @@ public class MachineViewModel {
         return new Maybe() {
             @Override
             protected void subscribeActual(MaybeObserver observer) {
-
-                if (machinesDB.getIncomeDAO().getIncomeOfMachine(id) == null){
-
-                } else {
-                    machinesDB.getIncomeDAO().getIncomeOfMachine(id);
-                }
+                machinesDB.getIncomeDAO().getIncomeOfMachine(id);
             }
         };
     }

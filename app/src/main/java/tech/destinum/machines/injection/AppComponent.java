@@ -1,11 +1,16 @@
 package tech.destinum.machines.injection;
 
+import javax.inject.Singleton;
+
 import dagger.Component;
+import tech.destinum.machines.ACTIVITIES.MachineInfo;
 import tech.destinum.machines.ACTIVITIES.MainActivity;
 
-@MainScope
+@Singleton
 @Component(modules = {AppModule.class})
-public interface MainComponent {
+public interface AppComponent {
 
     void inject(MainActivity activity);
+
+    void inject(MachineInfo activity);
 }

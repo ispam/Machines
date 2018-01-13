@@ -24,6 +24,8 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
+import javax.inject.Inject;
+
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.data.POJO.Income;
 import tech.destinum.machines.R;
@@ -42,13 +44,17 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private String date, name;
     private long id;
     private Boolean showMenu = false;
-    private MachinesDB mDB;
+
+    @Inject
+    MachinesDB mDB;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_machine_info);
+
+        ((App) getApplication()).getComponent().inject(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

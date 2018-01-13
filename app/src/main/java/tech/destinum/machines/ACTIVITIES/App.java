@@ -2,22 +2,22 @@ package tech.destinum.machines.ACTIVITIES;
 
 import android.app.Application;
 
+import tech.destinum.machines.injection.AppComponent;
 import tech.destinum.machines.injection.AppModule;
-import tech.destinum.machines.injection.DaggerMainComponent;
-import tech.destinum.machines.injection.MainComponent;
+import tech.destinum.machines.injection.DaggerAppComponent;
 
 public class App extends Application {
 
-    private MainComponent component;
+    private AppComponent component;
 
     @Override
     public void onCreate() {
         super.onCreate();
     }
 
-    MainComponent getComponent(){
+    AppComponent getComponent(){
         if (component==null){
-            component = DaggerMainComponent.builder()
+            component = DaggerAppComponent.builder()
                     .appModule(new AppModule(this))
                     .build();
         }

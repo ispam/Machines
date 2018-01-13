@@ -7,6 +7,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import tech.destinum.machines.ACTIVITIES.App;
@@ -26,19 +28,19 @@ public class AppModule {
         this.application = application;
     }
 
-    @MainScope
+    @Singleton
     @Provides
     Context getApplication(){
         return application;
     }
 
-    @MainScope
+    @Singleton
     @Provides
     MachineViewModel getMachineViewModel(MachinesDB machinesDB){
         return new MachineViewModel(machinesDB);
     }
 
-    @MainScope
+    @Singleton
     @Provides
     MachinesDB getDB(Context context) {
         return getInstance(context);
