@@ -6,22 +6,23 @@ This is a personal project created for the whole purpose of studying all of the 
 This projects makes acknowledgements and express gratitude to the people who create each respective library for contributing to
 the increase in my personal knowledge and for creating several fantastic pieces of **free** and **open-source** software.
 
-..* [Room](https://developer.android.com/topic/libraries/architecture/room.html)
-..* [RxJava](https://github.com/ReactiveX/RxJava)
-..* [Dagger](https://github.com/google/dagger)
-..* [Retrofit](https://github.com/square/retrofit)
-..* [GSON](https://github.com/google/gson)
-..* [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)
-..* [SwipeLayout](https://github.com/daimajia/AndroidSwipeLayout)
+- [Room](https://developer.android.com/topic/libraries/architecture/room.html)
+- [RxJava](https://github.com/ReactiveX/RxJava)
+- [Dagger](https://github.com/google/dagger)
+- [Retrofit](https://github.com/square/retrofit)
+- [GSON](https://github.com/google/gson)
+- [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)
+- [SwipeLayout](https://github.com/daimajia/AndroidSwipeLayout)
 
 ## Goals
-I have set-up some goals I'd would like to achieve while doing this project and upon completion they will have a corresponding
+I have set-up some goals that I'd would like to achieve while doing this project and upon completion they will have a corresponding
 separate branch.
-|Name |Completion| Date|Branch|
-|:------:|:------:|:------:|:-----|
-|Big Refactor|Not Completed| XX/XX/XX|big_refactor|
-|Kotlin|Not Completed|XX/XX/XX|kotlin|
-|Tests|Not Completed|XX/XX/XX|tests|
+
+|     Name     | Completion |   Date   |    Branch    |
+|:------------:|:----------:|:--------:|:------------:|
+| Big Refactor |    :-1:    | XX/XX/XX | big_refactor |
+|    Kotlin    |    :-1:    | XX/XX/XX |    kotlin    |
+|     Tests    |    :-1:    | XX/XX/XX |     tests    |
 
 ## License
 No License chosen yet.
