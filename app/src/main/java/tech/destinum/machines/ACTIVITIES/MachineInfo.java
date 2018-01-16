@@ -8,8 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,13 +23,26 @@ import android.widget.TextView;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.Maybe;
+import io.reactivex.MaybeEmitter;
+import io.reactivex.MaybeObserver;
+import io.reactivex.MaybeOnSubscribe;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
-import tech.destinum.machines.data.POJO.Income;
 import tech.destinum.machines.R;
-import tech.destinum.machines.data.MachinesDB;
+import tech.destinum.machines.data.POJO.Income;
+import tech.destinum.machines.data.POJO.Machine;
+import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -45,9 +58,14 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private long id;
     private Boolean showMenu = false;
 
-    @Inject
-    MachinesDB mDB;
+    private CompositeDisposable disposable;
+    private MaybeObserver<Income> observer;
+    private Maybe<List<Income>> maybe;
 
+    @Inject
+    IncomeViewModel incomeViewModel;
+
+    private static final String TAG = MachineInfo.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,18 +87,81 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             final long id = bundle.getLong("id");
             this.id = id;
             name = location;
+//
+//            maybe = Maybe.create(new MaybeOnSubscribe<List<Income>>() {
+//                @Override
+//                public void subscribe(MaybeEmitter<List<Income>> e) throws Exception {
+//
+//                }
+//            });
+//            observer = new MaybeObserver<Income>() {
+//                @Override
+//                public void onSubscribe(Disposable d) {
+//
+//                }
+//
+//                @Override
+//                public void onSuccess(Income income) {
+//                    double total_amount = income.getMoney();
+//                    DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+//                    String formatted = formatter.format(total_amount);
+//                    mMoney.setText(formatted);
+//
+//                    if (total_amount <= 0){
+//                        showMenu = false;
+//                    } else {
+//                        showMenu = true;
+//                    }
+//                }
+//
+//                @Override
+//                public void onError(Throwable e) {
+//
+//                }
+//
+//                @Override
+//                public void onComplete() {
+//
+//                }
+//            };
+//
+//            maybe.subscribe(observer);
+//            disposable.add(Maybe.fromCallable(new Callable<Maybe>() {
+//                @Override
+//                public Maybe call() throws Exception {
+//                    return incomeViewModel.getIncomeOfMachine(id);
+//                }
+//            })
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(observer));
+
+            Maybe.fromCallable(new Callable<Maybe<Income>>() {
+                @Override
+                public Maybe call() throws Exception {
+                    return incomeViewModel.getIncomeOfMachine(id);
+                }
+            }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(money -> {
+
+                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                        String formatted = formatter.format(money);
+                        mMoney.setText(formatted);
+
+//                        if (money <= 0){
+//                            showMenu = false;
+//                        } else {
+//                            showMenu = true;
+//                        }
+                }, throwable -> {
+                    Log.e(TAG, "MachineInfo: ERROR GETTING INCOME",  throwable);
+                });
 
 //            double total_amount = mDB.getInstance(this).getIncomeDAO().getIncomeOfMachine(id).getMoney();
-            double total_amount = 222.222;
-            DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-            String formatted = formatter.format(total_amount);
 
-            if (total_amount <= 0){
-                showMenu = false;
-            } else {
-                showMenu = true;
-            }
-            mMoney.setText(formatted);
+
+
             mName.setText(location);
 
         }else{
@@ -92,9 +173,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 //        mNotesList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 //        mNotesList.setAdapter(mAdapter);
 
-        mFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
+        mFAB.setOnClickListener(v -> {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_info, null, true);
@@ -103,9 +182,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 final EditText editText2 = view.findViewById(R.id.dialog_info_notes_et);
                 info_date = view.findViewById(R.id.dialog_info_date_tv);
                 Button button = view.findViewById(R.id.dialog_info_date_btn);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                button.setOnClickListener(button1 ->{
                         mCalendar = Calendar.getInstance();
                         mDay = mCalendar.get(Calendar.DAY_OF_MONTH);
                         mMonth = mCalendar.get(Calendar.MONTH);
@@ -113,8 +190,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
                         DatePickerDialog datePickerDialog = new DatePickerDialog(MachineInfo.this, MachineInfo.this, mYear, mMonth, mDay);
                         datePickerDialog.show();
-                    }
+
                 });
+
                 dialog.setNegativeButton("Cancelar", null).setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -127,7 +205,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             money = 0.0;
                         }
 
-                        mDB.getIncomeDAO().addIncome(new Income(date, notes, money, id));
+//                        mDB.getIncomeDAO().addIncome(new Income(date, notes, money, id));
 //                        mDBHelpter.insertNewIncome(money, date, notes, id);
 //                        mAdapter.refreshAdapter(mDBHelpter.getInfoOfMachine(id));
 //                        mDB.getInstance(v.getContext()).getIncomeDAO().getIncomeOfMachine(id).getMoney();
@@ -146,12 +224,17 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
                     }
                 }).setView(view).show();
-            }
         });
 
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (disposable != null && !disposable.isDisposed()){
+            disposable.clear();
+        }
+    }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {

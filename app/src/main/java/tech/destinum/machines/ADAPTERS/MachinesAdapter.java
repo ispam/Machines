@@ -1,42 +1,29 @@
 package tech.destinum.machines.ADAPTERS;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding2.support.v7.widget.RxRecyclerView;
-import com.jakewharton.rxbinding2.widget.RxTextView;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
-import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.ViewModel.MachineViewModel;
@@ -80,7 +67,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.ViewHo
 //                    Log.e(TAG, "MachinesAdapter: Error on Adapter");
 //                }));
 
-        io.reactivex.Observable.fromCallable(new Callable<Maybe>() {
+        Observable.fromCallable(new Callable<Maybe>() {
             @Override
             public Maybe call() throws Exception {
                 return machineViewModel.getIncomeOfMachine(machine.getId());

@@ -2,17 +2,24 @@ package tech.destinum.machines.data.ViewModel;
 
 import org.reactivestreams.Subscriber;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.MaybeObserver;
 import tech.destinum.machines.data.MachinesDB;
+import tech.destinum.machines.data.POJO.Income;
 
 public class IncomeViewModel {
 
     @Inject
     MachinesDB machinesDB;
+
+    public IncomeViewModel(MachinesDB machinesDB) {
+        this.machinesDB = machinesDB;
+    }
 
     public Maybe getIncomeOfMachine(long id){
         return new Maybe() {

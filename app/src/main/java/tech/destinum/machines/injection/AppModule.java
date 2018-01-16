@@ -13,6 +13,7 @@ import dagger.Module;
 import dagger.Provides;
 import tech.destinum.machines.ACTIVITIES.App;
 import tech.destinum.machines.data.MachinesDB;
+import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.ViewModel.MachineViewModel;
 
 
@@ -38,6 +39,13 @@ public class AppModule {
     @Provides
     MachineViewModel getMachineViewModel(MachinesDB machinesDB){
         return new MachineViewModel(machinesDB);
+    }
+
+
+    @Singleton
+    @Provides
+    IncomeViewModel getIncomeViewModel(MachinesDB machinesDB){
+        return new IncomeViewModel(machinesDB);
     }
 
     @Singleton

@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         mFAB = findViewById(R.id.fabAddMachine);
 
         disposable.add(mDB.getMachineDAO().getAllMachines()
+                .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(machines -> {
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Crear", (dialog, which) -> {
                             String machine = mEditText.getText().toString();
                             disposable.add(viewModel.addMachine(machine)
+                                    .distinctUntilChanged()
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(emitter -> {
