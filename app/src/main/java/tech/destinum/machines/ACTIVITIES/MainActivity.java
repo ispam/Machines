@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
 
+        // TODO: 1/16/2018 create an income of 0.0
         mFAB.setOnClickListener(v -> {
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_main, null, true);

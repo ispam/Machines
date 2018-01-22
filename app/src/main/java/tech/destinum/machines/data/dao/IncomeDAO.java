@@ -17,14 +17,14 @@ import tech.destinum.machines.data.POJO.Income;
 @Dao
 public interface IncomeDAO {
 
-    @Query("select _id, machines_id, SUM(money) from incomes group by machines_id")
+    @Query("select sum(money), machines_id, _id from incomes group by machines_id")
     Flowable<List<Income>> getAllMachinesIncome();
 
-    @Query("select _id, note, date, money, machines_id, sum(money) from incomes where machines_id = :machines_id")
-    Maybe<Income> getIncomeOfMachine(long machines_id);
+    @Query("select sum(money), _id, machines_id from incomes where machines_id = :machines_id")
+    Flowable<List<Income>> getIncomeOfMachine(long machines_id);
 
     @Query("select * from incomes where machines_id = :machines_id")
-    Flowable<List<Income>> getInfoOfMachine(long machines_id);
+    Flowable<Income> getInfoOfMachine(long machines_id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addIncome(Income income);

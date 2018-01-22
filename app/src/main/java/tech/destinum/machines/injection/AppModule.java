@@ -41,7 +41,6 @@ public class AppModule {
         return new MachineViewModel(machinesDB);
     }
 
-
     @Singleton
     @Provides
     IncomeViewModel getIncomeViewModel(MachinesDB machinesDB){

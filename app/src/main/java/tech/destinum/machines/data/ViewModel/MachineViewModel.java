@@ -1,5 +1,7 @@
 package tech.destinum.machines.data.ViewModel;
 
+import android.util.Log;
+
 import org.reactivestreams.Subscriber;
 
 import javax.inject.Inject;
@@ -9,10 +11,15 @@ import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.MaybeObserver;
+import tech.destinum.machines.UTILS.Optional;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Machine;
 
+import static android.content.ContentValues.TAG;
+
 public class MachineViewModel {
+
+    private static final String TAG = MachineViewModel.class.getSimpleName();
 
     @Inject
     MachinesDB machinesDB;
@@ -30,20 +37,28 @@ public class MachineViewModel {
         };
     }
 
-    public Maybe getIncomeOfMachine(long id){
-        return new Maybe() {
-            @Override
-            protected void subscribeActual(MaybeObserver observer) {
-                machinesDB.getIncomeDAO().getIncomeOfMachine(id);
-            }
-        };
-    }
-
     public Completable deleteMachine(Machine machine){
         return new Completable() {
             @Override
             protected void subscribeActual(CompletableObserver s) {
                 machinesDB.getMachineDAO().deleteMachine(machine);
+            }
+        };
+    }
+
+    public Maybe getIncomeOfMachine(long id){
+        return new Maybe() {
+            @Override
+            protected void subscribeActual(MaybeObserver observer) {
+                Maybe.just(new Optional(machinesDB.getIncomeDAO().getIncomeOfMachine(id)))
+                        .subscribe(optional -> {
+                        if (optional.isEmpty()) {
+                            Log.d(TAG, "Object is null");
+                            Double nada = 0.0;
+                        } else {
+                            Log.d(TAG, "Object value is " + optional.get());
+                        }
+                    });
             }
         };
     }

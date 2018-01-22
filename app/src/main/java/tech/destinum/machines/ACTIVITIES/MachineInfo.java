@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,24 +25,17 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import io.reactivex.Maybe;
-import io.reactivex.MaybeEmitter;
-import io.reactivex.MaybeObserver;
-import io.reactivex.MaybeOnSubscribe;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Income;
-import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
@@ -57,13 +51,13 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private String date, name;
     private long id;
     private Boolean showMenu = false;
-
-    private CompositeDisposable disposable;
-    private MaybeObserver<Income> observer;
-    private Maybe<List<Income>> maybe;
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     IncomeViewModel incomeViewModel;
+
+    @Inject
+    MachinesDB mDB;
 
     private static final String TAG = MachineInfo.class.getSimpleName();
 
@@ -79,7 +73,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mName = findViewById(R.id.machine_info_name);
         mMoney = findViewById(R.id.machine_info_money);
         mFAB =  findViewById(R.id.fabAddIncome);
-        mNotesList = findViewById(R.id.lvNotes);
+        mNotesList = findViewById(R.id.rvNotes);
 
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null){
@@ -87,80 +81,30 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             final long id = bundle.getLong("id");
             this.id = id;
             name = location;
-//
-//            maybe = Maybe.create(new MaybeOnSubscribe<List<Income>>() {
-//                @Override
-//                public void subscribe(MaybeEmitter<List<Income>> e) throws Exception {
-//
-//                }
-//            });
-//            observer = new MaybeObserver<Income>() {
-//                @Override
-//                public void onSubscribe(Disposable d) {
-//
-//                }
-//
-//                @Override
-//                public void onSuccess(Income income) {
-//                    double total_amount = income.getMoney();
-//                    DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-//                    String formatted = formatter.format(total_amount);
-//                    mMoney.setText(formatted);
-//
-//                    if (total_amount <= 0){
-//                        showMenu = false;
-//                    } else {
-//                        showMenu = true;
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(Throwable e) {
-//
-//                }
-//
-//                @Override
-//                public void onComplete() {
-//
-//                }
-//            };
-//
-//            maybe.subscribe(observer);
-//            disposable.add(Maybe.fromCallable(new Callable<Maybe>() {
-//                @Override
-//                public Maybe call() throws Exception {
-//                    return incomeViewModel.getIncomeOfMachine(id);
-//                }
-//            })
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(observer));
 
-            Maybe.fromCallable(new Callable<Maybe<Income>>() {
-                @Override
-                public Maybe call() throws Exception {
-                    return incomeViewModel.getIncomeOfMachine(id);
-                }
-            }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(money -> {
-
-                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-                        String formatted = formatter.format(money);
-                        mMoney.setText(formatted);
-
-//                        if (money <= 0){
-//                            showMenu = false;
-//                        } else {
-//                            showMenu = true;
-//                        }
-                }, throwable -> {
-                    Log.e(TAG, "MachineInfo: ERROR GETTING INCOME",  throwable);
-                });
-
-//            double total_amount = mDB.getInstance(this).getIncomeDAO().getIncomeOfMachine(id).getMoney();
-
-
+            disposable.add(incomeViewModel.getIncomeOfMachine(id).distinctUntilChanged()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<Income>>() {
+                        @Override
+                        public void accept(List<Income> incomes) throws Exception {
+                            if (incomes == null || incomes.isEmpty()) {
+                                mMoney.setText("$0.0");
+                                Log.d(TAG, "MachineInfo: 0.0");
+                            } else {
+                                double total_amount = incomes.get(0).getMoney();
+                                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                                String formatted = formatter.format(total_amount);
+                                mMoney.setText(formatted);
+                                Log.d(TAG, "MachineInfo: money" + formatted);
+                            }
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            Log.e(TAG, "MachineInfo: ERROR", throwable );
+                        }
+                    }));
 
             mName.setText(location);
 
@@ -168,7 +112,19 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             finish();
         }
 
+        disposable.add(incomeViewModel.getInfoOfMachine(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(incomes -> {
+                    if (incomes != null) {
+                        mAdapter = new ListAdapter(MachineInfo.this, incomes);
+                        mNotesList.setAdapter(mAdapter);
+                    }
+                }, throwable -> {
+                    Log.e(TAG, "onCreate: Unable to get machines", throwable);
+                }));
 
+        mNotesList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 //        mAdapter = new ListAdapter(this, mDB.getInstance(this).getIncomeDAO().getInfoOfMachine(id));
 //        mNotesList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 //        mNotesList.setAdapter(mAdapter);
@@ -193,7 +149,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
                 });
 
-                dialog.setNegativeButton("Cancelar", null).setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
+                dialog.setNegativeButton("Cancelar", null)
+                        .setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -205,14 +162,35 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             money = 0.0;
                         }
 
+                        incomeViewModel.addIncome(date, notes, money, id);
+                        Log.d(TAG, "MachineInfo: income" + String.valueOf(incomeViewModel.addIncome(date, notes, money, id)));
 //                        mDB.getIncomeDAO().addIncome(new Income(date, notes, money, id));
 //                        mDBHelpter.insertNewIncome(money, date, notes, id);
 //                        mAdapter.refreshAdapter(mDBHelpter.getInfoOfMachine(id));
-//                        mDB.getInstance(v.getContext()).getIncomeDAO().getIncomeOfMachine(id).getMoney();
-                        double total_amount = 222.222;
-                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-                        String formatted = formatter.format(total_amount);
-                        mMoney.setText(formatted);
+
+                        disposable.add(incomeViewModel.getIncomeOfMachine(id).distinctUntilChanged()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Consumer<List<Income>>() {
+                                    @Override
+                                    public void accept(List<Income> incomes) throws Exception {
+
+                                        double total_amount = incomes.get(0).getMoney();
+                                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                                        String formatted = formatter.format(total_amount);
+                                        mMoney.setText(formatted);
+                                        mAdapter.notifyDataSetChanged();
+                                        Log.d(TAG, "MachineInfo: getting income" + formatted);
+
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        Log.e(TAG, "MachineInfo: ERROR", throwable );
+                                    }
+                                }));
+
+//
 
                         invalidateOptionsMenu();
                         //Hide Softkeyboard

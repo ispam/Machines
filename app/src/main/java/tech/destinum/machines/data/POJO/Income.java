@@ -4,6 +4,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import io.reactivex.annotations.Nullable;
+
 @Entity(tableName = "incomes")
 public class Income {
 
@@ -22,7 +24,7 @@ public class Income {
     @ColumnInfo(name = "machines_id")
     private long machines_id;
 
-    public Income(String date, String note, Double money, long machines_id) {
+    public Income(String date, String note, @Nullable Double money, long machines_id) {
         this._id = _id;
         this.date = date;
         this.note = note;
