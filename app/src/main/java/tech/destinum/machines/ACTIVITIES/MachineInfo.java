@@ -51,13 +51,11 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private String date, name;
     private long id;
     private Boolean showMenu = false;
+    
     private CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     IncomeViewModel incomeViewModel;
-
-    @Inject
-    MachinesDB mDB;
 
     private static final String TAG = MachineInfo.class.getSimpleName();
 
@@ -112,17 +110,18 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             finish();
         }
 
-        disposable.add(incomeViewModel.getInfoOfMachine(id)
+        incomeViewModel.getInfoOfMachine(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(incomes -> {
                     if (incomes != null) {
                         mAdapter = new ListAdapter(MachineInfo.this, incomes);
                         mNotesList.setAdapter(mAdapter);
+                        Log.d(TAG, "MachineInfo: adapter setted");
                     }
                 }, throwable -> {
                     Log.e(TAG, "onCreate: Unable to get machines", throwable);
-                }));
+                });
 
         mNotesList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 //        mAdapter = new ListAdapter(this, mDB.getInstance(this).getIncomeDAO().getInfoOfMachine(id));

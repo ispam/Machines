@@ -24,7 +24,7 @@ public interface IncomeDAO {
     Flowable<List<Income>> getIncomeOfMachine(long machines_id);
 
     @Query("select * from incomes where machines_id = :machines_id")
-    Flowable<Income> getInfoOfMachine(long machines_id);
+    Flowable<List<Income>> getInfoOfMachine(long machines_id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addIncome(Income income);

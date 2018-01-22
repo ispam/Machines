@@ -51,12 +51,13 @@ public class IncomeViewModel {
         };
     }
 
-    public Flowable <List<Income>> getInfoOfMachine(long machines_id){
+    public Flowable <Income> getInfoOfMachine(long machines_id){
         return machinesDB.getIncomeDAO().getInfoOfMachine(machines_id)
                 .map(info -> {
-                    List<Income> list = new ArrayList<>();
-                    list.add(info);
-                    return list;
+                    return income.getMoney()
+//                    List<Income> list = new ArrayList<>();
+//                    list.add(info);
+//                    return list;
                 });
 
     }
