@@ -22,13 +22,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
+import org.reactivestreams.Subscription;
+
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -53,6 +57,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private Boolean showMenu = false;
     
     private CompositeDisposable disposable = new CompositeDisposable();
+    private Observable<Income> observable;
+    private Subscription subscription;
 
     @Inject
     IncomeViewModel incomeViewModel;
@@ -80,22 +86,23 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             this.id = id;
             name = location;
 
-            disposable.add(incomeViewModel.getIncomeOfMachine(id).distinctUntilChanged()
+            disposable.add(incomeViewModel.getIncomeOfMachine(id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<List<Income>>() {
+                    .subscribe(new Consumer<Income>() {
                         @Override
-                        public void accept(List<Income> incomes) throws Exception {
-                            if (incomes == null || incomes.isEmpty()) {
-                                mMoney.setText("$0.0");
-                                Log.d(TAG, "MachineInfo: 0.0");
-                            } else {
-                                double total_amount = incomes.get(0).getMoney();
+                        public void accept(@Nullable Income incomes) throws Exception {
+
+                            Double total_amount = incomes.getMoney();
+                            if (total_amount != null) {
                                 DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                                 String formatted = formatter.format(total_amount);
                                 mMoney.setText(formatted);
                                 Log.d(TAG, "MachineInfo: money" + formatted);
+                            } else {
+                                mMoney.setText("NUUULLLL");
                             }
+
                         }
                     }, new Consumer<Throwable>() {
                         @Override
@@ -110,18 +117,22 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             finish();
         }
 
-        incomeViewModel.getInfoOfMachine(id)
+//        disposable.add(incomeViewModel.getInfoOfMachine(id))
+        disposable.add(incomeViewModel.getInfoOfMachine(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(incomes -> {
-                    if (incomes != null) {
-                        mAdapter = new ListAdapter(MachineInfo.this, incomes);
-                        mNotesList.setAdapter(mAdapter);
-                        Log.d(TAG, "MachineInfo: adapter setted");
+                .subscribe(new Consumer<List<Income>>() {
+                    @Override
+                    public void accept(List<Income> incomes) throws Exception {
+                        if (incomes != null){
+                            mAdapter = new ListAdapter(MachineInfo.this, incomes);
+                            mNotesList.setAdapter(mAdapter);
+                            Log.d(TAG, "MachineInfo: adapter setted");
+                        }
                     }
                 }, throwable -> {
                     Log.e(TAG, "onCreate: Unable to get machines", throwable);
-                });
+                }));
 
         mNotesList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 //        mAdapter = new ListAdapter(this, mDB.getInstance(this).getIncomeDAO().getInfoOfMachine(id));
@@ -167,14 +178,14 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 //                        mDBHelpter.insertNewIncome(money, date, notes, id);
 //                        mAdapter.refreshAdapter(mDBHelpter.getInfoOfMachine(id));
 
-                        disposable.add(incomeViewModel.getIncomeOfMachine(id).distinctUntilChanged()
+                        disposable.add(incomeViewModel.getIncomeOfMachine(id)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Consumer<List<Income>>() {
+                                .subscribe(new Consumer<Income>() {
                                     @Override
-                                    public void accept(List<Income> incomes) throws Exception {
+                                    public void accept(Income incomes) throws Exception {
 
-                                        double total_amount = incomes.get(0).getMoney();
+                                        double total_amount = incomes.getMoney();
                                         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                                         String formatted = formatter.format(total_amount);
                                         mMoney.setText(formatted);

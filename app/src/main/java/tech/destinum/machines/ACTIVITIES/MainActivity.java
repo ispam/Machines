@@ -77,25 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-//        if (mDBHelpter.getAllMachines().size() == 0){
-//            mLayout.setVisibility(View.VISIBLE);
-//            mRecyclerViewDetails.setVisibility(View.GONE);
-//
-//            mAdd.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(final View v) {
-//
-//                    Intent intent = new Intent(Home.this, Selection.class);
-//                    startActivity(intent);
-//
-//                }
-//            });
-//
-//        } else {
-//            mLayout.setVisibility(View.GONE);
-//            mRecyclerViewDetails.setVisibility(View.VISIBLE);
-//        }
-
 
         // TODO: 1/16/2018 create an income of 0.0
         mFAB.setOnClickListener(v -> {
