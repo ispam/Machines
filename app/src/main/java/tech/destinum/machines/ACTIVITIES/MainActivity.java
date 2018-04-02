@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,40 +18,45 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
-import io.reactivex.Observer;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.MachinesDB;
+import tech.destinum.machines.data.POJO.Income;
 import tech.destinum.machines.data.POJO.Machine;
+import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.ViewModel.MachineViewModel;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private FloatingActionButton mFAB;
     private RecyclerView mRecyclerView;
     private MachinesAdapter mAdapter;
 
-    @Inject
-    MachinesDB mDB;
+    @Inject MachinesDB db;
 
     @Inject
-    MachineViewModel viewModel;
+    MachineViewModel machineViewModel;
+
+    @Inject
+    IncomeViewModel incomeViewModel;
 
     private CompositeDisposable disposable = new CompositeDisposable();
-
-    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +68,43 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycler_view_main);
         mFAB = findViewById(R.id.fabAddMachine);
 
-        disposable.add(mDB.getMachineDAO().getAllMachines()
-                .distinctUntilChanged()
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        mFAB.setOnClickListener(v -> {
+            LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.dialog_main, null, true);
+
+            final EditText mEditText =   view.findViewById(R.id.dialog_et);
+
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
+            alertDialog
+                    .setNegativeButton("Cancelar", null)
+                    .setPositiveButton("Crear", (dialog, which) -> {
+
+                        String machine = mEditText.getText().toString();
+                        disposable.add(machineViewModel.addMachine(machine)
+                                .distinct()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    emitter -> {
+                                        mAdapter.notifyDataSetChanged();
+                                        Log.d(TAG, "MainActivity: "+ machine);
+                                        },
+                                    throwable -> Log.e(TAG, "onCreate: MACHINE NOT CREATED"),
+                                    () -> {}
+                                ));
+
+            }).setView(view).show();
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        disposable.add(machineViewModel.getAllMachines()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(machines -> {
@@ -74,42 +115,14 @@ public class MainActivity extends AppCompatActivity {
                 }, throwable -> {
                     Log.e(TAG, "onCreate: Unable to get machines", throwable);
                 }));
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-
-        // TODO: 1/16/2018 create an income of 0.0
-        mFAB.setOnClickListener(v -> {
-                LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View view = inflater.inflate(R.layout.dialog_main, null, true);
-                final EditText mEditText =   view.findViewById(R.id.dialog_et);
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
-                alertDialog.setNegativeButton("Cancelar", null)
-                        .setPositiveButton("Crear", (dialog, which) -> {
-                            String machine = mEditText.getText().toString();
-                            disposable.add(viewModel.addMachine(machine)
-                                    .distinctUntilChanged()
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(emitter -> {
-                                        mAdapter.notifyDataSetChanged();
-                                    }, throwable -> {
-                                        Log.e(TAG, "onCreate: MACHINE NOT CREATED");
-                                    }, () -> {
-
-                                    }));
-
-                }).setView(view).show();
-        });
-
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         if (disposable != null && !disposable.isDisposed()){
             disposable.clear();
         }
+        super.onStop();
     }
 
     @Override

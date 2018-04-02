@@ -16,11 +16,14 @@ import tech.destinum.machines.data.POJO.Machine;
 @Dao
 public interface MachineDAO {
 
-    @Query("select machines_id, sum(money) as total from incomes group by machines_id")
-    Cursor getAllMachinesIncomeCursor();
-
     @Query("select * from machines")
     Flowable<List<Machine>> getAllMachines();
+
+    @Query("select * from machines")
+    Flowable<List<Machine>> getAllMachines2();
+
+    @Query("select * from machines where id = :id limit 1")
+    Machine getMachineInf(long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addMachine(Machine machines);

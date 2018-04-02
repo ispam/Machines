@@ -4,6 +4,8 @@ import android.util.Log;
 
 import org.reactivestreams.Subscriber;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
@@ -63,12 +65,11 @@ public class MachineViewModel {
         };
     }
 
-    public Flowable getAllMachines(){
-        return new Flowable() {
-            @Override
-            protected void subscribeActual(Subscriber s) {
-                machinesDB.getMachineDAO().getAllMachines();
-            }
-        };
+    public Flowable<List<Machine>> getAllMachines(){
+        return machinesDB.getMachineDAO().getAllMachines2();
+    }
+
+    public Machine getMachineInfo(long id){
+        return machinesDB.getMachineDAO().getMachineInf(id);
     }
 }

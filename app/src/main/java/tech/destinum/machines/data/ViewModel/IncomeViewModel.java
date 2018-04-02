@@ -8,16 +8,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Income;
 
 public class IncomeViewModel {
-
-    private Income income;
 
     @Inject
     MachinesDB machinesDB;
@@ -25,6 +23,7 @@ public class IncomeViewModel {
     public IncomeViewModel(MachinesDB machinesDB) {
         this.machinesDB = machinesDB;
     }
+
 
     public Maybe<Income> getIncomeOfMachine(long id){
         return machinesDB.getIncomeDAO().getIncomeOfMachine(id);
@@ -39,14 +38,8 @@ public class IncomeViewModel {
         };
     }
 
-    public Flowable<Income> getAllMachinesIncome(){
-        return new Flowable() {
-            @Override
-            protected void subscribeActual(Subscriber s) {
-                machinesDB.getIncomeDAO().getAllMachinesIncome();
-
-            }
-        };
+    public Flowable<List<Income>> getAllMachinesIncome(){
+        return  machinesDB.getIncomeDAO().getAllMachinesIncome();
     }
 
     public Flowable<List<Income>> getInfoOfMachine(long machines_id){

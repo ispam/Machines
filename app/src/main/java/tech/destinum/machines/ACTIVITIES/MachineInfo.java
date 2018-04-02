@@ -30,10 +30,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
@@ -57,8 +59,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private Boolean showMenu = false;
     
     private CompositeDisposable disposable = new CompositeDisposable();
-    private Observable<Income> observable;
-    private Subscription subscription;
 
     @Inject
     IncomeViewModel incomeViewModel;
@@ -117,27 +117,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             finish();
         }
 
-//        disposable.add(incomeViewModel.getInfoOfMachine(id))
-        disposable.add(incomeViewModel.getInfoOfMachine(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Income>>() {
-                    @Override
-                    public void accept(List<Income> incomes) throws Exception {
-                        if (incomes != null){
-                            mAdapter = new ListAdapter(MachineInfo.this, incomes);
-                            mNotesList.setAdapter(mAdapter);
-                            Log.d(TAG, "MachineInfo: adapter setted");
-                        }
-                    }
-                }, throwable -> {
-                    Log.e(TAG, "onCreate: Unable to get machines", throwable);
-                }));
 
         mNotesList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-//        mAdapter = new ListAdapter(this, mDB.getInstance(this).getIncomeDAO().getInfoOfMachine(id));
-//        mNotesList.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-//        mNotesList.setAdapter(mAdapter);
 
         mFAB.setOnClickListener(v -> {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
@@ -165,42 +146,19 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                     public void onClick(DialogInterface dialog, int which) {
 
                         String notes = editText2.getText().toString();
-                        Double money;
-                        try {
-                            money = new Double(editText.getText().toString());
-                        } catch (NumberFormatException e){
-                            money = 0.0;
-                        }
+                        Double money = new Double(editText.getText().toString());
 
-                        incomeViewModel.addIncome(date, notes, money, id);
-                        Log.d(TAG, "MachineInfo: income" + String.valueOf(incomeViewModel.addIncome(date, notes, money, id)));
-//                        mDB.getIncomeDAO().addIncome(new Income(date, notes, money, id));
-//                        mDBHelpter.insertNewIncome(money, date, notes, id);
-//                        mAdapter.refreshAdapter(mDBHelpter.getInfoOfMachine(id));
-
-                        disposable.add(incomeViewModel.getIncomeOfMachine(id)
+                        disposable.add(incomeViewModel.addIncome(date, notes, money, id)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Consumer<Income>() {
-                                    @Override
-                                    public void accept(Income incomes) throws Exception {
+                                .subscribe(emitter -> {
+                                    mAdapter.notifyDataSetChanged();
+                                }, throwable -> {
+                                    Log.d(TAG, "MachineInfo: income" +
+                                            String.valueOf(incomeViewModel.addIncome(date, notes, money, id)));
+                                }, () -> {
 
-                                        double total_amount = incomes.getMoney();
-                                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-                                        String formatted = formatter.format(total_amount);
-                                        mMoney.setText(formatted);
-                                        mAdapter.notifyDataSetChanged();
-                                        Log.d(TAG, "MachineInfo: getting income" + formatted);
-
-                                    }
-                                }, new Consumer<Throwable>() {
-                                    @Override
-                                    public void accept(Throwable throwable) throws Exception {
-                                        Log.e(TAG, "MachineInfo: ERROR", throwable );
-                                    }
                                 }));
-
-//
 
                         invalidateOptionsMenu();
                         //Hide Softkeyboard
@@ -213,6 +171,28 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                     }
                 }).setView(view).show();
         });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        disposable.add(incomeViewModel.getInfoOfMachine(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Income>>() {
+                    @Override
+                    public void accept(List<Income> incomes) throws Exception {
+                        if (incomes != null){
+                            mAdapter = new ListAdapter(MachineInfo.this, incomes);
+                            mNotesList.setAdapter(mAdapter);
+                            Log.d(TAG, "MachineInfo: adapter setted");
+                        }
+                    }
+                }, throwable -> {
+                    Log.e(TAG, "onCreate: Unable to get machines", throwable);
+                }));
 
     }
 

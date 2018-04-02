@@ -23,7 +23,6 @@ public class AppModule {
     private App application;
     private static final String DB_NAME = "machines.db";
     private static MachinesDB instance;
-    private MachineViewModel machineViewModel;
 
     public AppModule(App application) {
         this.application = application;
@@ -59,6 +58,7 @@ public class AppModule {
             instance = Room.databaseBuilder(context.getApplicationContext(),
                     MachinesDB.class,
                     DB_NAME)
+                    .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build();
         }

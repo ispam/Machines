@@ -1,10 +1,14 @@
 package tech.destinum.machines.data.POJO;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
 import io.reactivex.annotations.Nullable;
+
+import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "incomes")
 public class Income {
@@ -24,13 +28,15 @@ public class Income {
     @ColumnInfo(name = "machines_id")
     private long machines_id;
 
-    public Income(String date, String note, @Nullable Double money, long machines_id) {
+
+    public Income(String date, String note, Double money, long machines_id) {
         this._id = _id;
         this.date = date;
         this.note = note;
         this.money = money;
         this.machines_id = machines_id;
     }
+
 
     public long get_id() {
         return _id;
