@@ -52,15 +52,14 @@ public class AppModule {
         return getInstance(context);
     }
 
-    public static MachinesDB getInstance(Context context){
+    private static MachinesDB getInstance(Context context){
 
         if (instance == null){
-            instance = Room.databaseBuilder(context.getApplicationContext(),
-                    MachinesDB.class,
-                    DB_NAME)
-                    .allowMainThreadQueries()
-                    .fallbackToDestructiveMigration()
-                    .build();
+            instance =
+                    Room.databaseBuilder(
+                            context.getApplicationContext(),
+                            MachinesDB.class,
+                            DB_NAME).build();
         }
         return instance;
     }

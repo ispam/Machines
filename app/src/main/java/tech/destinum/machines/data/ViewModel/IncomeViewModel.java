@@ -32,8 +32,8 @@ public class IncomeViewModel {
     public Flowable<List<Double>> getAllIncomesFromAllMachines(){
         return machinesDB.getIncomeDAO().getAllIncomesFromAllMachines();
     }
-    public void addIncome(String date, String note, Double money, Long machines_id){
-       machinesDB.getIncomeDAO().addIncome(new Income(date, note, money, machines_id));
+    public Completable addIncome(String date, String note, Double money, Long machines_id){
+        return Completable.fromAction(() -> machinesDB.getIncomeDAO().addIncome(new Income(date, note, money, machines_id)));
     }
 
     public Flowable<List<Income>> getAllMachinesIncome(){

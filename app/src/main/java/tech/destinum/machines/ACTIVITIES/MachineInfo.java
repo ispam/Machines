@@ -115,7 +115,12 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                                 hideSoftKeyboard(v);
                             } else {
                                 value = Double.parseDouble(money);
-                                incomeViewModel.addIncome(date, notes, value, id);
+                                disposable.add(incomeViewModel.addIncome(date, notes, value, id)
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(
+                                                        () -> {},
+                                                        throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
                             }
 
                             hideSoftKeyboard(v);
@@ -148,6 +153,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             String formatted = formatter.format(total_amount);
                             mMoney.setText(formatted);
                             Log.d(TAG, "MachineInfo: money" + formatted);
+                            showMenu = true;
                         } else {
                             mMoney.setText("$0.0");
                         }
@@ -186,7 +192,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (showMenu == true){
+        if (showMenu){
             getMenuInflater().inflate(R.menu.menu_line_chart, menu);
             return super.onCreateOptionsMenu(menu);
         } else {

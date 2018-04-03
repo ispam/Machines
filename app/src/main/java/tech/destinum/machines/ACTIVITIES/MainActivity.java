@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MachinesAdapter mAdapter;
 
-    @Inject MachinesDB db;
-
     @Inject
     MachineViewModel machineViewModel;
 
@@ -82,8 +80,12 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton("Crear", (dialog, which) -> {
 
                         String machine = mEditText.getText().toString();
-                        machineViewModel.addMachine(machine);
-                        mAdapter.notifyDataSetChanged();
+                        disposable.add(machineViewModel.addMachine(machine)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        () -> mAdapter.notifyDataSetChanged(),
+                                        throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
 
             }).setView(view).show();
         });

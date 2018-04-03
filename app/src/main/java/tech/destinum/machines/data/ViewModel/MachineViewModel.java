@@ -30,30 +30,14 @@ public class MachineViewModel {
         this.machinesDB = machinesDB;
     }
 
-    public void addMachine(final String name){
-        machinesDB.getMachineDAO().addMachine(new Machine(name));
+    public Completable addMachine(final String name){
+        return Completable.fromAction(() -> machinesDB.getMachineDAO().addMachine(new Machine(name)));
     }
 
     public void deleteMachine(Machine machine){
         machinesDB.getMachineDAO().deleteMachine(machine);
     }
 
-    public Maybe getIncomeOfMachine(long id){
-        return new Maybe() {
-            @Override
-            protected void subscribeActual(MaybeObserver observer) {
-                Maybe.just(new Optional(machinesDB.getIncomeDAO().getIncomeOfMachine(id)))
-                        .subscribe(optional -> {
-                        if (optional.isEmpty()) {
-                            Log.d(TAG, "Object is null");
-                            Double nada = 0.0;
-                        } else {
-                            Log.d(TAG, "Object value is " + optional.get());
-                        }
-                    });
-            }
-        };
-    }
 
     public Flowable<List<Machine>> getAllMachines(){
         return machinesDB.getMachineDAO().getAllMachines2();
