@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -115,6 +116,22 @@ public class MainActivity extends AppCompatActivity {
                 }, throwable -> {
                     Log.e(TAG, "onCreate: Unable to get machines", throwable);
                 }));
+
+        disposable.add(incomeViewModel.getIncomeOfMachine(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(total_amount -> {
+                            if (total_amount != null) {
+                                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                                String formatted = formatter.format(total_amount);
+                                mMoney.setText(formatted);
+                                Log.d(TAG, "MachineInfo: money" + formatted);
+                            } else {
+                                mMoney.setText("$0.0");
+                            }
+                        }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )
+                ));
+
     }
 
     @Override

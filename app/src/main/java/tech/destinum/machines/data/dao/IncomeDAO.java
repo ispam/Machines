@@ -25,8 +25,9 @@ public interface IncomeDAO {
     @Query("select * from incomes group by machines_id")
     List<Income> getAllMachinesIncome2();
 
-    @Query("select sum(money), _id, machines_id from incomes where machines_id = :machines_id")
-    Maybe<Income> getIncomeOfMachine(long machines_id);
+    @Query("select sum(money) from incomes where machines_id = :machines_id group by :machines_id limit 1")
+    Flowable<Double> getIncomeOfMachine(long machines_id);
+
 
     @Query("select * from incomes where machines_id = :machines_id")
     Flowable<List<Income>> getInfoOfMachine(long machines_id);

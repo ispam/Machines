@@ -85,34 +85,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             final long id = bundle.getLong("id");
             this.id = id;
             name = location;
-
-            disposable.add(incomeViewModel.getIncomeOfMachine(id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Income>() {
-                        @Override
-                        public void accept(@Nullable Income incomes) throws Exception {
-
-                            Double total_amount = incomes.getMoney();
-                            if (total_amount != null) {
-                                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-                                String formatted = formatter.format(total_amount);
-                                mMoney.setText(formatted);
-                                Log.d(TAG, "MachineInfo: money" + formatted);
-                            } else {
-                                mMoney.setText("NUUULLLL");
-                            }
-
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            Log.e(TAG, "MachineInfo: ERROR", throwable );
-                        }
-                    }));
-
             mName.setText(location);
-
         }else{
             finish();
         }
@@ -177,6 +150,21 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     @Override
     protected void onStart() {
         super.onStart();
+
+        disposable.add(incomeViewModel.getIncomeOfMachine(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(total_amount -> {
+                        if (total_amount != null) {
+                            DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                            String formatted = formatter.format(total_amount);
+                            mMoney.setText(formatted);
+                            Log.d(TAG, "MachineInfo: money" + formatted);
+                        } else {
+                            mMoney.setText("$0.0");
+                        }
+                }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )
+                ));
 
         disposable.add(incomeViewModel.getInfoOfMachine(id)
                 .subscribeOn(Schedulers.io())

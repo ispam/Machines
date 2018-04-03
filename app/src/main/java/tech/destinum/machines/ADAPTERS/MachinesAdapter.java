@@ -60,7 +60,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
-
         if (disposable != null && !disposable.isDisposed()){
             disposable.clear();
         }
@@ -80,27 +79,29 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
     @Override
     public void onBindViewHolder(MachineViewHolder holder, int position) {
         holder.populate(machinesList.get(position));
-//        holder.v.setOnClickListener(v -> {
-//
-//            Intent intent = new Intent(v.getContext(), MachineInfo.class);
-//            intent.putExtra("id", machineM.getId());
-//            intent.putExtra("name", machineM.getName());
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            v.getContext().startActivity(intent);
-//
-//        });
-//
-//        holder.v.setOnLongClickListener(v -> {
-//            AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
-//            dialogg.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> " + machinesList.get(position).getName()))
-//                    .setNegativeButton("No", null)
-//                    .setPositiveButton("Si", (dialog, which)-> {
-//                        machineViewModel.deleteMachine(machine);
-//                    });
-//            dialogg.create();
-//            dialogg.show();
-//            return true;
-//        });
+
+        Machine machine = machinesList.get(position);
+        holder.v.setOnClickListener(v -> {
+
+            Intent intent = new Intent(v.getContext(), MachineInfo.class);
+            intent.putExtra("id", machine.getId());
+            intent.putExtra("name", machine.getName());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            v.getContext().startActivity(intent);
+
+        });
+
+        holder.v.setOnLongClickListener(v -> {
+            AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
+            dialogg.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> " + machinesList.get(position).getName()))
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Si", (dialog, which)-> {
+                        machineViewModel.deleteMachine(machine);
+                    });
+            dialogg.create();
+            dialogg.show();
+            return true;
+        });
     }
 
     @Override

@@ -25,7 +25,7 @@ public class IncomeViewModel {
     }
 
 
-    public Maybe<Income> getIncomeOfMachine(long id){
+    public Flowable<Double> getIncomeOfMachine(long id){
         return machinesDB.getIncomeDAO().getIncomeOfMachine(id);
     }
 
