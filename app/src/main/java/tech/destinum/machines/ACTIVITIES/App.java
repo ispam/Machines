@@ -1,10 +1,10 @@
 package tech.destinum.machines.ACTIVITIES;
 
-import android.app.Application;
+        import android.app.Application;
 
-import tech.destinum.machines.injection.AppComponent;
-import tech.destinum.machines.injection.AppModule;
-import tech.destinum.machines.injection.DaggerAppComponent;
+        import tech.destinum.machines.injection.AppComponent;
+        import tech.destinum.machines.injection.AppModule;
+        import tech.destinum.machines.injection.DaggerAppComponent;
 
 public class App extends Application {
 

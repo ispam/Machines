@@ -95,9 +95,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
             AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
             dialogg.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> " + machinesList.get(position).getName()))
                     .setNegativeButton("No", null)
-                    .setPositiveButton("Si", (dialog, which)-> {
-                        machineViewModel.deleteMachine(machine);
-                    });
+                    .setPositiveButton("Si", (dialog, which)-> machineViewModel.deleteMachine(machine));
             dialogg.create();
             dialogg.show();
             return true;
@@ -116,26 +114,42 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
 
         private MachineViewHolder(View v) {
             super(v);
-
             mName = v.findViewById(R.id.machines_list_name);
             mMoney = v.findViewById(R.id.machines_list_total);
             this.v = v;
         }
 
-        public void populate(Machine machine){
+        private void populate(Machine machine){
             mName.setText(machine.getName());
 
             Income income = machine.getIncome();
             if (income != null){
-                double money = income.getMoney();
-                if (money <= 0.0){
-                    mMoney.setText("No hay");
-                } else {
-                    mMoney.setText(String.valueOf(machine.getIncome().getMoney()));
-                }
+                disposable.add(incomeViewModel.getAllIncomesFromAllMachines()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(total_amount -> {
+                                    if (total_amount != null) {
+                                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                                        String formatted = formatter.format(total_amount);
+                                        mMoney.setText(formatted);
+                                        Log.d(TAG, "MachineInfo: money" + formatted);
+                                    } else {
+                                        mMoney.setText("$0.0");
+                                    }
+                                }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )
+                        ));
+//                double money = income.getMoney();
+//                if (money <= 0.0){
+//                    mMoney.setText("No hay");
+//                } else {
+//                    mMoney.setText(String.valueOf(machine.getIncome().getMoney()));
+//                }
             } else {
                 mMoney.setText("No hay2");
             }
+
+
+
         }
     }
 }

@@ -30,22 +30,12 @@ public class MachineViewModel {
         this.machinesDB = machinesDB;
     }
 
-    public Flowable addMachine(final String name){
-        return new Flowable() {
-            @Override
-            protected void subscribeActual(Subscriber s) {
-                machinesDB.getMachineDAO().addMachine(new Machine(name));
-            }
-        };
+    public void addMachine(final String name){
+        machinesDB.getMachineDAO().addMachine(new Machine(name));
     }
 
-    public Completable deleteMachine(Machine machine){
-        return new Completable() {
-            @Override
-            protected void subscribeActual(CompletableObserver s) {
-                machinesDB.getMachineDAO().deleteMachine(machine);
-            }
-        };
+    public void deleteMachine(Machine machine){
+        machinesDB.getMachineDAO().deleteMachine(machine);
     }
 
     public Maybe getIncomeOfMachine(long id){

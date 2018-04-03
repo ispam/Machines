@@ -2,8 +2,8 @@ package tech.destinum.machines.ACTIVITIES;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,37 +20,27 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-
-import org.reactivestreams.Subscription;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.CompletableObserver;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
-import tech.destinum.machines.data.MachinesDB;
-import tech.destinum.machines.data.POJO.Income;
 import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     private TextView mName, mMoney;
-    private RecyclerView mNotesList;
+    private RecyclerView mRecyclerView;
     private FloatingActionButton mFAB;
     private ListAdapter mAdapter;
-    private Context mContext;
     private Calendar mCalendar;
     private TextView info_date;
     private int mDay, mMonth, mYear, mDayFinal, mMonthFinal, mYearFinal;
@@ -76,8 +66,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
         mName = findViewById(R.id.machine_info_name);
         mMoney = findViewById(R.id.machine_info_money);
-        mFAB =  findViewById(R.id.fabAddIncome);
-        mNotesList = findViewById(R.id.rvNotes);
+
+        mRecyclerView = findViewById(R.id.rvNotes);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null){
@@ -90,19 +81,18 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             finish();
         }
 
-
-        mNotesList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
+        mFAB =  findViewById(R.id.fabAddIncome);
         mFAB.setOnClickListener(v -> {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_info, null, true);
-                final EditText editText = view.findViewById(R.id.dialog_info_et);
+
+                EditText editText = view.findViewById(R.id.dialog_info_et);
 //                editText.addTextChangedListener(new NumberTextWatcher(editText));
-                final EditText editText2 = view.findViewById(R.id.dialog_info_notes_et);
+                EditText editText2 = view.findViewById(R.id.dialog_info_notes_et);
                 info_date = view.findViewById(R.id.dialog_info_date_tv);
                 Button button = view.findViewById(R.id.dialog_info_date_btn);
-                button.setOnClickListener(button1 ->{
+                button.setOnClickListener(button1 -> {
                         mCalendar = Calendar.getInstance();
                         mDay = mCalendar.get(Calendar.DAY_OF_MONTH);
                         mMonth = mCalendar.get(Calendar.MONTH);
@@ -114,44 +104,42 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 });
 
                 dialog.setNegativeButton("Cancelar", null)
-                        .setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                        .setPositiveButton("Agregar", (dialog1, which) -> {
 
-                        String notes = editText2.getText().toString();
-                        Double money = new Double(editText.getText().toString());
+                            String notes = editText2.getText().toString();
+                            String money = editText.getText().toString();
 
-                        disposable.add(incomeViewModel.addIncome(date, notes, money, id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(emitter -> {
-                                    mAdapter.notifyDataSetChanged();
-                                }, throwable -> {
-                                    Log.d(TAG, "MachineInfo: income" +
-                                            String.valueOf(incomeViewModel.addIncome(date, notes, money, id)));
-                                }, () -> {
+                            double value;
+                            if(money.isEmpty() || money.equals(null) || date == null || date.equals("")) {
+                                Toast.makeText(v.getContext(), "Fecha y Dinero SON OBLIGATORIOS", Toast.LENGTH_SHORT).show();
+                                hideSoftKeyboard(v);
+                            } else {
+                                value = Double.parseDouble(money);
+                                incomeViewModel.addIncome(date, notes, value, id);
+                            }
 
-                                }));
+                            hideSoftKeyboard(v);
 
-                        invalidateOptionsMenu();
-                        //Hide Softkeyboard
-                        View view = v.getRootView();
-                        if (view != null) {
-                            InputMethodManager inputManager = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                        }
-
-                    }
-                }).setView(view).show();
+                        }).setView(view).show();
         });
-
     }
 
+    @NonNull
+    public void hideSoftKeyboard(View v){
+        invalidateOptionsMenu();
+        //Hide Softkeyboard
+        View view1 = v.getRootView();
+        if (view1 != null) {
+            InputMethodManager inputManager = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view1.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
     @Override
     protected void onStart() {
         super.onStart();
 
         disposable.add(incomeViewModel.getIncomeOfMachine(id)
+                .defaultIfEmpty(0.0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(total_amount -> {
@@ -163,24 +151,18 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                         } else {
                             mMoney.setText("$0.0");
                         }
-                }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )
-                ));
+                }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )));
 
         disposable.add(incomeViewModel.getInfoOfMachine(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Income>>() {
-                    @Override
-                    public void accept(List<Income> incomes) throws Exception {
-                        if (incomes != null){
-                            mAdapter = new ListAdapter(MachineInfo.this, incomes);
-                            mNotesList.setAdapter(mAdapter);
-                            Log.d(TAG, "MachineInfo: adapter setted");
-                        }
+                .subscribe(incomes -> {
+                    if (incomes != null){
+                        mAdapter = new ListAdapter(MachineInfo.this, incomes);
+                        mRecyclerView.setAdapter(mAdapter);
+                        Log.d(TAG, "MachineInfo: adapter setted");
                     }
-                }, throwable -> {
-                    Log.e(TAG, "onCreate: Unable to get machines", throwable);
-                }));
+                }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
 
     }
 

@@ -67,15 +67,14 @@ public class MainActivity extends AppCompatActivity {
         ((App) getApplication()).getComponent().inject(this);
 
         mRecyclerView = findViewById(R.id.recycler_view_main);
-        mFAB = findViewById(R.id.fabAddMachine);
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
+        mFAB = findViewById(R.id.fabAddMachine);
         mFAB.setOnClickListener(v -> {
+
             LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.dialog_main, null, true);
-
-            final EditText mEditText =   view.findViewById(R.id.dialog_et);
+            EditText mEditText =   view.findViewById(R.id.dialog_et);
 
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
             alertDialog
@@ -83,18 +82,8 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton("Crear", (dialog, which) -> {
 
                         String machine = mEditText.getText().toString();
-                        disposable.add(machineViewModel.addMachine(machine)
-                                .distinct()
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(
-                                    emitter -> {
-                                        mAdapter.notifyDataSetChanged();
-                                        Log.d(TAG, "MainActivity: "+ machine);
-                                        },
-                                    throwable -> Log.e(TAG, "onCreate: MACHINE NOT CREATED"),
-                                    () -> {}
-                                ));
+                        machineViewModel.addMachine(machine);
+                        mAdapter.notifyDataSetChanged();
 
             }).setView(view).show();
         });
@@ -116,22 +105,6 @@ public class MainActivity extends AppCompatActivity {
                 }, throwable -> {
                     Log.e(TAG, "onCreate: Unable to get machines", throwable);
                 }));
-
-        disposable.add(incomeViewModel.getIncomeOfMachine(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(total_amount -> {
-                            if (total_amount != null) {
-                                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-                                String formatted = formatter.format(total_amount);
-                                mMoney.setText(formatted);
-                                Log.d(TAG, "MachineInfo: money" + formatted);
-                            } else {
-                                mMoney.setText("$0.0");
-                            }
-                        }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )
-                ));
-
     }
 
     @Override

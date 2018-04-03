@@ -29,13 +29,11 @@ public class IncomeViewModel {
         return machinesDB.getIncomeDAO().getIncomeOfMachine(id);
     }
 
-    public Flowable addIncome(String date, String note, Double money, Long machines_id){
-        return new Flowable() {
-            @Override
-            protected void subscribeActual(Subscriber s) {
-                machinesDB.getIncomeDAO().addIncome(new Income(date, note, money, machines_id));
-            }
-        };
+    public Flowable<List<Double>> getAllIncomesFromAllMachines(){
+        return machinesDB.getIncomeDAO().getAllIncomesFromAllMachines();
+    }
+    public void addIncome(String date, String note, Double money, Long machines_id){
+       machinesDB.getIncomeDAO().addIncome(new Income(date, note, money, machines_id));
     }
 
     public Flowable<List<Income>> getAllMachinesIncome(){

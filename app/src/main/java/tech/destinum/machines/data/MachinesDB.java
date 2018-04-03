@@ -17,8 +17,10 @@ public abstract class MachinesDB extends RoomDatabase{
     public static MachinesDB getDB(Context context){
         if (INSTANCE == null){
             INSTANCE =
-                    Room.databaseBuilder(context.getApplicationContext(),
-                            MachinesDB.class, "machines_db").build();
+                    Room.databaseBuilder(
+                            context.getApplicationContext(),
+                            MachinesDB.class,
+                            "machines_db").build();
         }
         return  INSTANCE;
     }
