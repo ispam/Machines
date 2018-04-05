@@ -19,8 +19,8 @@ import tech.destinum.machines.data.POJO.Machine;
 @Dao
 public interface IncomeDAO {
 
-    @Query("select sum(money), machines_id, _id from incomes group by machines_id")
-    Flowable<List<Income>> getAllMachinesIncome();
+    @Query("select sum(money) from incomes group by machines_id")
+    Flowable<List<Double>> getAllMachinesIncome();
 
     @Query("select * from incomes group by machines_id")
     List<Income> getAllMachinesIncome2();

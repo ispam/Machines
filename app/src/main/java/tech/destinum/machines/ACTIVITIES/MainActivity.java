@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton("Crear", (dialog, which) -> {
 
                         String machine = mEditText.getText().toString();
-                        disposable.add(machineViewModel.addMachine(machine)
+                        disposable.add(machineViewModel.addMachine(machine, 0.0)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(
@@ -96,6 +96,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+//        disposable.add(machineViewModel.getAllMachines()
+//                .zipWith(incomeViewModel.getAllMachinesIncome(), Pair::new)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(machinesAndIncomePair -> {
+//                    List<Machine> machines = machinesAndIncomePair.first;
+//                    List<Double> incomes = machinesAndIncomePair.second;
+//                    if (machines != null && incomes != null) {
+//                        mAdapter = new MachinesAdapter(machines, incomes, MainActivity.this);
+//                        mRecyclerView.setAdapter(mAdapter);
+//                    }
+//                }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
+
         disposable.add(machineViewModel.getAllMachines()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -104,9 +117,7 @@ public class MainActivity extends AppCompatActivity {
                         mAdapter = new MachinesAdapter(machines, MainActivity.this);
                         mRecyclerView.setAdapter(mAdapter);
                     }
-                }, throwable -> {
-                    Log.e(TAG, "onCreate: Unable to get machines", throwable);
-                }));
+                }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
     }
 
     @Override

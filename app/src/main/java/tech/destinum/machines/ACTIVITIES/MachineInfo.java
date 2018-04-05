@@ -33,7 +33,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.data.ViewModel.IncomeViewModel;
+import tech.destinum.machines.data.ViewModel.MachineViewModel;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -53,6 +55,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     @Inject
     IncomeViewModel incomeViewModel;
 
+    @Inject
+    MachineViewModel machineViewModel;
+
     private static final String TAG = MachineInfo.class.getSimpleName();
 
     @Override
@@ -69,17 +74,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
         mRecyclerView = findViewById(R.id.rvNotes);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        Bundle bundle = getIntent().getExtras();
-        if(bundle!=null){
-            String location = bundle.getString("name");
-            final long id = bundle.getLong("id");
-            this.id = id;
-            name = location;
-            mName.setText(location);
-        }else{
-            finish();
-        }
 
         mFAB =  findViewById(R.id.fabAddIncome);
         mFAB.setOnClickListener(v -> {
@@ -143,6 +137,17 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     protected void onStart() {
         super.onStart();
 
+        Bundle bundle = getIntent().getExtras();
+        if(bundle!=null){
+            String location = bundle.getString("name");
+            final long id = bundle.getLong("id");
+            this.id = id;
+            name = location;
+            mName.setText(location);
+        }else{
+            finish();
+        }
+
         disposable.add(incomeViewModel.getIncomeOfMachine(id)
                 .defaultIfEmpty(0.0)
                 .subscribeOn(Schedulers.io())
@@ -151,6 +156,11 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                         if (total_amount != null) {
                             DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                             String formatted = formatter.format(total_amount);
+                            long id = bundle.getLong("id");
+
+//                            Machine machine = machineViewModel.getMachine(id);
+//                            machine.setTotal_income(total_amount);
+//                            machineViewModel.updateMachine(machineViewModel.getMachine(id));
                             mMoney.setText(formatted);
                             Log.d(TAG, "MachineInfo: money" + formatted);
                             showMenu = true;

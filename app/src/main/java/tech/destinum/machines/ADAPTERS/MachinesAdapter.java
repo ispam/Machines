@@ -30,11 +30,13 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import tech.destinum.machines.ACTIVITIES.App;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
 import tech.destinum.machines.UTILS.Optional;
 import tech.destinum.machines.data.POJO.Income;
 import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.POJO.MachineWithIncomes;
 import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.ViewModel.MachineViewModel;
 
@@ -42,7 +44,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
 
     private static final String TAG = MachinesAdapter.class.getSimpleName();
     private List<Machine> machinesList;
-    private List<Income> incomeList;
     private Context mContext;
     private CompositeDisposable disposable = new CompositeDisposable();
 
@@ -65,11 +66,11 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
         }
     }
 
-    public synchronized void refreshAdapter(List<Income> mNewMachines){
-        incomeList.clear();
-        incomeList.addAll(mNewMachines);
-        notifyDataSetChanged();
-    }
+//    public synchronized void refreshAdapter(List<Double> mNewMachines){
+//        incomeList.clear();
+//        incomeList.addAll(mNewMachines);
+//        notifyDataSetChanged();
+//    }
 
     @Override
     public MachinesAdapter.MachineViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -78,9 +79,17 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
 
     @Override
     public void onBindViewHolder(MachineViewHolder holder, int position) {
-        holder.populate(machinesList.get(position));
+//        holder.populate(machineWithIncomesList.get(position));
 
         Machine machine = machinesList.get(position);
+
+        holder.mName.setText(machine.getName());
+
+        Double total_amount = machine.getTotal_income();
+        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+        String formatted = formatter.format(total_amount);
+        holder.mMoney.setText(formatted);
+
         holder.v.setOnClickListener(v -> {
 
             Intent intent = new Intent(v.getContext(), MachineInfo.class);
@@ -104,7 +113,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
 
     @Override
     public int getItemCount() {
-        return machinesList != null ? machinesList.size(): 0;
+        return machinesList != null ? machinesList.size() : 0;
     }
 
     public class MachineViewHolder extends RecyclerView.ViewHolder {
@@ -119,37 +128,45 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
             this.v = v;
         }
 
-        private void populate(Machine machine){
-            mName.setText(machine.getName());
-
-            Income income = machine.getIncome();
-            if (income != null){
-                disposable.add(incomeViewModel.getAllIncomesFromAllMachines()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(total_amount -> {
-                                    if (total_amount != null) {
-                                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-                                        String formatted = formatter.format(total_amount);
-                                        mMoney.setText(formatted);
-                                        Log.d(TAG, "MachineInfo: money" + formatted);
-                                    } else {
-                                        mMoney.setText("$0.0");
-                                    }
-                                }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )
-                        ));
+//        private void populate(MachineWithIncomes machine){
+//            mName.setText(machine.machine.getName());
+//
+//
+//            List<Income> list = machine.incomeList;
+//            if (list.isEmpty() || list == null){
+//                mMoney.setText("No hay");
+//            } else {
+//                disposable.add(incomeViewModel.getIncomeOfMachine(machine.incomeList.get())
+//                        .subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(total_amount -> {
+//                                    if (total_amount != null) {
+//                                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+//                                        String formatted = formatter.format(total_amount);
+//                                        mMoney.setText(formatted);
+//                                        Log.d(TAG, "MachineInfo: money" + formatted);
+//                                    } else {
+//                                        mMoney.setText("$0.0");
+//                                    }
+//                                }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )
+//                        ));
+//            }
+//
+//            Income income = machine.getIncome();
+//            if (income != null){
+//
 //                double money = income.getMoney();
 //                if (money <= 0.0){
 //                    mMoney.setText("No hay");
 //                } else {
 //                    mMoney.setText(String.valueOf(machine.getIncome().getMoney()));
 //                }
-            } else {
-                mMoney.setText("No hay2");
-            }
+//            } else {
+//                mMoney.setText("No hay2");
+//            }
 
 
 
-        }
+//        }
     }
 }

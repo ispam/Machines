@@ -4,6 +4,7 @@ import org.reactivestreams.Subscriber;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,6 +17,8 @@ import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Income;
 
 public class IncomeViewModel {
+
+    private Income income;
 
     @Inject
     MachinesDB machinesDB;
@@ -36,8 +39,14 @@ public class IncomeViewModel {
         return Completable.fromAction(() -> machinesDB.getIncomeDAO().addIncome(new Income(date, note, money, machines_id)));
     }
 
-    public Flowable<List<Income>> getAllMachinesIncome(){
-        return  machinesDB.getIncomeDAO().getAllMachinesIncome();
+    public Flowable<List<Double>> getAllMachinesIncome(){
+        return machinesDB.getIncomeDAO().getAllMachinesIncome().map(sumMoney -> {
+            if (sumMoney.isEmpty()){
+                return Collections.EMPTY_LIST;
+            } else {
+                return new ArrayList<Double>(sumMoney) ;
+            }
+        });
     }
 
     public Flowable<List<Income>> getInfoOfMachine(long machines_id){

@@ -13,21 +13,19 @@ public class Machine {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private String name;
+    private double total_income;
 
-    @Embedded
-    private Income income;
-
-    public Income getIncome() {
-        return income;
-    }
-
-    public void setIncome(Income income) {
-        this.income = income;
-    }
-
-    public Machine(String name) {
-        this.id = id;
+    public Machine(String name, double total_income) {
         this.name = name;
+        this.total_income = total_income;
+    }
+
+    public double getTotal_income() {
+        return total_income;
+    }
+
+    public void setTotal_income(double total_income) {
+        this.total_income = total_income;
     }
 
     public long getId(){

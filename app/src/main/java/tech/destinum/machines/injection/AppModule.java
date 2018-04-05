@@ -59,14 +59,15 @@ public class AppModule {
                     Room.databaseBuilder(
                             context.getApplicationContext(),
                             MachinesDB.class,
-                            DB_NAME).build();
+                            DB_NAME).fallbackToDestructiveMigration().build();
         }
         return instance;
     }
 
-    private static final Migration MIGRATION1_2 = new Migration(1,2) {
+    private static final Migration MIGRATION8_9 = new Migration(8,9) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("alter table machines add column total_income real");
 
         }
     };
