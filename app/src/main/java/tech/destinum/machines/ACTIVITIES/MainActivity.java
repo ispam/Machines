@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -119,8 +120,9 @@ public class MainActivity extends AppCompatActivity {
                         mAdapter = new MachinesAdapter(machines, MainActivity.this);
                         mRecyclerView.setAdapter(mAdapter);
                         mAdapter.clickEvent.subscribe(machine -> {
-                            machineViewModel.deleteMachine(machine);
+                            machineViewModel.deleteByID(machine);
                             Toast.makeText(this, "PublishSubject" + machine, Toast.LENGTH_SHORT).show();
+                            mAdapter.notifyDataSetChanged();
                         });
                     }
 

@@ -36,4 +36,7 @@ public interface MachineDAO {
 
     @Delete
     void deleteMachine(Machine... machines);
+
+    @Query("delete from machines where id = :id")
+    int deleteByID(long id);
 }

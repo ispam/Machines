@@ -41,6 +41,10 @@ public class MachineViewModel {
         return Completable.fromAction(() -> machinesDB.getMachineDAO().deleteMachine(machine));
     }
 
+    public long deleteByID(long id){
+        return machinesDB.getMachineDAO().deleteByID(id);
+    }
+
     public Flowable<List<Machine>> getAllMachines(){
         return machinesDB.getMachineDAO().getAllMachines();
     }

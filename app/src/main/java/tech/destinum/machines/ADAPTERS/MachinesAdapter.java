@@ -48,8 +48,8 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
     private List<Machine> machinesList;
     private Context mContext;
     private CompositeDisposable disposable = new CompositeDisposable();
-    private PublishSubject<Machine> clickSubject = PublishSubject.create();
-    public Observable<Machine> clickEvent = clickSubject;
+    private PublishSubject<Long> clickSubject = PublishSubject.create();
+    public Observable<Long> clickEvent = clickSubject;
 
     @Inject
     MachinesDB machinesDB;
@@ -101,7 +101,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
             AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
             dialogg.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> " + machinesList.get(position).getName()))
                     .setNegativeButton("No", null)
-                    .setPositiveButton("Si", (dialog, which)-> clickSubject.onNext(machine));
+                    .setPositiveButton("Si", (dialog, which)-> clickSubject.onNext(machine.getId()));
             dialogg.create();
             dialogg.show();
             return true;
