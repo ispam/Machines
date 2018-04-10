@@ -14,6 +14,7 @@ import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.MaybeObserver;
+import io.reactivex.Single;
 import tech.destinum.machines.UTILS.Optional;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Machine;
@@ -52,7 +53,7 @@ public class MachineViewModel {
         return Completable.fromAction(() -> machinesDB.getMachineDAO().updateMachine(machine));
     }
 
-    public Machine getMachine(long id){
-        return machinesDB.getMachineDAO().getMachine(id);
+    public Single<Machine> getMachine(long id){
+        return Single.fromCallable(() -> machinesDB.getMachineDAO().getMachine(id));
     }
 }

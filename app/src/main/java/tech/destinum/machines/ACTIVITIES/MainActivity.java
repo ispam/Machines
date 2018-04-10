@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             }).setView(view).show();
         });
 
+
     }
 
     @Override
@@ -110,14 +111,21 @@ public class MainActivity extends AppCompatActivity {
 //                }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
 
         disposable.add(machineViewModel.getAllMachines()
+                .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(machines -> {
                     if (machines != null) {
                         mAdapter = new MachinesAdapter(machines, MainActivity.this);
                         mRecyclerView.setAdapter(mAdapter);
+                        mAdapter.clickEvent.subscribe(machine -> {
+                            machineViewModel.deleteMachine(machine);
+                            Toast.makeText(this, "PublishSubject" + machine, Toast.LENGTH_SHORT).show();
+                        });
                     }
+
                 }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
+
     }
 
     @Override

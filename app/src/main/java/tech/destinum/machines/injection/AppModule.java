@@ -12,6 +12,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import tech.destinum.machines.ACTIVITIES.App;
+import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.ViewModel.MachineViewModel;
@@ -52,6 +53,7 @@ public class AppModule {
         return getInstance(context);
     }
 
+
     private static MachinesDB getInstance(Context context){
 
         if (instance == null){
@@ -59,7 +61,10 @@ public class AppModule {
                     Room.databaseBuilder(
                             context.getApplicationContext(),
                             MachinesDB.class,
-                            DB_NAME).fallbackToDestructiveMigration().build();
+                            DB_NAME)
+                            .fallbackToDestructiveMigration()
+                            .allowMainThreadQueries()
+                            .build();
         }
         return instance;
     }

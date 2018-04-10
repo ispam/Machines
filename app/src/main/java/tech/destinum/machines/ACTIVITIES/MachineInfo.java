@@ -104,7 +104,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             String money = editText.getText().toString();
 
                             double value;
-                            if(money.isEmpty() || money.equals(null) || date == null || date.equals("")) {
+                            if(money.isEmpty() || money.equals("") || date == null || date.equals("")) {
                                 Toast.makeText(v.getContext(), "Fecha y Dinero SON OBLIGATORIOS", Toast.LENGTH_SHORT).show();
                                 hideSoftKeyboard(v);
                             } else {
@@ -156,7 +156,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                         if (total_amount != null) {
                             DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                             String formatted = formatter.format(total_amount);
-                            long id = bundle.getLong("id");
 
 //                            Machine machine = machineViewModel.getMachine(id);
 //                            machine.setTotal_income(total_amount);
@@ -168,6 +167,15 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             mMoney.setText("$0.0");
                         }
                 }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )));
+
+        disposable.add(machineViewModel.getMachine(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(machine -> machineViewModel.updateMachine(machine))
+                .doOnError(error -> Toast.makeText(this, "ERROR PAPI PAILA", Toast.LENGTH_SHORT).show())
+                .subscribe(
+                        machine -> Toast.makeText(this, "MACHINE UPDATED " + machine, Toast.LENGTH_SHORT).show(),
+                        throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
 
         disposable.add(incomeViewModel.getInfoOfMachine(id)
                 .subscribeOn(Schedulers.io())
@@ -184,10 +192,10 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
     @Override
     protected void onStop() {
-        super.onStop();
         if (disposable != null && !disposable.isDisposed()){
             disposable.clear();
         }
+        super.onStop();
     }
 
     @Override

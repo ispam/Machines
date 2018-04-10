@@ -30,9 +30,11 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 import tech.destinum.machines.ACTIVITIES.App;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
 import tech.destinum.machines.UTILS.Optional;
+import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Income;
 import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.R;
@@ -46,6 +48,11 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
     private List<Machine> machinesList;
     private Context mContext;
     private CompositeDisposable disposable = new CompositeDisposable();
+    private PublishSubject<Machine> clickSubject = PublishSubject.create();
+    public Observable<Machine> clickEvent = clickSubject;
+
+    @Inject
+    MachinesDB machinesDB;
 
     @Inject
     IncomeViewModel incomeViewModel;
@@ -53,17 +60,17 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
     @Inject
     MachineViewModel machineViewModel;
 
-    public MachinesAdapter(List<Machine> machinesList,  Context mContext) {
+    public MachinesAdapter(List<Machine> machinesList, Context mContext) {
         this.machinesList = machinesList;
         this.mContext = mContext;
     }
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
         if (disposable != null && !disposable.isDisposed()){
             disposable.clear();
         }
+        super.onDetachedFromRecyclerView(recyclerView);
     }
 
 //    public synchronized void refreshAdapter(List<Double> mNewMachines){
@@ -79,32 +86,22 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
 
     @Override
     public void onBindViewHolder(MachineViewHolder holder, int position) {
-//        holder.populate(machineWithIncomesList.get(position));
+        holder.populate(machinesList.get(position));
 
         Machine machine = machinesList.get(position);
-
-        holder.mName.setText(machine.getName());
-
-        Double total_amount = machine.getTotal_income();
-        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-        String formatted = formatter.format(total_amount);
-        holder.mMoney.setText(formatted);
-
         holder.v.setOnClickListener(v -> {
-
             Intent intent = new Intent(v.getContext(), MachineInfo.class);
             intent.putExtra("id", machine.getId());
             intent.putExtra("name", machine.getName());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             v.getContext().startActivity(intent);
-
         });
 
         holder.v.setOnLongClickListener(v -> {
             AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
             dialogg.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> " + machinesList.get(position).getName()))
                     .setNegativeButton("No", null)
-                    .setPositiveButton("Si", (dialog, which)-> machineViewModel.deleteMachine(machine));
+                    .setPositiveButton("Si", (dialog, which)-> clickSubject.onNext(machine));
             dialogg.create();
             dialogg.show();
             return true;
@@ -126,47 +123,17 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
             mName = v.findViewById(R.id.machines_list_name);
             mMoney = v.findViewById(R.id.machines_list_total);
             this.v = v;
+
         }
 
-//        private void populate(MachineWithIncomes machine){
-//            mName.setText(machine.machine.getName());
-//
-//
-//            List<Income> list = machine.incomeList;
-//            if (list.isEmpty() || list == null){
-//                mMoney.setText("No hay");
-//            } else {
-//                disposable.add(incomeViewModel.getIncomeOfMachine(machine.incomeList.get())
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(total_amount -> {
-//                                    if (total_amount != null) {
-//                                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-//                                        String formatted = formatter.format(total_amount);
-//                                        mMoney.setText(formatted);
-//                                        Log.d(TAG, "MachineInfo: money" + formatted);
-//                                    } else {
-//                                        mMoney.setText("$0.0");
-//                                    }
-//                                }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )
-//                        ));
-//            }
-//
-//            Income income = machine.getIncome();
-//            if (income != null){
-//
-//                double money = income.getMoney();
-//                if (money <= 0.0){
-//                    mMoney.setText("No hay");
-//                } else {
-//                    mMoney.setText(String.valueOf(machine.getIncome().getMoney()));
-//                }
-//            } else {
-//                mMoney.setText("No hay2");
-//            }
+        private void populate(Machine machine){
+            mName.setText(machine.getName());
 
+            Double total_amount = machine.getTotal_income();
+            DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+            String formatted = formatter.format(total_amount);
+            mMoney.setText(formatted);
 
-
-//        }
+        }
     }
 }
