@@ -28,9 +28,13 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.POJO.Machine;
@@ -51,6 +55,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private Boolean showMenu = false;
     
     private CompositeDisposable disposable = new CompositeDisposable();
+    private PublishSubject<Double> publishSubject = PublishSubject.create();
+//    private Observable<Double> clickEvent = publishSubject;
 
     @Inject
     IncomeViewModel incomeViewModel;
@@ -148,21 +154,30 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             finish();
         }
 
+
+//        incomeViewModel.getIncomeOfMachine(id).subscribe(publishSubject);
+//        publishSubject.subscribe(thing ->{});
+
         disposable.add(incomeViewModel.getIncomeOfMachine(id)
                 .defaultIfEmpty(0.0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(total_amount -> {
-                        if (total_amount != null) {
-                            machineViewModel.updateByID(id, total_amount);
-                            DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-                            String formatted = formatter.format(total_amount);
-                            mMoney.setText(formatted);
-                            showMenu = true;
-                        } else {
-                            mMoney.setText("$0.0");
-                        }
-                }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )));
+                            if (total_amount != null) {
+
+//                                publishSubject.onNext(total_amount);
+
+                                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                                String formatted = formatter.format(total_amount);
+                                mMoney.setText(formatted);
+                                showMenu = true;
+                            } else {
+                                mMoney.setText("$0.0");
+                            }
+                        }, throwable -> Log.d(TAG, "MachineInfo: ERROR")));
+
+//        disposable.add(clickEvent.subscribe(
+//                total_amount -> machineViewModel.updateByID(id, total_amount)));
 
 //        disposable.add(machineViewModel.getMachine(id)
 //                .subscribeOn(Schedulers.io())

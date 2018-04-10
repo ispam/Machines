@@ -51,15 +51,6 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
     private PublishSubject<Long> clickSubject = PublishSubject.create();
     public Observable<Long> clickEvent = clickSubject;
 
-    @Inject
-    MachinesDB machinesDB;
-
-    @Inject
-    IncomeViewModel incomeViewModel;
-
-    @Inject
-    MachineViewModel machineViewModel;
-
     public MachinesAdapter(List<Machine> machinesList, Context mContext) {
         this.machinesList = machinesList;
         this.mContext = mContext;

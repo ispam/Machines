@@ -45,14 +45,15 @@
         android:id="@+id/tvNotes"/>
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabAddIncome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:fabSize="normal"
-            app:srcCompat="@mipmap/ic_add_black_24dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:id="@+id/fabAddIncome"/>
+            android:clickable="true"
+            app:fabSize="normal"
+            app:rippleColor="@android:color/white"
+            app:srcCompat="@drawable/ic_add_white_24dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"

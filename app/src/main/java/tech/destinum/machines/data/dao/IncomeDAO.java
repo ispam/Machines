@@ -35,7 +35,7 @@ public interface IncomeDAO {
     @Query("select sum(money) from incomes group by machines_id")
     Flowable<List<Double>> getAllIncomesFromAllMachines();
 
-    @Query("select * from incomes where machines_id = :machines_id")
+    @Query("select * from incomes where machines_id = :machines_id order by _id desc")
     Flowable<List<Income>> getInfoOfMachine(long machines_id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

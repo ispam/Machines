@@ -1,11 +1,9 @@
 package tech.destinum.machines.ACTIVITIES;
 
-import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -20,7 +18,6 @@ import javax.inject.Inject;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 

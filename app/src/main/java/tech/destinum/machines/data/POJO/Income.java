@@ -10,7 +10,7 @@ import io.reactivex.annotations.Nullable;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(tableName = "incomes")
+@Entity(tableName = "incomes", foreignKeys = @ForeignKey(entity = Machine.class, parentColumns = "id", childColumns = "machines_id", onUpdate = CASCADE, onDelete = CASCADE))
 public class Income {
 
     @PrimaryKey(autoGenerate = true)

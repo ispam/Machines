@@ -10,7 +10,7 @@ import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.data.dao.IncomeDAO;
 import tech.destinum.machines.data.dao.MachineDAO;
 
-@Database(entities = {Machine.class, Income.class}, version = 9)
+@Database(entities = {Machine.class, Income.class}, version = 10)
 public abstract class MachinesDB extends RoomDatabase{
     private static MachinesDB INSTANCE;
 

@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton mFAB;
     private RecyclerView mRecyclerView;
     private MachinesAdapter mAdapter;
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     MachineViewModel machineViewModel;
@@ -56,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     IncomeViewModel incomeViewModel;
 
-    private CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
                                 .subscribe(
                                         () -> mAdapter.notifyDataSetChanged(),
                                         throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
-
             }).setView(view).show();
         });
 
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                         mRecyclerView.setAdapter(mAdapter);
                         mAdapter.clickEvent.subscribe(machine -> {
                             machineViewModel.deleteByID(machine);
-                            Toast.makeText(this, "PublishSubject" + machine, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "PublishSubject " + machine, Toast.LENGTH_SHORT).show();
                             mAdapter.notifyDataSetChanged();
                         });
                     }

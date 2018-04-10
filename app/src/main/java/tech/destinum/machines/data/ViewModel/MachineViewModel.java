@@ -58,7 +58,7 @@ public class MachineViewModel {
     }
 
     public Completable updateByID(long id, double total_income){
-        return Completable.fromCallable(() -> machinesDB.getMachineDAO().updateMachineByID(id, total_income));
+        return Completable.fromAction(() -> machinesDB.getMachineDAO().updateMachineByID(id, total_income));
     }
 
     public Single<Machine> getMachine(long id){

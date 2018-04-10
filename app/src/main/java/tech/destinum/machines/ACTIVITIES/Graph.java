@@ -33,7 +33,6 @@ import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 public class Graph extends AppCompatActivity {
 
     private BarChart mChart;
-    private DBHelpter mDBHelpter;
     private CompositeDisposable disposable;
 
     @Inject
@@ -46,7 +45,6 @@ public class Graph extends AppCompatActivity {
 
         ((App) getApplication()).getComponent().inject(this);
 
-        mDBHelpter = new DBHelpter(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mChart = findViewById(R.id.graph);
