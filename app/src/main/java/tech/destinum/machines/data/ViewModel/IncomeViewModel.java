@@ -1,5 +1,7 @@
 package tech.destinum.machines.data.ViewModel;
 
+import android.database.Cursor;
+
 import org.reactivestreams.Subscriber;
 
 
@@ -13,6 +15,7 @@ import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Income;
 
@@ -51,5 +54,13 @@ public class IncomeViewModel {
 
     public Flowable<List<Income>> getInfoOfMachine(long machines_id){
         return machinesDB.getIncomeDAO().getInfoOfMachine(machines_id);
+    }
+
+    public Single<Cursor> getCursor(){
+        return Single.fromCallable(() -> machinesDB.getIncomeDAO().getCursor());
+    }
+
+    public Single<Cursor> getCursorByID(long machines_id){
+        return Single.fromCallable(() -> machinesDB.getIncomeDAO().getCursorByID(machines_id));
     }
 }

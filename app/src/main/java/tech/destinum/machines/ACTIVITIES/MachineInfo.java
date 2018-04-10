@@ -154,15 +154,10 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(total_amount -> {
                         if (total_amount != null) {
+                            machineViewModel.updateByID(id, total_amount);
                             DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                             String formatted = formatter.format(total_amount);
-
-//                            Machine machine = machineViewModel.getMachine(id);
-//                            machine.setTotal_income(total_amount);
-//                            machineViewModel.updateMachine(machineViewModel.getMachine(id));
-                            machineViewModel.updateByID(id, total_amount);
                             mMoney.setText(formatted);
-                            Toast.makeText(this, "MachineInfo: " + String.valueOf(machineViewModel.updateByID(id, total_amount)), Toast.LENGTH_SHORT).show();
                             showMenu = true;
                         } else {
                             mMoney.setText("$0.0");

@@ -89,62 +89,50 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             }
         });
 
-        holder.mShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String date = income.getDate();
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.setType("text/plain");
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Fecha: "+date+"\n"+"Recaudado: "+formatted);
-                v.getContext().startActivity(Intent.createChooser(sendIntent, "Compartir"));
-            }
+        holder.mShare.setOnClickListener(v -> {
+            String date = income.getDate();
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Fecha: "+date+"\n"+"Recaudado: "+formatted);
+            v.getContext().startActivity(Intent.createChooser(sendIntent, "Compartir"));
         });
 
-        holder.mDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDBHelpter.deleteIncome(income.get_id());
-                mIncomeArrayList.remove(income);
-                notifyDataSetChanged();
+        holder.mDelete.setOnClickListener(v -> {
+            mDBHelpter.deleteIncome(income.get_id());
+            mIncomeArrayList.remove(income);
+            notifyDataSetChanged();
 //                refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
-            }
         });
 
-        holder.mEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
+        holder.mEdit.setOnClickListener(v -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
 
-                LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View dialogView =inflater.inflate(R.layout.dialog_income, null, true);
-                final EditText edt = dialogView.findViewById(R.id.dialog_edt_date);
-                TextView msg = dialogView.findViewById(R.id.dialog_tv_msg) ;
+            LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View dialogView =inflater.inflate(R.layout.dialog_income, null, true);
+            final EditText edt = dialogView.findViewById(R.id.dialog_edt_date);
+            TextView msg = dialogView.findViewById(R.id.dialog_tv_msg) ;
 
-                msg.setText("Esta remplazando el ingreso de la fecha: "+ income.getDate());
+            msg.setText("Esta remplazando el ingreso de la fecha: "+ income.getDate());
 
-                dialog.setNegativeButton("Cancelar", null)
-                        .setPositiveButton("Cambiar", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+            dialog.setNegativeButton("Cancelar", null)
+                    .setPositiveButton("Cambiar", (dialog1, which) -> {
 
-                                if (edt.getText().equals("") || edt.getText().length() < 6){
-                                    Toast.makeText(v.getContext(), "Necesitamos algun dato", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Double money;
-                                    try {
-                                        money = new Double(edt.getText().toString());
-                                    } catch (NumberFormatException e){
-                                        money = 0.0;
-                                    }
-                                    mDBHelpter.updateIncome(money, income.getDate(), income.getNote(), income.get_id());
-//                                    refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
-                                    dialog.dismiss();
-                                }
+                        if (edt.getText().equals("") || edt.getText().length() < 6){
+                            Toast.makeText(v.getContext(), "Necesitamos algun dato", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Double money;
+                            try {
+                                money = new Double(edt.getText().toString());
+                            } catch (NumberFormatException e){
+                                money = 0.0;
                             }
-                        });
-                dialog.setView(dialogView).show();
-            }
+                            mDBHelpter.updateIncome(money, income.getDate(), income.getNote(), income.get_id());
+//                                    refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
+                            dialog1.dismiss();
+                        }
+                    });
+            dialog.setView(dialogView).show();
         });
     }
 
@@ -169,14 +157,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         public ViewHolder(View v) {
             super(v);
 
-            mNote = (TextView) v.findViewById(R.id.notes_list_note);
-            mMoney = (TextView) v.findViewById(R.id.notes_list_money);
-            mDate = (TextView) v.findViewById(R.id.notes_list_date);
-            mDelete = (ImageView) v.findViewById(R.id.trash);
-            mShare = (ImageView) v.findViewById(R.id.share);
-            mEdit = (ImageView) v.findViewById(R.id.edit);
-            mSwipeLayout = (SwipeLayout) v.findViewById(R.id.swipe_notes_list);
-            mRelativeLayout = (RelativeLayout) v.findViewById(R.id.background);
+            mNote = v.findViewById(R.id.notes_list_note);
+            mMoney = v.findViewById(R.id.notes_list_money);
+            mDate = v.findViewById(R.id.notes_list_date);
+            mDelete = v.findViewById(R.id.trash);
+            mShare = v.findViewById(R.id.share);
+            mEdit = v.findViewById(R.id.edit);
+            mSwipeLayout = v.findViewById(R.id.swipe_notes_list);
+            mRelativeLayout = v.findViewById(R.id.background);
         }
     }
 }

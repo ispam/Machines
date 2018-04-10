@@ -62,7 +62,6 @@ public class AppModule {
                             MachinesDB.class,
                             DB_NAME)
                             .fallbackToDestructiveMigration()
-                            .allowMainThreadQueries()
                             .build();
         }
         return instance;

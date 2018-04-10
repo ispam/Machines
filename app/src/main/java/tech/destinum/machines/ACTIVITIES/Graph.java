@@ -16,48 +16,80 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.POJO.Income;
+import tech.destinum.machines.data.POJO.Machine;
+import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 
 public class Graph extends AppCompatActivity {
 
     private BarChart mChart;
     private DBHelpter mDBHelpter;
+    private CompositeDisposable disposable;
+
+    @Inject
+    IncomeViewModel incomeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
+        ((App) getApplication()).getComponent().inject(this);
+
         mDBHelpter = new DBHelpter(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mChart = (BarChart) findViewById(R.id.graph);
+        mChart = findViewById(R.id.graph);
 
-        List<BarEntry> entries = new ArrayList<>();
-
-        Cursor cursor = mDBHelpter.getAllMachinesIncome();
-        while (cursor.moveToNext()) {
-            double total = cursor.getDouble(cursor.getColumnIndex("total"));
-            float id = cursor.getLong(cursor.getColumnIndex("machines_id"));
-            float newTotal = (float) total;
-            entries.add(new BarEntry(id, newTotal));
-        }
-
-
-        BarDataSet set = new BarDataSet(entries, "Maquinas");
-        BarData data = new BarData(set);
-
-        mChart.setDragEnabled(true);
-        mChart.setScaleEnabled(true);
-        mChart.setFitBars(true);
-        data.setValueTextSize(16f);
-        set.setColors(ColorTemplate.COLORFUL_COLORS);
-        mChart.setData(data);
-        mChart.invalidate();
     }
 
+    @Override
+    protected void onStop() {
+        if (disposable != null && !disposable.isDisposed()){
+            disposable.clear();
+        }
+        super.onStop();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        disposable.add(
+                incomeViewModel.getCursor()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(cursor -> {
+                            List<BarEntry> entries = new ArrayList<>();
+
+                            while (cursor.moveToNext()) {
+                                double total = cursor.getDouble(cursor.getColumnIndex("money"));
+                                float id = cursor.getLong(cursor.getColumnIndex("machines_id"));
+                                float newTotal = (float) total;
+                                entries.add(new BarEntry(id, newTotal));
+                            }
+                            cursor.close();
+
+                            BarDataSet set = new BarDataSet(entries, "Maquinas");
+                            BarData data = new BarData(set);
+
+                            mChart.setDragEnabled(true);
+                            mChart.setScaleEnabled(true);
+                            mChart.setFitBars(true);
+                            data.setValueTextSize(16f);
+                            set.setColors(ColorTemplate.COLORFUL_COLORS);
+                            mChart.setData(data);
+                            mChart.invalidate();
+                        }));
+    }
 }
