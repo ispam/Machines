@@ -53,7 +53,6 @@ public class AppModule {
         return getInstance(context);
     }
 
-
     private static MachinesDB getInstance(Context context){
 
         if (instance == null){

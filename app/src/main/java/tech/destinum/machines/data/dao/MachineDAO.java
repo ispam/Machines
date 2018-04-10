@@ -34,6 +34,9 @@ public interface MachineDAO {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateMachine(Machine machines);
 
+    @Query("update machines set total_income = :total_income where id = :id")
+    int updateMachineByID(long id, double total_income);
+
     @Delete
     void deleteMachine(Machine... machines);
 

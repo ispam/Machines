@@ -160,22 +160,23 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 //                            Machine machine = machineViewModel.getMachine(id);
 //                            machine.setTotal_income(total_amount);
 //                            machineViewModel.updateMachine(machineViewModel.getMachine(id));
+                            machineViewModel.updateByID(id, total_amount);
                             mMoney.setText(formatted);
-                            Log.d(TAG, "MachineInfo: money" + formatted);
+                            Toast.makeText(this, "MachineInfo: " + String.valueOf(machineViewModel.updateByID(id, total_amount)), Toast.LENGTH_SHORT).show();
                             showMenu = true;
                         } else {
                             mMoney.setText("$0.0");
                         }
                 }, throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )));
 
-        disposable.add(machineViewModel.getMachine(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(machine -> machineViewModel.updateMachine(machine))
-                .doOnError(error -> Toast.makeText(this, "ERROR PAPI PAILA", Toast.LENGTH_SHORT).show())
-                .subscribe(
-                        machine -> Toast.makeText(this, "MACHINE UPDATED " + machine, Toast.LENGTH_SHORT).show(),
-                        throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
+//        disposable.add(machineViewModel.getMachine(id)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .map(machine -> machineViewModel.updateMachine(machine))
+//                .doOnError(error -> Toast.makeText(this, "ERROR PAPI PAILA", Toast.LENGTH_SHORT).show())
+//                .subscribe(
+//                        machine -> Toast.makeText(this, "MACHINE UPDATED " + machine, Toast.LENGTH_SHORT).show(),
+//                        throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
 
         disposable.add(incomeViewModel.getInfoOfMachine(id)
                 .subscribeOn(Schedulers.io())
