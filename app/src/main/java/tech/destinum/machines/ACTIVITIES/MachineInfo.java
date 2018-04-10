@@ -28,9 +28,11 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -166,6 +168,13 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             if (total_amount != null) {
 
 //                                publishSubject.onNext(total_amount);
+
+                                disposable.add(machineViewModel.updateByID(id, total_amount)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(
+                                                () -> Log.d(TAG, "MachineInfo: COMPLETED"),
+                                                throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )));
 
                                 DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                                 String formatted = formatter.format(total_amount);

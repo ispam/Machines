@@ -12,6 +12,7 @@ import android.database.Cursor;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import tech.destinum.machines.data.POJO.Machine;
 import tech.destinum.machines.data.POJO.MachineWithIncomes;
 

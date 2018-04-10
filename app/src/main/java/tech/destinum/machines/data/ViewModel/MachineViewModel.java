@@ -15,6 +15,8 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.MaybeObserver;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.UTILS.Optional;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.POJO.Machine;
@@ -58,7 +60,7 @@ public class MachineViewModel {
     }
 
     public Completable updateByID(long id, double total_income){
-        return Completable.fromAction(() -> machinesDB.getMachineDAO().updateMachineByID(id, total_income));
+        return Completable.fromCallable(() -> machinesDB.getMachineDAO().updateMachineByID(id, total_income));
     }
 
     public Single<Machine> getMachine(long id){
