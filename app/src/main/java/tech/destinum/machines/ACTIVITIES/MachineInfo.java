@@ -3,6 +3,7 @@ package tech.destinum.machines.ACTIVITIES;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -94,7 +97,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                         mMonth = mCalendar.get(Calendar.MONTH);
                         mYear = mCalendar.get(Calendar.YEAR);
 
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(MachineInfo.this, MachineInfo.this, mYear, mMonth, mDay);
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(MachineInfo.this,  R.style.datepicker, MachineInfo.this,  mYear, mMonth, mDay);
                         datePickerDialog.show();
 
                 });
@@ -222,12 +225,20 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         if (showMenu){
             getMenuInflater().inflate(R.menu.menu_line_chart, menu);
-            return super.onCreateOptionsMenu(menu);
+            for(int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+                spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spanString.length(), 0); //fix the color to white
+                item.setTitle(spanString);
+            }
+            return true;
         } else {
             return false;
         }
+
     }
 
 
@@ -236,6 +247,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
         switch (item.getItemId()){
             case R.id.menu_line_chart:
+
 
                 Intent intent = new Intent(MachineInfo.this, LineChart.class);
                 intent.putExtra("id", id);

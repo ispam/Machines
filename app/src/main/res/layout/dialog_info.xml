@@ -5,13 +5,14 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/dialog_info_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/dialog_info_title"
-        android:text="Nuevo Ingreso"
-        android:textSize="20sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:text="Nuevo Ingreso"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"/>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="wrap_content"
@@ -19,6 +20,7 @@
         android:layout_below="@id/dialog_info_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
         android:id="@+id/dialog_info_til">
 
         <android.support.design.widget.TextInputEditText
@@ -27,58 +29,68 @@
             android:id="@+id/dialog_info_et"
             android:ems="8"
             android:hint="$XXX.XXX"
+            android:textColor="@android:color/black"
             android:inputType="numberDecimal"
             android:gravity="center_horizontal"/>
 
     </android.support.design.widget.TextInputLayout>
 
     <TextView
+        android:id="@+id/dialog_info_notes_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/dialog_info_notes_tv"
-        android:text="Notas"
-        android:textSize="20sp"
         android:layout_below="@id/dialog_info_til"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:text="Notas"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dialog_info_notes_et"
         android:ems="8"
-        android:inputType="textLongMessage"
+        android:textColor="@android:color/black"
+        android:inputType="textCapSentences"
+        android:gravity="center_horizontal"
         android:layout_below="@id/dialog_info_notes_tv"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"/>
 
     <TextView
+        android:id="@+id/date_info_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/date_info_date"
-        android:text="Fecha Actual"
-        android:textSize="20sp"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/dialog_info_notes_et"
-        android:layout_marginTop="8dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="Fecha Actual"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"/>
 
     <TextView
+        android:id="@+id/dialog_info_date_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/dialog_info_date_tv"
+        android:layout_below="@id/date_info_date"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
         android:text="MM/DD/AAAA"
         android:textSize="20sp"
-        android:layout_marginTop="8dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/date_info_date"/>
+        android:textStyle="normal|bold|italic"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dialog_info_date_btn"
         android:text="Seleccionar fecha"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@android:color/white"
         android:layout_centerHorizontal="true"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
         android:layout_below="@id/dialog_info_date_tv"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="15dp"/>
 
 </RelativeLayout>

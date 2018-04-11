@@ -6,8 +6,9 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tech.destinum.machines.ACTIVITIES.MainActivity"
-    android:padding="@dimen/activity_vertical_margin">
+    android:background="#FCE4EC"
+    android:padding="@dimen/activity_vertical_margin"
+    tools:context="tech.destinum.machines.ACTIVITIES.MainActivity">
 
 
         <android.support.design.widget.FloatingActionButton
@@ -22,9 +23,9 @@
             app:srcCompat="@drawable/ic_add_white_24dp"/>
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/recycler_view_main"/>
+            android:layout_height="match_parent"/>
 
 
 </android.support.design.widget.CoordinatorLayout>
