@@ -1,88 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                xmlns:tools="http://schemas.android.com/tools"
+                                android:id="@+id/swipe_notes_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/swipe_notes_list"
-                                android:layout_margin="1dp"
+                                android:layout_margin="5dp"
                                 app:leftEdgeSwipeOffset="0dp"
                                 app:rightEdgeSwipeOffset="0dp">
 
     <RelativeLayout
+        android:id="@+id/background"
         android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:id="@+id/background">
+        android:layout_height="70dp">
 
         <ImageView
             android:id="@+id/trash"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/delete_white"
-            android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:background="#FF5534"/>
+            android:layout_centerVertical="true"
+            android:background="#FF5534"
+            android:src="@drawable/delete_white"/>
 
         <ImageView
             android:id="@+id/share"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/share_white"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/trash"
-            android:background="#388E3C"/>
+            android:background="#388E3C"
+            android:src="@drawable/share_white"/>
 
         <ImageView
             android:id="@+id/edit"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/white_edit"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/share"
-            android:background="#1d90dd"/>
+            android:background="#1d90dd"
+            android:src="@drawable/white_edit"/>
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
+    <android.support.v7.widget.CardView
         android:id="@+id/rl_NotesList"
-        android:padding="4dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        app:cardBackgroundColor="@android:color/holo_blue_bright"
+        app:cardCornerRadius="5dp">
 
-        <TextView
-            android:textSize="20sp"
-            android:text="voy a escribir una cosa larga haber como resulta"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/notes_list_date"
-            android:layout_toStartOf="@+id/notes_list_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/notes_list_note"
-            android:layout_centerVertical="true"/>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:textSize="18sp"
-            android:text="$300.000"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            android:gravity="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/notes_list_money"/>
+            <TextView
+                android:id="@+id/notes_list_note"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Voy a escribir una cosa larga habar"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-        <TextView
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginEnd="4dp"
-            android:text="21/03/17"
-            android:id="@+id/notes_list_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/notes_list_money"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"/>
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="222dp"/>
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/notes_list_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="end"
+                android:text="$300.000"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/notes_list_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="21/03/17"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/notes_list_money"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
 
 </com.daimajia.swipe.SwipeLayout>

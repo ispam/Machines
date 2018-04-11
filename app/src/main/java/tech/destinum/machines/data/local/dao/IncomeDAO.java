@@ -25,7 +25,7 @@ public interface IncomeDAO {
     @Query("select sum(money), _id from incomes where machines_id = :machines_id")
     Cursor getCursorByID(long machines_id);
 
-    @Query("select sum(money), _id from incomes group by machines_id")
+    @Query("select sum(money), machines_id from incomes group by machines_id")
     Cursor getCursor();
 
     @Query("select sum(money) from incomes group by machines_id")

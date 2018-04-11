@@ -77,8 +77,8 @@ public class LineChart extends AppCompatActivity {
                             List<Entry> entries = new ArrayList<>();
 
                             while (cursor.moveToNext()) {
-                                double total = cursor.getDouble(cursor.getColumnIndex("money"));
-                                float id = cursor.getLong(cursor.getColumnIndex("_id"));
+                                float id = cursor.getLong(1);
+                                double total = cursor.getDouble(0);
                                 float newTotal = (float) total;
                                 entries.add(new Entry(id, newTotal));
                             }

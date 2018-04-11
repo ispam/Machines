@@ -62,8 +62,8 @@ public class Graph extends AppCompatActivity {
                             List<BarEntry> entries = new ArrayList<>();
 
                             while (cursor.moveToNext()) {
-                                double total = cursor.getDouble(cursor.getColumnIndex("money"));
-                                float id = cursor.getLong(cursor.getColumnIndex("machines_id"));
+                                double total = cursor.getDouble(0);
+                                float id = cursor.getLong(1);
                                 float newTotal = (float) total;
                                 entries.add(new BarEntry(id, newTotal));
                             }
