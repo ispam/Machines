@@ -19,7 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.R;
-import tech.destinum.machines.data.ViewModel.IncomeViewModel;
+import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 
 public class LineChart extends AppCompatActivity {
 

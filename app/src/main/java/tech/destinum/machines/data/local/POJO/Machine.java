@@ -1,11 +1,7 @@
-package tech.destinum.machines.data.POJO;
+package tech.destinum.machines.data.local.POJO;
 
-import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
-
-import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "machines")
 public class Machine {

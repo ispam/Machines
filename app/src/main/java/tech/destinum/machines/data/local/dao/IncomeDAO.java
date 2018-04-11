@@ -1,4 +1,4 @@
-package tech.destinum.machines.data.dao;
+package tech.destinum.machines.data.local.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -11,11 +11,7 @@ import android.database.Cursor;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import tech.destinum.machines.data.POJO.Income;
-import tech.destinum.machines.data.POJO.Machine;
+import tech.destinum.machines.data.local.POJO.Income;
 
 @Dao
 public interface IncomeDAO {

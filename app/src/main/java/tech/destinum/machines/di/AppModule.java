@@ -1,21 +1,19 @@
-package tech.destinum.machines.injection;
+package tech.destinum.machines.di;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import tech.destinum.machines.ACTIVITIES.App;
-import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.data.MachinesDB;
-import tech.destinum.machines.data.ViewModel.IncomeViewModel;
-import tech.destinum.machines.data.ViewModel.MachineViewModel;
+import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
+import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
 
 @Module

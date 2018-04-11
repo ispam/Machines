@@ -3,7 +3,6 @@ package tech.destinum.machines.ACTIVITIES;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -29,20 +28,14 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
-import io.reactivex.CompletableObserver;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
-import tech.destinum.machines.data.POJO.Machine;
-import tech.destinum.machines.data.ViewModel.IncomeViewModel;
-import tech.destinum.machines.data.ViewModel.MachineViewModel;
+import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
+import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
 public class MachineInfo extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
@@ -53,10 +46,10 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private Calendar mCalendar;
     private TextView info_date;
     private int mDay, mMonth, mYear, mDayFinal, mMonthFinal, mYearFinal;
-    private String date, name;
+    private String date, name, total_amount2;
     private long id;
     private Boolean showMenu = false;
-    
+
     private CompositeDisposable disposable = new CompositeDisposable();
     private PublishSubject<Double> publishSubject = PublishSubject.create();
 //    private Observable<Double> clickEvent = publishSubject;
@@ -117,12 +110,17 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                                 Toast.makeText(v.getContext(), "Fecha y Dinero SON OBLIGATORIOS", Toast.LENGTH_SHORT).show();
                                 hideSoftKeyboard(v);
                             } else {
+
+                                if (notes.isEmpty() || notes.equals("")){
+                                    notes = "Sin Observaciones";
+                                }
+
                                 value = Double.parseDouble(money);
                                 disposable.add(incomeViewModel.addIncome(date, notes, value, id)
                                                 .subscribeOn(Schedulers.io())
                                                 .observeOn(AndroidSchedulers.mainThread())
                                                 .subscribe(
-                                                        () -> {},
+                                                        () -> Log.d(TAG, "MachineInfo: INCOME ADDED"),
                                                         throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
                             }
 
@@ -183,6 +181,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                                 DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                                 String formatted = formatter.format(total_amount);
                                 mMoney.setText(formatted);
+
+                                total_amount2 = formatted;
                                 showMenu = true;
                             } else {
                                 mMoney.setText("$0.0");
@@ -245,15 +245,10 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 break;
             case R.id.share_info:
 
-//                double total_amount = mDB.getInstance(this).getIncomeDAO().getIncomeOfMachine(id).getMoney();
-                double total_amount = 222.222;
-                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-                String formatted = formatter.format(total_amount);
-
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.setType("text/plain");
-                sendIntent.putExtra(Intent.EXTRA_TEXT, name + " ha recaudado en total: "+formatted);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, name + " ha recaudado en total: "+total_amount2);
                 startActivity(Intent.createChooser(sendIntent, "Compartir"));
 
                 break;

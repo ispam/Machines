@@ -1,28 +1,15 @@
-package tech.destinum.machines.data.ViewModel;
-
-import android.util.Log;
-
-import org.reactivestreams.Subscriber;
+package tech.destinum.machines.data.local.ViewModel;
 
 import java.util.List;
 
-import javax.crypto.Mac;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.MaybeObserver;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import tech.destinum.machines.UTILS.Optional;
 import tech.destinum.machines.data.MachinesDB;
-import tech.destinum.machines.data.POJO.Machine;
-import tech.destinum.machines.data.POJO.MachineWithIncomes;
-
-import static android.content.ContentValues.TAG;
+import tech.destinum.machines.data.local.POJO.Machine;
+import tech.destinum.machines.data.local.POJO.MachineWithIncomes;
 
 public class MachineViewModel {
 

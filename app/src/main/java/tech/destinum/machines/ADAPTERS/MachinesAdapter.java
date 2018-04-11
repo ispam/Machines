@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,34 +12,14 @@ import android.widget.TextView;
 
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import javax.crypto.Mac;
-import javax.inject.Inject;
-
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
-import tech.destinum.machines.ACTIVITIES.App;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
-import tech.destinum.machines.UTILS.Optional;
-import tech.destinum.machines.data.MachinesDB;
-import tech.destinum.machines.data.POJO.Income;
-import tech.destinum.machines.data.POJO.Machine;
+import tech.destinum.machines.data.local.POJO.Machine;
 import tech.destinum.machines.R;
-import tech.destinum.machines.data.POJO.MachineWithIncomes;
-import tech.destinum.machines.data.ViewModel.IncomeViewModel;
-import tech.destinum.machines.data.ViewModel.MachineViewModel;
 
 public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.MachineViewHolder>  {
 
@@ -77,9 +56,10 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
 
     @Override
     public void onBindViewHolder(MachineViewHolder holder, int position) {
-        holder.populate(machinesList.get(position));
 
         Machine machine = machinesList.get(position);
+        holder.populate(machine);
+
         holder.v.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), MachineInfo.class);
             intent.putExtra("id", machine.getId());

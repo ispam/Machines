@@ -1,4 +1,4 @@
-package tech.destinum.machines.injection;
+package tech.destinum.machines.di;
 
 import javax.inject.Scope;
 

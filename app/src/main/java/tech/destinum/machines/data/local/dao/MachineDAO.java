@@ -1,4 +1,4 @@
-package tech.destinum.machines.data.dao;
+package tech.destinum.machines.data.local.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -7,14 +7,12 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
-import android.database.Cursor;
 
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.Single;
-import tech.destinum.machines.data.POJO.Machine;
-import tech.destinum.machines.data.POJO.MachineWithIncomes;
+import tech.destinum.machines.data.local.POJO.Machine;
+import tech.destinum.machines.data.local.POJO.MachineWithIncomes;
 
 @Dao
 public interface MachineDAO {

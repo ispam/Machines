@@ -1,7 +1,6 @@
 package tech.destinum.machines.ADAPTERS;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -21,15 +20,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import tech.destinum.machines.DB.DBHelpter;
-import tech.destinum.machines.data.POJO.Income;
+import tech.destinum.machines.data.local.POJO.Income;
 import tech.destinum.machines.R;
 
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private Context mContext;
-    private DBHelpter mDBHelpter;
     public List<Income> mIncomeArrayList;
 
     public ListAdapter(Context context, List<Income> incomeArrayList) {
@@ -45,11 +42,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ListAdapter.ViewHolder holder, final int position) {
 
-        mDBHelpter = new DBHelpter(mContext);
-        final Income income = mIncomeArrayList.get(position);
+        Income income = mIncomeArrayList.get(position);
 
         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-        final String formatted = formatter.format(income.getMoney());
+        String formatted = formatter.format(income.getMoney());
 
         holder.mNote.setText(income.getNote());
         holder.mMoney.setText(formatted);
@@ -99,7 +95,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         });
 
         holder.mDelete.setOnClickListener(v -> {
-            mDBHelpter.deleteIncome(income.get_id());
             mIncomeArrayList.remove(income);
             notifyDataSetChanged();
 //                refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
@@ -109,8 +104,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
 
             LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View dialogView =inflater.inflate(R.layout.dialog_income, null, true);
-            final EditText edt = dialogView.findViewById(R.id.dialog_edt_date);
+            View dialogView =inflater.inflate(R.layout.dialog_income, null, true);
+            EditText edt = dialogView.findViewById(R.id.dialog_edt_date);
             TextView msg = dialogView.findViewById(R.id.dialog_tv_msg) ;
 
             msg.setText("Esta remplazando el ingreso de la fecha: "+ income.getDate());
@@ -118,16 +113,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             dialog.setNegativeButton("Cancelar", null)
                     .setPositiveButton("Cambiar", (dialog1, which) -> {
 
-                        if (edt.getText().equals("") || edt.getText().length() < 6){
+                        String date = edt.getText().toString();
+                        if (date.equals("") || date.length() < 6){
                             Toast.makeText(v.getContext(), "Necesitamos algun dato", Toast.LENGTH_SHORT).show();
                         } else {
-                            Double money;
-                            try {
-                                money = new Double(edt.getText().toString());
-                            } catch (NumberFormatException e){
-                                money = 0.0;
-                            }
-                            mDBHelpter.updateIncome(money, income.getDate(), income.getNote(), income.get_id());
+                            double value;
+                            value = Double.parseDouble(edt.getText().toString());
+
 //                                    refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
                             dialog1.dismiss();
                         }
@@ -149,12 +141,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mNote, mMoney, mDate;
-        public SwipeLayout mSwipeLayout;
-        public RelativeLayout mRelativeLayout;
-        public ImageView mDelete, mShare, mEdit;
+        private TextView mNote, mMoney, mDate;
+        private SwipeLayout mSwipeLayout;
+        private ImageView mDelete, mShare, mEdit;
 
-        public ViewHolder(View v) {
+        private ViewHolder(View v) {
             super(v);
 
             mNote = v.findViewById(R.id.notes_list_note);
@@ -164,7 +155,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             mShare = v.findViewById(R.id.share);
             mEdit = v.findViewById(R.id.edit);
             mSwipeLayout = v.findViewById(R.id.swipe_notes_list);
-            mRelativeLayout = v.findViewById(R.id.background);
         }
     }
 }

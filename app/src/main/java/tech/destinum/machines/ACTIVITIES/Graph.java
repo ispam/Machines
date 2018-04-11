@@ -1,13 +1,8 @@
 package tech.destinum.machines.ACTIVITIES;
 
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -16,7 +11,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,11 +18,8 @@ import javax.inject.Inject;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import tech.destinum.machines.DB.DBHelpter;
 import tech.destinum.machines.R;
-import tech.destinum.machines.data.POJO.Income;
-import tech.destinum.machines.data.POJO.Machine;
-import tech.destinum.machines.data.ViewModel.IncomeViewModel;
+import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 
 public class Graph extends AppCompatActivity {
 

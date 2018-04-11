@@ -1,10 +1,8 @@
 package tech.destinum.machines.ACTIVITIES;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,29 +16,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.R;
-import tech.destinum.machines.data.MachinesDB;
-import tech.destinum.machines.data.POJO.Income;
-import tech.destinum.machines.data.POJO.Machine;
-import tech.destinum.machines.data.ViewModel.IncomeViewModel;
-import tech.destinum.machines.data.ViewModel.MachineViewModel;
+import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
+import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -124,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
                             mAdapter.notifyDataSetChanged();
                         });
                     }
-
                 }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
 
     }

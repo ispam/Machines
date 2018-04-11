@@ -1,8 +1,6 @@
-package tech.destinum.machines.data.ViewModel;
+package tech.destinum.machines.data.local.ViewModel;
 
 import android.database.Cursor;
-
-import org.reactivestreams.Subscriber;
 
 
 import java.util.ArrayList;
@@ -12,12 +10,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
 import io.reactivex.Single;
 import tech.destinum.machines.data.MachinesDB;
-import tech.destinum.machines.data.POJO.Income;
+import tech.destinum.machines.data.local.POJO.Income;
 
 public class IncomeViewModel {
 

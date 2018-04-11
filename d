@@ -81,7 +81,7 @@ Binary files a/.idea/caches/build_file_checksums.ser and b/.idea/caches/build_fi
 [1mindex 809ff4f..ba739fc 100644[m
 [1m--- a/app/src/main/java/tech/destinum/machines/data/MachinesDB.java[m
 [1m+++ b/app/src/main/java/tech/destinum/machines/data/MachinesDB.java[m
-[36m@@ -14,16 +14,16 @@[m [mimport tech.destinum.machines.data.dao.MachineDAO;[m
+[36m@@ -14,16 +14,16 @@[m [mimport tech.destinum.machines.data.local.dao.MachineDAO;[m
  public abstract class MachinesDB extends RoomDatabase{[m
      private static MachinesDB INSTANCE;[m
  [m

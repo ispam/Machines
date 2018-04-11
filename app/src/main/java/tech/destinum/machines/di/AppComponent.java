@@ -1,4 +1,4 @@
-package tech.destinum.machines.injection;
+package tech.destinum.machines.di;
 
 import javax.inject.Singleton;
 
@@ -7,7 +7,6 @@ import tech.destinum.machines.ACTIVITIES.Graph;
 import tech.destinum.machines.ACTIVITIES.LineChart;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
 import tech.destinum.machines.ACTIVITIES.MainActivity;
-import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 
 @Singleton
 @Component(modules = {AppModule.class})
