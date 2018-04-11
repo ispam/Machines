@@ -12,13 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ACTIVITIES.MainActivity"
-            android:theme="@style/AppTheme">
+            android:name=".ACTIVITIES.SplashScreen"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_splash_screen"
+            android:theme="@style/Theme.Design.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ACTIVITIES.MainActivity"
+            android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".ACTIVITIES.MachineInfo"
@@ -32,17 +38,7 @@
             android:name=".ACTIVITIES.LineChart"
             android:parentActivityName=".ACTIVITIES.MachineInfo">
         </activity>
-        <activity
-            android:name=".ACTIVITIES.SplashScreen"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_splash_screen"
-            android:theme="@style/FullscreenTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
