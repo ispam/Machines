@@ -164,12 +164,21 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(total_amount -> {
                             if (total_amount != null) {
+
                                 disposable.add(machineViewModel.updateByID(id, total_amount)
                                         .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .observeOn(Schedulers.io())
                                         .subscribe(
-                                                () -> Log.d(TAG, "MachineInfo: COMPLETED"),
+                                                () -> Log.d(TAG, "MachineInfo: UPDATE COMPLETED"),
                                                 throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )));
+
+
+//                                machineViewModel.updateByID(id, total_amount)
+//                                        .subscribeOn(Schedulers.io())
+//                                        .observeOn(Schedulers.io())
+//                                        .subscribe(
+//                                                () -> Log.d(TAG, "MachineInfo: UPDATE COMPLETED"),
+//                                                throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable ));
 
                                 DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                                 String formatted = formatter.format(total_amount);
