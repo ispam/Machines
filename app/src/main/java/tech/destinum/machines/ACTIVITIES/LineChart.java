@@ -63,6 +63,7 @@ public class LineChart extends AppCompatActivity {
             String name = bundle.getString("name");
             long id = bundle.getLong("id");
             this.id = id;
+            this.name = name;
             setTitle(name);
         } else {
             finish();
@@ -74,17 +75,16 @@ public class LineChart extends AppCompatActivity {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(cursor -> {
 
-                            List<Entry> entries = new ArrayList<>();
+                            List<Entry> entries = new ArrayList<Entry>();
 
                             while (cursor.moveToNext()) {
-                                float id = cursor.getLong(1);
                                 double total = cursor.getDouble(0);
+                                float id = cursor.getLong(1);
                                 float newTotal = (float) total;
                                 entries.add(new Entry(id, newTotal));
                             }
-                            cursor.close();
 
-                            LineDataSet set = new LineDataSet(entries, "Maquinas");
+                            LineDataSet set = new LineDataSet(entries, name);
                             set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
                             List<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
@@ -97,6 +97,8 @@ public class LineChart extends AppCompatActivity {
                             set.setCircleColors(ColorTemplate.MATERIAL_COLORS);
                             mLineChart.setData(data);
                             mLineChart.invalidate();
+
+                            cursor.close();
                         }));
     }
 }
