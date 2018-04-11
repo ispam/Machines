@@ -24,7 +24,7 @@ import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 public class LineChart extends AppCompatActivity {
 
     private com.github.mikephil.charting.charts.LineChart mLineChart;
-    private CompositeDisposable disposable;
+    private CompositeDisposable disposable = new CompositeDisposable();
     private String name;
     private long id;
 

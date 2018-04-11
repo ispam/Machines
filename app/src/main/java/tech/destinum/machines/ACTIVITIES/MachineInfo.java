@@ -3,6 +3,7 @@ package tech.destinum.machines.ACTIVITIES;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -157,18 +158,12 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         }
 
 
-//        incomeViewModel.getIncomeOfMachine(id).subscribe(publishSubject);
-//        publishSubject.subscribe(thing ->{});
-
         disposable.add(incomeViewModel.getIncomeOfMachine(id)
                 .defaultIfEmpty(0.0)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(total_amount -> {
                             if (total_amount != null) {
-
-//                                publishSubject.onNext(total_amount);
-
                                 disposable.add(machineViewModel.updateByID(id, total_amount)
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
@@ -183,19 +178,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             } else {
                                 mMoney.setText("$0.0");
                             }
-                        }, throwable -> Log.d(TAG, "MachineInfo: ERROR")));
-
-//        disposable.add(clickEvent.subscribe(
-//                total_amount -> machineViewModel.updateByID(id, total_amount)));
-
-//        disposable.add(machineViewModel.getMachine(id)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(machine -> machineViewModel.updateMachine(machine))
-//                .doOnError(error -> Toast.makeText(this, "ERROR PAPI PAILA", Toast.LENGTH_SHORT).show())
-//                .subscribe(
-//                        machine -> Toast.makeText(this, "MACHINE UPDATED " + machine, Toast.LENGTH_SHORT).show(),
-//                        throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
+                        }, throwable -> Log.d(TAG, "MachineInfo 2: ERROR")));
 
         disposable.add(incomeViewModel.getInfoOfMachine(id)
                 .subscribeOn(Schedulers.io())

@@ -33,7 +33,7 @@ import tech.destinum.machines.data.ViewModel.IncomeViewModel;
 public class Graph extends AppCompatActivity {
 
     private BarChart mChart;
-    private CompositeDisposable disposable;
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     IncomeViewModel incomeViewModel;
