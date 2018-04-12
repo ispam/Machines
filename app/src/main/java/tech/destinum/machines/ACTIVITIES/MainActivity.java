@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -25,6 +33,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.local.POJO.Machine;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
@@ -36,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MachinesAdapter mAdapter;
     private CompositeDisposable disposable = new CompositeDisposable();
-    private Boolean showMenu = false;
+    private List<Machine> machineList = new ArrayList<>();
 
     @Inject
     MachineViewModel machineViewModel;
@@ -108,13 +117,14 @@ public class MainActivity extends AppCompatActivity {
                         mAdapter = new MachinesAdapter(machines, MainActivity.this);
                         mRecyclerView.setAdapter(mAdapter);
 
+                        machineList.addAll(machines);
+
                         disposable.add(mAdapter.clickEvent
                                 .observeOn(Schedulers.io())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(machine -> machineViewModel.deleteByID(machine)));
 
                         mAdapter.notifyDataSetChanged();
-                        showMenu = true;
                     }
                 }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
 
@@ -131,18 +141,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        if (showMenu){
-            getMenuInflater().inflate(R.menu.menu_graph, menu);
-            for(int i = 0; i < menu.size(); i++) {
-                MenuItem item = menu.getItem(i);
-                SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
-                spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spanString.length(), 0); //fix the color to white
-                item.setTitle(spanString);
-            }
-            return true;
-        } else {
-            return false;
+        getMenuInflater().inflate(R.menu.menu_graph, menu);
+        for(int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spanString.length(), 0); //fix the color to white
+            item.setTitle(spanString);
         }
+        return true;
     }
 
     @Override
@@ -156,14 +162,29 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.share_machines:
 
-//                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-//                String formatted = formatter.format(total_amount);
-//
-//                Intent sendIntent = new Intent();
-//                sendIntent.setAction(Intent.ACTION_SEND);
-//                sendIntent.setType("text/plain");
-//                sendIntent.putExtra(Intent.EXTRA_TEXT, name + " ha recaudado en total: "+formatted);
-//                startActivity(Intent.createChooser(sendIntent, "Compartir"));
+                List<String> names = new ArrayList<>();
+                Iterator<Machine> iterator = machineList.iterator();
+
+                while (iterator.hasNext()){
+                    Machine machine = iterator.next();
+                    String name = machine.getName();
+                    double total_amount = machine.getTotal_income();
+                    DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                    String formatted = formatter.format(total_amount);
+
+                    names.add(name + " = " + formatted);
+                }
+
+                String separated = names.toString()
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replace(", ", "\n");
+                
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.setType("text/plain");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "Maquinas: \n" + separated );
+                startActivity(Intent.createChooser(sendIntent, "Compartir"));
 
                 break;
         }

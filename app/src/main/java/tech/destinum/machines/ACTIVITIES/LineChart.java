@@ -7,6 +7,9 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.DefaultFillFormatter;
+import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
@@ -92,6 +95,8 @@ public class LineChart extends AppCompatActivity {
 
                             LineData data = new LineData(dataSets);
                             data.setValueTextSize(16f);
+                            set.setDrawFilled(true);
+                            set.setFillColor(ColorTemplate.LIBERTY_COLORS[3]);
                             set.setCircleRadius(8f);
                             set.setCircleHoleRadius(4f);
                             set.setCircleColors(ColorTemplate.MATERIAL_COLORS);

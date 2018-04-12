@@ -28,7 +28,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        disposable.add(Completable.timer(4, TimeUnit.SECONDS)
+        disposable.add(Completable.timer(5, TimeUnit.SECONDS)
                 .observeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {

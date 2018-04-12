@@ -31,6 +31,7 @@ import java.util.Calendar;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -54,8 +55,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private Boolean showMenu = false;
 
     private CompositeDisposable disposable = new CompositeDisposable();
-    private PublishSubject<Double> publishSubject = PublishSubject.create();
-//    private Observable<Double> clickEvent = publishSubject;
 
     @Inject
     IncomeViewModel incomeViewModel;
@@ -92,6 +91,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 info_date = view.findViewById(R.id.dialog_info_date_tv);
                 Button button = view.findViewById(R.id.dialog_info_date_btn);
                 button.setOnClickListener(button1 -> {
+
                         mCalendar = Calendar.getInstance();
                         mDay = mCalendar.get(Calendar.DAY_OF_MONTH);
                         mMonth = mCalendar.get(Calendar.MONTH);
@@ -99,6 +99,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
                         DatePickerDialog datePickerDialog = new DatePickerDialog(MachineInfo.this,  R.style.datepicker, MachineInfo.this,  mYear, mMonth, mDay);
                         datePickerDialog.show();
+
+                        hideSoftKeyboard(v);
 
                 });
 
@@ -199,7 +201,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(incomes -> {
                     if (incomes != null){
-                        mAdapter = new ListAdapter(MachineInfo.this, incomes, machineViewModel, incomeViewModel);
+                        mAdapter = new ListAdapter(MachineInfo.this, incomes, machineViewModel, incomeViewModel, name);
                         mRecyclerView.setAdapter(mAdapter);
 
                         disposable.add(mAdapter.clickEvent
@@ -256,7 +258,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
         switch (item.getItemId()){
             case R.id.menu_line_chart:
-
 
                 Intent intent = new Intent(MachineInfo.this, LineChart.class);
                 intent.putExtra("id", id);

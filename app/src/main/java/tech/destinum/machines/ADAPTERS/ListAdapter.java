@@ -27,6 +27,7 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
+import tech.destinum.machines.ACTIVITIES.MachineInfo;
 import tech.destinum.machines.data.local.POJO.Income;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
@@ -43,13 +44,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private IncomeViewModel incomeViewModel;
     private PublishSubject<Long> publishSubject = PublishSubject.create();
     public Observable<Long> clickEvent = publishSubject;
+    private String name;
+
     private static final String TAG = ListAdapter.class.getSimpleName();
 
-    public ListAdapter(Context context, List<Income> incomeArrayList, MachineViewModel machineViewModel, IncomeViewModel incomeViewModel) {
+    public ListAdapter(Context context, List<Income> incomeArrayList, MachineViewModel machineViewModel, IncomeViewModel incomeViewModel, String name) {
         mContext = context;
         mIncomeArrayList = incomeArrayList;
         this.machineViewModel = machineViewModel;
         this.incomeViewModel = incomeViewModel;
+        this.name = name;
     }
 
     @Override
@@ -105,13 +109,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         holder.mShare.setOnClickListener(v -> {
 
-            String name = "";
-            disposable.add(
-                    machineViewModel.getMachineName(income.getMachines_id())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(Schedulers.io())
-                            .subscribe(name2 -> name2 = name, throwable -> Log.e(TAG, "ListAdapter: ERROR",  throwable)));
-
             String date = income.getDate();
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
@@ -137,7 +134,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             EditText edt = dialogView.findViewById(R.id.dialog_edt_date);
             TextView msg = dialogView.findViewById(R.id.dialog_tv_msg) ;
 
-            msg.setText("Esta remplazando el ingreso de la fecha: "+ income.getDate());
+            msg.setText(Html.fromHtml("Esta remplazando el ingreso de la fecha: \n<b><font size='18px'>"+ income.getDate()+"</b></font>"));
 
             dialog.setNegativeButton("Cancelar", null)
                     .setPositiveButton("Cambiar", (dialog1, which) -> {

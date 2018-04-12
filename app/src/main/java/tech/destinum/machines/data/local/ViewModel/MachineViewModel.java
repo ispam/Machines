@@ -13,8 +13,6 @@ import tech.destinum.machines.data.local.POJO.MachineWithIncomes;
 
 public class MachineViewModel {
 
-    private static final String TAG = MachineViewModel.class.getSimpleName();
-
     @Inject
     MachinesDB machinesDB;
 
@@ -32,10 +30,6 @@ public class MachineViewModel {
 
     public Flowable<List<Machine>> getAllMachines(){
         return machinesDB.getMachineDAO().getAllMachines();
-    }
-
-    public Single<String> getMachineName(long id){
-        return machinesDB.getMachineDAO().getMachineName(id);
     }
 
     public Completable updateByID(long id, double total_income){
