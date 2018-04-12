@@ -16,9 +16,6 @@ import tech.destinum.machines.data.local.POJO.Income;
 @Dao
 public interface IncomeDAO {
 
-    @Query("select sum(money) from incomes group by machines_id")
-    Flowable<List<Double>> getAllMachinesIncome();
-
     @Query("select sum(money) from incomes where machines_id = :machines_id group by :machines_id limit 1")
     Flowable<Double> getIncomeOfMachine(long machines_id);
 
@@ -28,18 +25,12 @@ public interface IncomeDAO {
     @Query("select sum(money), machines_id from incomes group by machines_id")
     Cursor getCursor();
 
-    @Query("select sum(money) from incomes group by machines_id")
-    Flowable<List<Double>> getAllIncomesFromAllMachines();
-
     @Query("select * from incomes where machines_id = :machines_id order by _id desc")
     Flowable<List<Income>> getInfoOfMachine(long machines_id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addIncome(Income income);
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateIncome(Income income);
-
-    @Delete
-    void deleteIncome(Income income);
+    @Query("delete from incomes where _id = :id")
+    int deleteByID(long id);
 }

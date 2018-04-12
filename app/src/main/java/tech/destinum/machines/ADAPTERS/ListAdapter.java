@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,18 +21,33 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 import tech.destinum.machines.data.local.POJO.Income;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
+import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
+
 
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private Context mContext;
-    public List<Income> mIncomeArrayList;
+    private List<Income> mIncomeArrayList;
+    private CompositeDisposable disposable = new CompositeDisposable();
+    private MachineViewModel machineViewModel;
+    private IncomeViewModel incomeViewModel;
+    private PublishSubject<Long> publishSubject = PublishSubject.create();
+    public Observable<Long> clickEvent = publishSubject;
+    private static final String TAG = ListAdapter.class.getSimpleName();
 
-    public ListAdapter(Context context, List<Income> incomeArrayList) {
+    public ListAdapter(Context context, List<Income> incomeArrayList, MachineViewModel machineViewModel, IncomeViewModel incomeViewModel) {
         mContext = context;
         mIncomeArrayList = incomeArrayList;
+        this.machineViewModel = machineViewModel;
+        this.incomeViewModel = incomeViewModel;
     }
 
     @Override
@@ -86,25 +102,36 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         });
 
         holder.mShare.setOnClickListener(v -> {
+
+            String name = "";
+            disposable.add(
+                    machineViewModel.getMachineName(income.getMachines_id())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(Schedulers.io())
+                            .subscribe(name2 -> name2 = name, throwable -> Log.e(TAG, "ListAdapter: ERROR",  throwable)));
+
             String date = income.getDate();
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.setType("text/plain");
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "Fecha: "+date+"\n"+"Recaudado: "+formatted);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Maquina: " + name + "\nFecha: "+date+"\n"+"Recaudado: "+formatted);
             v.getContext().startActivity(Intent.createChooser(sendIntent, "Compartir"));
         });
 
         holder.mDelete.setOnClickListener(v -> {
-            mIncomeArrayList.remove(income);
-            notifyDataSetChanged();
-//                refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
-        });
+            AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
+            dialogg.setTitle(Html.fromHtml("<font color='black'>Confirmación</font>")).setMessage(Html.fromHtml("<font color='black'>Segura de <b>BORRAR</b> el ingreso: \n<b>" + formatted+ "</b></font>"))
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Si", (dialog, which)-> publishSubject.onNext(income.get_id()));
+            dialogg.create();
+            dialogg.show();
+            });
 
         holder.mEdit.setOnClickListener(v -> {
             AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
 
             LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View dialogView =inflater.inflate(R.layout.dialog_income, null, true);
+            View dialogView =inflater.inflate(R.layout.dialog_update_income, null, true);
             EditText edt = dialogView.findViewById(R.id.dialog_edt_date);
             TextView msg = dialogView.findViewById(R.id.dialog_tv_msg) ;
 
@@ -120,7 +147,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                             double value;
                             value = Double.parseDouble(edt.getText().toString());
 
-//                                    refreshAdapter(mDBHelpter.getInfoOfMachine(income.getId()));
+//                                    refreshAdapter(mDBHelpter.getAllIncomesOfMachine(income.getId()));
                             dialog1.dismiss();
                         }
                     });
@@ -128,6 +155,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         });
     }
 
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+
+
+        super.onDetachedFromRecyclerView(recyclerView);
+    }
 
     @Override
     public int getItemCount() {return mIncomeArrayList != null ? mIncomeArrayList.size(): 0;

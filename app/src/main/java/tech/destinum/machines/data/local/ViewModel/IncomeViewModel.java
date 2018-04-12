@@ -31,24 +31,11 @@ public class IncomeViewModel {
         return machinesDB.getIncomeDAO().getIncomeOfMachine(id);
     }
 
-    public Flowable<List<Double>> getAllIncomesFromAllMachines(){
-        return machinesDB.getIncomeDAO().getAllIncomesFromAllMachines();
-    }
     public Completable addIncome(String date, String note, Double money, Long machines_id){
         return Completable.fromAction(() -> machinesDB.getIncomeDAO().addIncome(new Income(date, note, money, machines_id)));
     }
 
-    public Flowable<List<Double>> getAllMachinesIncome(){
-        return machinesDB.getIncomeDAO().getAllMachinesIncome().map(sumMoney -> {
-            if (sumMoney.isEmpty()){
-                return Collections.EMPTY_LIST;
-            } else {
-                return new ArrayList<Double>(sumMoney) ;
-            }
-        });
-    }
-
-    public Flowable<List<Income>> getInfoOfMachine(long machines_id){
+    public Flowable<List<Income>> getAllIncomesOfMachine(long machines_id){
         return machinesDB.getIncomeDAO().getInfoOfMachine(machines_id);
     }
 
@@ -58,5 +45,9 @@ public class IncomeViewModel {
 
     public Single<Cursor> getCursorByID(long machines_id){
         return Single.fromCallable(() -> machinesDB.getIncomeDAO().getCursorByID(machines_id));
+    }
+
+    public long deleteByID(long id){
+        return machinesDB.getIncomeDAO().deleteByID(id);
     }
 }

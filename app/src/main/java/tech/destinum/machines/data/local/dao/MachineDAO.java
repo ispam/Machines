@@ -10,7 +10,9 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import tech.destinum.machines.data.local.POJO.Machine;
 import tech.destinum.machines.data.local.POJO.MachineWithIncomes;
 
@@ -20,25 +22,15 @@ public interface MachineDAO {
     @Query("select * from machines")
     Flowable<List<Machine>> getAllMachines();
 
-    @Transaction
-    @Query("select * from machines")
-    Flowable<List<MachineWithIncomes>> getMachinesAndIncomes();
-
-    @Query("select * from machines where id = :id limit 1")
-    Machine getMachine(long id);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addMachine(Machine machines);
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateMachine(Machine machines);
 
     @Query("update machines set total_income = :total_income where id = :id")
     int updateMachineByID(long id, double total_income);
 
-    @Delete
-    void deleteMachine(Machine... machines);
-
     @Query("delete from machines where id = :id")
     int deleteByID(long id);
+
+    @Query("select name from machines where id = :id limit 1")
+    Single<String> getMachineName(long id);
 }

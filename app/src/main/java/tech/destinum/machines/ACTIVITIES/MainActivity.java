@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mFAB.setOnClickListener(v -> {
 
             LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.dialog_main, null, true);
+            View view = inflater.inflate(R.layout.dialog_add_machine, null, true);
             EditText mEditText =   view.findViewById(R.id.dialog_et);
 
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
@@ -115,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
                                 .subscribe(machine -> machineViewModel.deleteByID(machine)));
 
                         mAdapter.notifyDataSetChanged();
-
                         showMenu = true;
                     }
                 }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));

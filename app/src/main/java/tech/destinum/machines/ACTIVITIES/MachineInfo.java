@@ -37,7 +37,6 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
-import tech.destinum.machines.UTILS.NumberTextWatcher;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
@@ -85,7 +84,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mFAB.setOnClickListener(v -> {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View view = inflater.inflate(R.layout.dialog_info, null, true);
+                View view = inflater.inflate(R.layout.dialog_add_income, null, true);
 
                 EditText editText = view.findViewById(R.id.dialog_info_et);
 //                editText.addTextChangedListener(new NumberTextWatcher(editText));
@@ -193,16 +192,25 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             }
                         }, throwable -> Log.d(TAG, "MachineInfo 2: ERROR")));
 
-        disposable.add(incomeViewModel.getInfoOfMachine(id)
+        disposable.add(incomeViewModel.getAllIncomesOfMachine(id)
+                .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(incomes -> {
                     if (incomes != null){
-                        mAdapter = new ListAdapter(MachineInfo.this, incomes);
+                        mAdapter = new ListAdapter(MachineInfo.this, incomes, machineViewModel, incomeViewModel);
                         mRecyclerView.setAdapter(mAdapter);
-                        Log.d(TAG, "MachineInfo: adapter setted");
+
+                        disposable.add(mAdapter.clickEvent
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(Schedulers.io())
+                                .subscribe(income_id -> incomeViewModel.deleteByID(income_id)));
+
+                        mAdapter.notifyDataSetChanged();
                     }
                 }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
+
+
 
     }
 
