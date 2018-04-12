@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MachinesAdapter mAdapter;
     private CompositeDisposable disposable = new CompositeDisposable();
+    private Boolean showMenu = false;
 
     @Inject
     MachineViewModel machineViewModel;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ((App) getApplication()).getComponent().inject(this);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         mRecyclerView = findViewById(R.id.recycler_view_main);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -105,11 +108,15 @@ public class MainActivity extends AppCompatActivity {
                     if (machines != null) {
                         mAdapter = new MachinesAdapter(machines, MainActivity.this);
                         mRecyclerView.setAdapter(mAdapter);
-                        mAdapter.clickEvent.subscribe(machine -> {
-                            machineViewModel.deleteByID(machine);
-                            Toast.makeText(this, "PublishSubject " + machine, Toast.LENGTH_SHORT).show();
-                            mAdapter.notifyDataSetChanged();
-                        });
+
+                        disposable.add(mAdapter.clickEvent
+                                .observeOn(Schedulers.io())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe(machine -> machineViewModel.deleteByID(machine)));
+
+                        mAdapter.notifyDataSetChanged();
+
+                        showMenu = true;
                     }
                 }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
 
@@ -126,14 +133,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_line_chart, menu);
-        for(int i = 0; i < menu.size(); i++) {
-            MenuItem item = menu.getItem(i);
-            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
-            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spanString.length(), 0); //fix the color to white
-            item.setTitle(spanString);
+        if (showMenu){
+            getMenuInflater().inflate(R.menu.menu_graph, menu);
+            for(int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+                spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spanString.length(), 0); //fix the color to white
+                item.setTitle(spanString);
+            }
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
     @Override

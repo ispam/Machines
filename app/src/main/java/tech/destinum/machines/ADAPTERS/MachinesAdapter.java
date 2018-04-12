@@ -70,7 +70,7 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
 
         holder.v.setOnLongClickListener(v -> {
             AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
-            dialogg.setTitle("Confirmación").setMessage(Html.fromHtml("Segura de <b>BORRAR</b> " + machinesList.get(position).getName()))
+            dialogg.setTitle(Html.fromHtml("<font color='black'>Confirmación</font>")).setMessage(Html.fromHtml("<font color='black'>Segura de <b>BORRAR</b> la maquina: <b>" + machinesList.get(position).getName() + "</b></font>"))
                     .setNegativeButton("No", null)
                     .setPositiveButton("Si", (dialog, which)-> clickSubject.onNext(machine.getId()));
             dialogg.create();

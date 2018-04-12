@@ -37,6 +37,7 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
+import tech.destinum.machines.UTILS.NumberTextWatcher;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
@@ -238,7 +239,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         } else {
             return false;
         }
-
     }
 
 

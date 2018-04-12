@@ -17,14 +17,15 @@
             android:id="@+id/trash"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentTop="true"
             android:background="#FF5534"
             android:src="@drawable/delete_white"/>
 
         <ImageView
             android:id="@+id/share"
             android:layout_width="50dp"
+            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/trash"
@@ -34,8 +35,9 @@
         <ImageView
             android:id="@+id/edit"
             android:layout_width="50dp"
+            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
             android:layout_toEndOf="@id/share"
             android:background="#1d90dd"
             android:src="@drawable/white_edit"/>
