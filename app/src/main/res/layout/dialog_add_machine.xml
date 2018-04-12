@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_title"
         android:layout_centerHorizontal="true"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_marginTop="10dp">
 
         <android.support.design.widget.TextInputEditText
@@ -28,7 +28,7 @@
             android:id="@+id/dialog_et"
             android:ems="10"
             android:inputType="textCapSentences"
-            android:textColor="@android:color/black"
+            android:textColor="@color/colorPrimaryDark"
             android:hint="Nombre de la Maquina"
             android:gravity="center_horizontal"/>
 

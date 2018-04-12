@@ -32,5 +32,8 @@ public interface IncomeDAO {
     void addIncome(Income income);
 
     @Query("delete from incomes where _id = :id")
-    int deleteByID(long id);
+    int deleteIncomeByID(long id);
+
+    @Query("update incomes set note = :note, money = :money where _id = :id")
+    int updateIncomeByID(long id, String note, double money);
 }

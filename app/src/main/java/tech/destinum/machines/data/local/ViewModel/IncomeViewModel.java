@@ -3,8 +3,6 @@ package tech.destinum.machines.data.local.ViewModel;
 import android.database.Cursor;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,7 +45,11 @@ public class IncomeViewModel {
         return Single.fromCallable(() -> machinesDB.getIncomeDAO().getCursorByID(machines_id));
     }
 
-    public long deleteByID(long id){
-        return machinesDB.getIncomeDAO().deleteByID(id);
+    public long deleteIncomeByID(long id){
+        return machinesDB.getIncomeDAO().deleteIncomeByID(id);
+    }
+
+    public Completable updateIncomeByID(long id, String note, double money){
+        return Completable.fromCallable(() -> machinesDB.getIncomeDAO().updateIncomeByID(id, note, money));
     }
 }

@@ -2,6 +2,7 @@ package tech.destinum.machines.ADAPTERS;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -140,14 +142,19 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             dialog.setNegativeButton("Cancelar", null)
                     .setPositiveButton("Cambiar", (dialog1, which) -> {
 
-                        String date = edt.getText().toString();
-                        if (date.equals("") || date.length() < 6){
+                        String money = edt.getText().toString();
+                        if (money.equals("") || money.isEmpty()){
                             Toast.makeText(v.getContext(), "Necesitamos algun dato", Toast.LENGTH_SHORT).show();
+
                         } else {
                             double value;
                             value = Double.parseDouble(edt.getText().toString());
 
-//                                    refreshAdapter(mDBHelpter.getAllIncomesOfMachine(income.getId()));
+                            disposable.add(incomeViewModel.updateIncomeByID(income.get_id(), income.getNote(), value)
+                                            .observeOn(Schedulers.io())
+                                            .subscribeOn(Schedulers.io())
+                                            .subscribe(()-> Log.d(TAG, "ListAdapter: INCOME UPDATED")));
+
                             dialog1.dismiss();
                         }
                     });
@@ -158,6 +165,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
 
+        if (disposable != null && !disposable.isDisposed()){
+            disposable.clear();
+        }
 
         super.onDetachedFromRecyclerView(recyclerView);
     }
@@ -166,11 +176,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     public int getItemCount() {return mIncomeArrayList != null ? mIncomeArrayList.size(): 0;
     }
 
-    public synchronized void refreshAdapter(ArrayList<Income> mNewIncomeArrayList){
-        mIncomeArrayList.clear();
-        mIncomeArrayList.addAll(mNewIncomeArrayList);
-        notifyDataSetChanged();
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

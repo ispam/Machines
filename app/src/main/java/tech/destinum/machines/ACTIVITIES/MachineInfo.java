@@ -143,6 +143,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             inputManager.hideSoftInputFromWindow(view1.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -204,7 +205,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                         disposable.add(mAdapter.clickEvent
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.io())
-                                .subscribe(income_id -> incomeViewModel.deleteByID(income_id)));
+                                .subscribe(income_id -> incomeViewModel.deleteIncomeByID(income_id)));
 
                         mAdapter.notifyDataSetChanged();
                     }

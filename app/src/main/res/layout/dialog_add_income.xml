@@ -20,7 +20,7 @@
         android:layout_below="@id/dialog_info_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorPrimaryDark"
         android:id="@+id/dialog_info_til">
 
         <android.support.design.widget.TextInputEditText
@@ -29,7 +29,7 @@
             android:id="@+id/dialog_info_et"
             android:ems="8"
             android:hint="$XXX.XXX"
-            android:textColor="@android:color/black"
+            android:textColor="@color/colorPrimaryDark"
             android:inputType="numberDecimal"
             android:gravity="center_horizontal"/>
 
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/dialog_info_notes_et"
         android:ems="8"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorPrimaryDark"
         android:inputType="textCapSentences"
         android:gravity="center_horizontal"
         android:layout_below="@id/dialog_info_notes_tv"
@@ -77,6 +77,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
         android:text="MM/DD/AAAA"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp"
         android:textStyle="normal|bold|italic"/>
 
