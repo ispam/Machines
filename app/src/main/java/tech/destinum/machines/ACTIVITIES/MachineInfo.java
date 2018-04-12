@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
+import tech.destinum.machines.UTILS.NumberTextWatcher;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
@@ -52,6 +54,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private int mDay, mMonth, mYear, mDayFinal, mMonthFinal, mYearFinal;
     private String date, name, total_amount2;
     private long id;
+    private ImageView check;
     private Boolean showMenu = false;
 
     private CompositeDisposable disposable = new CompositeDisposable();
@@ -86,7 +89,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 View view = inflater.inflate(R.layout.dialog_add_income, null, true);
 
                 EditText editText = view.findViewById(R.id.dialog_info_et);
-//                editText.addTextChangedListener(new NumberTextWatcher(editText));
+                editText.addTextChangedListener(new NumberTextWatcher(editText));
+                check = view.findViewById(R.id.check);
                 EditText editText2 = view.findViewById(R.id.dialog_info_notes_et);
                 info_date = view.findViewById(R.id.dialog_info_date_tv);
                 Button button = view.findViewById(R.id.dialog_info_date_btn);
@@ -233,6 +237,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
         date = mDayFinal+"/"+mMonthFinal+"/"+mYearFinal;
         info_date.setText(date);
+        check.setVisibility(View.VISIBLE);
     }
 
     @Override
