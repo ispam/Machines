@@ -3,9 +3,12 @@ package tech.destinum.machines.ACTIVITIES;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,8 +30,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,6 +48,9 @@ import io.reactivex.subjects.PublishSubject;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
 import tech.destinum.machines.UTILS.NumberTextWatcher;
+import tech.destinum.machines.data.ExportCSV;
+import tech.destinum.machines.data.local.POJO.Income;
+import tech.destinum.machines.data.local.POJO.Machine;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
@@ -56,6 +67,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private long id;
     private ImageView check;
     private Boolean showMenu = false;
+    private List<Income> incomeList;
 
     private CompositeDisposable disposable = new CompositeDisposable();
 
@@ -208,6 +220,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                         mAdapter = new ListAdapter(MachineInfo.this, incomes, machineViewModel, incomeViewModel, name);
                         mRecyclerView.setAdapter(mAdapter);
 
+                        incomeList.addAll(incomes);
+
                         disposable.add(mAdapter.clickEvent
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.io())
@@ -277,6 +291,10 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 sendIntent.setType("text/plain");
                 sendIntent.putExtra(Intent.EXTRA_TEXT, name + " ha recaudado en total: "+total_amount2);
                 startActivity(Intent.createChooser(sendIntent, "Compartir"));
+
+                break;
+            case R.id.export_csv_incomes:
+
 
                 break;
         }

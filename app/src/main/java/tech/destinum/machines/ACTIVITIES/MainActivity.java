@@ -3,7 +3,9 @@ package tech.destinum.machines.ACTIVITIES;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +21,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.opencsv.CSVWriter;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +43,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.ADAPTERS.MachinesAdapter;
 import tech.destinum.machines.R;
+import tech.destinum.machines.UTILS.PathUtil;
+import tech.destinum.machines.data.ExportCSV;
 import tech.destinum.machines.data.local.POJO.Machine;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
@@ -46,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private MachinesAdapter mAdapter;
     private CompositeDisposable disposable = new CompositeDisposable();
     private List<Machine> machineList = new ArrayList<>();
+    private Context context;
 
     @Inject
     MachineViewModel machineViewModel;
@@ -160,22 +173,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 break;
+
             case R.id.share_machines:
 
-                List<String> names = new ArrayList<>();
+                List<String> machines = new ArrayList<>();
                 Iterator<Machine> iterator = machineList.iterator();
 
                 while (iterator.hasNext()){
                     Machine machine = iterator.next();
                     String name = machine.getName();
+
                     double total_amount = machine.getTotal_income();
                     DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                     String formatted = formatter.format(total_amount);
 
-                    names.add(name + " = " + formatted);
+                    machines.add(name + " = " + formatted);
                 }
-
-                String separated = names.toString()
+                String separated = machines.toString()
                         .replace("[", "")
                         .replace("]", "")
                         .replace(", ", "\n");
@@ -187,7 +201,60 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(sendIntent, "Compartir"));
 
                 break;
+
+            case R.id.export_csv_machines:
+
+                String[] headers = new String[]{"Id", "Nombre", "Ingreso Total"};
+                Iterator<Machine> iterator2 = machineList.iterator();
+                List<String> newList = new ArrayList<>();
+
+                while (iterator2.hasNext()){
+                    Machine machine = iterator2.next();
+                    long id = machine.getId();
+                    String name = machine.getName();
+                    double total_amount = machine.getTotal_income();
+                    DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                    String formatted = formatter.format(total_amount);
+
+                    newList.add(id + "," + name+ "," +formatted);
+                }
+
+
+                File file = new File( getFilesDir(), "myDir");
+
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+
+                try {
+                    File exportFile = new File(file, "machines.csv");
+                    CSVWriter writer = new CSVWriter(new FileWriter(exportFile, true));
+
+                    String[] newRows = newList.toArray(new String[0]);
+                    writer.writeNext(headers);
+                    writer.writeNext(newRows);
+
+
+                    writer.close();
+
+                    Uri uri = null;
+                    uri = Uri.fromFile(exportFile);
+
+                    Intent export = new Intent();
+                    export.setAction(Intent.ACTION_SEND);
+                    export.setType("text/plain");
+                    export.putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(export, "Exportar CSV"));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

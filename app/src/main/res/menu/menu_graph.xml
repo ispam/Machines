@@ -7,4 +7,7 @@
 
     <item android:title="Compartir Máquinas"
           android:id="@+id/share_machines"/>
+
+    <item android:title="Exportar CSV"
+        android:id="@+id/export_csv_machines"/>
 </menu>

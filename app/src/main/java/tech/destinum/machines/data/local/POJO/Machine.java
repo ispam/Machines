@@ -1,6 +1,7 @@
 package tech.destinum.machines.data.local.POJO;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "machines")
@@ -11,9 +12,18 @@ public class Machine {
     private String name;
     private double total_income;
 
+    @Ignore
+    private String total_amount;
+
     public Machine(String name, double total_income) {
         this.name = name;
         this.total_income = total_income;
+    }
+
+    public Machine(long id, String name, String total_amount) {
+        this.id = id;
+        this.name = name;
+        this.total_amount = total_amount;
     }
 
     public double getTotal_income() {

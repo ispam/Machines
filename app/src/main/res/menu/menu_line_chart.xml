@@ -6,4 +6,6 @@
         android:id="@+id/menu_line_chart"/>
     <item android:title="Compartir Info"
           android:id="@+id/share_info"/>
+    <item android:title="Exportar CSV"
+          android:id="@+id/export_csv_incomes"/>
 </menu>

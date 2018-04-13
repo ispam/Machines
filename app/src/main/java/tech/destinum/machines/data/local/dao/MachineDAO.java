@@ -31,6 +31,4 @@ public interface MachineDAO {
     @Query("delete from machines where id = :id")
     int deleteByID(long id);
 
-    @Query("select name from machines where id = :id limit 1")
-    Single<String> getMachineName(long id);
 }
