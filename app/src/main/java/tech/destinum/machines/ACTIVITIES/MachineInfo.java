@@ -30,7 +30,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.opencsv.CSVWriter;
+
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -67,7 +70,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private long id;
     private ImageView check;
     private Boolean showMenu = false;
-    private List<Income> incomeList;
+    private List<Income> incomeList = new ArrayList<>();
 
     private CompositeDisposable disposable = new CompositeDisposable();
 
@@ -294,6 +297,47 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
                 break;
             case R.id.export_csv_incomes:
+
+                String[] headers = new String[]{"ID", "Nota", "Dinero Recoletado"};
+                Iterator<Income> iterator2 = incomeList.iterator();
+
+                File file = new File(getFilesDir(), "myDir");
+
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+
+                try {
+                    File exportFile = new File(file, "ingresos.csv");
+                    CSVWriter writer = new CSVWriter(new FileWriter(exportFile, true));
+
+                    writer.writeNext(headers);
+
+                    while (iterator2.hasNext()){
+                        Income income = iterator2.next();
+                        long id = income.get_id();
+                        String note = income.getNote();
+                        double total_amount = income.getMoney();
+                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                        String formatted = formatter.format(total_amount);
+
+                        writer.writeNext(new String[]{String.valueOf(id), note, formatted});
+                    }
+
+                    writer.close();
+
+                    Uri uri = null;
+                    uri = Uri.fromFile(exportFile);
+
+                    Intent export = new Intent();
+                    export.setAction(Intent.ACTION_SEND);
+                    export.setType("text/plain");
+                    export.putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(export, "Exportar CSV"));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 
                 break;

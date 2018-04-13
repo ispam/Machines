@@ -28,6 +28,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.inject.Inject;
 
@@ -195,36 +196,31 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.export_csv_machines:
 
-                String[] headers = new String[]{"Id", "Nombre", "Ingreso Total"};
+                String[] headers = new String[]{"ID", "Nombre", "Ingreso Total"};
                 Iterator<Machine> iterator2 = machineList.iterator();
-                List<String> newList = new ArrayList<>();
 
-                while (iterator2.hasNext()){
-                    Machine machine = iterator2.next();
-                    long id = machine.getId();
-                    String name = machine.getName();
-                    double total_amount = machine.getTotal_income();
-                    DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-                    String formatted = formatter.format(total_amount);
-
-                    newList.add(id + "," + name+ "," +formatted);
-                }
-
-
-                File file = new File( getFilesDir(), "myDir");
+                File file = new File(getFilesDir(), "myDir");
 
                 if (!file.exists()) {
                     file.mkdir();
                 }
 
                 try {
-                    File exportFile = new File(file, "machines.csv");
+                    File exportFile = new File(file, "maquinas.csv");
                     CSVWriter writer = new CSVWriter(new FileWriter(exportFile, true));
 
-                    String[] newRows = newList.toArray(new String[0]);
                     writer.writeNext(headers);
-                    writer.writeNext(newRows);
 
+                    while (iterator2.hasNext()){
+                        Machine machine = iterator2.next();
+                        long id = machine.getId();
+                        String name = machine.getName();
+                        double total_amount = machine.getTotal_income();
+                        DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                        String formatted = formatter.format(total_amount);
+
+                        writer.writeNext(new String[]{String.valueOf(id), name, formatted});
+                    }
 
                     writer.close();
 
