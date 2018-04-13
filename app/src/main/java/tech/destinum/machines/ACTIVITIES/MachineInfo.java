@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
@@ -298,19 +299,19 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 break;
             case R.id.export_csv_incomes:
 
-                String[] headers = new String[]{"ID", "Nota", "Dinero Recoletado"};
+                String[] headers = new String[]{"ID", "Máquina", "Nota", "Dinero Recoletado"};
                 Iterator<Income> iterator2 = incomeList.iterator();
 
-                File file = new File(getFilesDir(), "myDir");
+                File file = new File(Environment.getExternalStorageDirectory(), "Base de Datos");
+                File exportFile = new File(file, "ingresos.csv");
 
                 if (!file.exists()) {
                     file.mkdir();
                 }
 
                 try {
-                    File exportFile = new File(file, "ingresos.csv");
-                    CSVWriter writer = new CSVWriter(new FileWriter(exportFile, true));
 
+                    CSVWriter writer = new CSVWriter(new FileWriter(exportFile, true));
                     writer.writeNext(headers);
 
                     while (iterator2.hasNext()){
@@ -321,19 +322,17 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                         DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                         String formatted = formatter.format(total_amount);
 
-                        writer.writeNext(new String[]{String.valueOf(id), note, formatted});
+                        writer.writeNext(new String[]{String.valueOf(id), name, note, formatted});
                     }
 
                     writer.close();
 
-                    Uri uri = null;
-                    uri = Uri.fromFile(exportFile);
-
                     Intent export = new Intent();
                     export.setAction(Intent.ACTION_SEND);
-                    export.setType("text/plain");
-                    export.putExtra(Intent.EXTRA_STREAM, uri);
-                    startActivity(Intent.createChooser(export, "Exportar CSV"));
+                    export.setType("text/csv");
+                    export.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(exportFile));
+                    export.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivityForResult(Intent.createChooser(export, "Exportar CSV"), 512);
 
                 } catch (IOException e) {
                     e.printStackTrace();

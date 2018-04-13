@@ -1,10 +1,16 @@
 package tech.destinum.machines.ACTIVITIES;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.opencsv.CSVWriter;
 
@@ -58,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     IncomeViewModel incomeViewModel;
 
+    private int requestCode;
+    private int grantResults[];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +103,27 @@ public class MainActivity extends AppCompatActivity {
             }).setView(view).show();
         });
 
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
 
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Log.d(TAG, "MainActivity: PERMISSION GRANTED");
+
+                } else {
+                    Toast.makeText(context, "SIN ESTE PERMISO NO PUEDE FUNCIONAR ADECUADAMENTE LA APP", Toast.LENGTH_SHORT).show();
+
+                    new Handler().postDelayed(() -> onDestroy(), 3000);
+
+                }
+                break;
+        }
     }
 
     @Override
@@ -196,22 +226,30 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.export_csv_machines:
 
-                String[] headers = new String[]{"ID", "Nombre", "Ingreso Total"};
+                String[] headers = new String[]{"ID", "Máquina", "Ingreso Total"};
                 Iterator<Machine> iterator2 = machineList.iterator();
 
-                File file = new File(getFilesDir(), "myDir");
+                File file = new File(Environment.getExternalStorageDirectory(), "/máquinas");
+                File exportFile = new File(file, "maquinas.csv");
 
                 if (!file.exists()) {
-                    file.mkdir();
+                    file.mkdirs();
+                }
+
+                if (!exportFile.exists()){
+                    try {
+                        exportFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 try {
-                    File exportFile = new File(file, "maquinas.csv");
-                    CSVWriter writer = new CSVWriter(new FileWriter(exportFile, true));
 
+                    CSVWriter writer = new CSVWriter(new FileWriter(exportFile, true));
                     writer.writeNext(headers);
 
-                    while (iterator2.hasNext()){
+                    while (iterator2.hasNext()) {
                         Machine machine = iterator2.next();
                         long id = machine.getId();
                         String name = machine.getName();
@@ -224,14 +262,12 @@ public class MainActivity extends AppCompatActivity {
 
                     writer.close();
 
-                    Uri uri = null;
-                    uri = Uri.fromFile(exportFile);
-
                     Intent export = new Intent();
                     export.setAction(Intent.ACTION_SEND);
-                    export.setType("text/plain");
-                    export.putExtra(Intent.EXTRA_STREAM, uri);
-                    startActivity(Intent.createChooser(export, "Exportar CSV"));
+                    export.setType("text/csv");
+                    export.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(exportFile));
+                    export.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivityForResult(Intent.createChooser(export, "Exportar CSV"), 512);
 
                 } catch (IOException e) {
                     e.printStackTrace();
