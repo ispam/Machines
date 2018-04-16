@@ -18,11 +18,11 @@ the increase in my personal knowledge and for creating several fantastic pieces 
 I have set-up some goals that I'd would like to achieve while doing this project and upon completion they will have a corresponding
 separate branch.
 
-|     Name     | Completion |   Date   |    Branch    |
-|:------------:|:----------:|:--------:|:------------:|
-| Big Refactor |    :-1:    | XX/XX/XX | big_refactor |
-|    Kotlin    |    :-1:    | XX/XX/XX |    kotlin    |
-|     Tests    |    :-1:    | XX/XX/XX |     tests    |
+|     Name     | Completion |    Date    |    Branch    |
+|:------------:|:----------:|:----------:|:------------:|
+|    Refactor  |    :+1:    | 04/16/2018 |   refactor   |
+|    Kotlin    |    :-1:    |  XX/XX/XX  |    kotlin    |
+|     Tests    |    :-1:    |  XX/XX/XX  |     tests    |
 
 ## License
 No License chosen yet.

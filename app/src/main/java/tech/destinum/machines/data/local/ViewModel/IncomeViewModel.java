@@ -54,7 +54,7 @@ public class IncomeViewModel {
         return Completable.fromCallable(() -> machinesDB.getIncomeDAO().updateIncomeByID(id, note, money));
     }
 
-    public Maybe<Double> totalObtained(){
+    public Flowable<Double> totalObtained(){
         return machinesDB.getIncomeDAO().totalObtained();
     }
 }

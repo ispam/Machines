@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     IncomeViewModel incomeViewModel;
 
-    private int requestCode;
+    private final static int PERMISSION_WRITE_EXTERNAL_STORAGE = 112;
     private int grantResults[];
 
 
@@ -108,8 +109,9 @@ public class MainActivity extends AppCompatActivity {
             }).setView(view).show();
         });
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
-
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_WRITE_EXTERNAL_STORAGE);
+        }
 
     }
 
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
-            case 1:
+            case PERMISSION_WRITE_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     Log.d(TAG, "MainActivity: PERMISSION GRANTED");
 
@@ -173,14 +175,13 @@ public class MainActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(success -> {
+                            mTotal.setVisibility(View.VISIBLE);
+                            mTotalText.setVisibility(View.VISIBLE);
                             DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                             String formatted = formatter.format(success);
                             mTotal.setText(formatted);
-                        }, throwable -> {
-                            mTotal.setVisibility(View.GONE);
-                            mTotalText.setVisibility(View.GONE);
-                            Log.e(TAG, "MainActivity: ERROR");
-                        }, () -> Log.d(TAG, "MainActivity: COMPLETED")));
+                        }, throwable -> Log.e(TAG, "MainActivity: ERROR"),
+                        () -> Log.d(TAG, "MainActivity: COMPLETED")));
 
     }
 

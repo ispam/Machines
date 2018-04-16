@@ -31,7 +31,7 @@ public interface IncomeDAO {
 
 
     @Query("select sum(money) from incomes")
-    Maybe<Double> totalObtained();
+    Flowable<Double> totalObtained();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addIncome(Income income);
