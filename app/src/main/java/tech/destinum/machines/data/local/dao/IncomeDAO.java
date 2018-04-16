@@ -11,6 +11,7 @@ import android.database.Cursor;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import tech.destinum.machines.data.local.POJO.Income;
 
 @Dao
@@ -27,6 +28,10 @@ public interface IncomeDAO {
 
     @Query("select * from incomes where machines_id = :machines_id order by _id desc")
     Flowable<List<Income>> getInfoOfMachine(long machines_id);
+
+
+    @Query("select sum(money) from incomes")
+    Maybe<Double> totalObtained();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addIncome(Income income);

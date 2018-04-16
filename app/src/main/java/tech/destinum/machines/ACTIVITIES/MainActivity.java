@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.opencsv.CSVWriter;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private CompositeDisposable disposable = new CompositeDisposable();
     private List<Machine> machineList = new ArrayList<>();
     private Context context;
+    private TextView mTotal, mTotalText;
 
     @Inject
     MachineViewModel machineViewModel;
@@ -77,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
         ((App) getApplication()).getComponent().inject(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        mTotal = findViewById(R.id.total_obtain);
+        mTotalText = findViewById(R.id.dinero_total);
 
         mRecyclerView = findViewById(R.id.recycler_view_main);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -154,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
                         machineList.addAll(machines);
 
+
                         disposable.add(mAdapter.clickEvent
                                 .observeOn(Schedulers.io())
                                 .subscribeOn(Schedulers.io())
@@ -162,6 +168,19 @@ public class MainActivity extends AppCompatActivity {
                         mAdapter.notifyDataSetChanged();
                     }
                 }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
+
+        disposable.add(incomeViewModel.totalObtained()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(success -> {
+                            DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                            String formatted = formatter.format(success);
+                            mTotal.setText(formatted);
+                        }, throwable -> {
+                            mTotal.setVisibility(View.GONE);
+                            mTotalText.setVisibility(View.GONE);
+                            Log.e(TAG, "MainActivity: ERROR");
+                        }, () -> Log.d(TAG, "MainActivity: COMPLETED")));
 
     }
 
@@ -184,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
             item.setTitle(spanString);
         }
         return true;
+
     }
 
     @Override
@@ -272,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
 
 
                 break;

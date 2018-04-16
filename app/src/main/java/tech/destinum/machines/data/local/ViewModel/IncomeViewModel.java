@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.local.POJO.Income;
@@ -51,5 +52,9 @@ public class IncomeViewModel {
 
     public Completable updateIncomeByID(long id, String note, double money){
         return Completable.fromCallable(() -> machinesDB.getIncomeDAO().updateIncomeByID(id, note, money));
+    }
+
+    public Maybe<Double> totalObtained(){
+        return machinesDB.getIncomeDAO().totalObtained();
     }
 }
