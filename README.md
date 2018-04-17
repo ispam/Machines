@@ -2,17 +2,8 @@
 This App fulfills the purpose of managing the accountability of some machines and its respective incomes.
 This is a personal project created for the whole purpose of studying all of the libraries below using **MVVM** design.
 
-## App Overview
-[Image 1](screenshots/screenshot_1523896472.png?raw=true)
-[Image 2](screenshots/screenshot_1523896480.png?raw=true)
-[Image 3](screenshots/screenshot_1523896483.png?raw=true)
-[Image 4](screenshots/screenshot_1523896490.png?raw=true)
-[Image 5](screenshots/screenshot_1523896491.png?raw=true)
-[Image 6](screenshots/screenshot_1523896512.png?raw=true)
-[Image 7](screenshots/screenshot_1523896522.png?raw=true)
-
 ## Architecture
-[Image Architecture](drawable/maquinas.png?raw=true)
+![Image Architecture](https://i.imgur.com/aPHZTP1.png)
 
 ## Libraries
 This projects makes acknowledgements and express gratitude to the people who create each respective library for contributing to
