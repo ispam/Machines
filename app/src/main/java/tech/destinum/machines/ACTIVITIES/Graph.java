@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -20,6 +21,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
+import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
 public class Graph extends AppCompatActivity {
 
@@ -28,6 +30,9 @@ public class Graph extends AppCompatActivity {
 
     @Inject
     IncomeViewModel incomeViewModel;
+
+    @Inject
+    MachineViewModel mMachineViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,7 @@ public class Graph extends AppCompatActivity {
                                 double total = cursor.getDouble(0);
                                 float id = cursor.getLong(1);
                                 float newTotal = (float) total;
+
                                 entries.add(new BarEntry(id, newTotal));
                             }
                             cursor.close();
@@ -77,6 +83,19 @@ public class Graph extends AppCompatActivity {
                             mChart.setFitBars(true);
                             data.setValueTextSize(16f);
                             set.setColors(ColorTemplate.COLORFUL_COLORS);
+
+                            YAxis leftAxis = mChart.getAxisLeft();
+                            leftAxis.setLabelCount(8, false);
+                            leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+                            leftAxis.setSpaceTop(15f);
+                            leftAxis.setAxisMinimum(0f);
+
+                            YAxis rightAxis = mChart.getAxisRight();
+                            rightAxis.setDrawGridLines(false);
+                            rightAxis.setLabelCount(8, false);
+                            rightAxis.setSpaceTop(15f);
+                            rightAxis.setAxisMinimum(0f);
+
                             mChart.setData(data);
                             mChart.invalidate();
                         }));

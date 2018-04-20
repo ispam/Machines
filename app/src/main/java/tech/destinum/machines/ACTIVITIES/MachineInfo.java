@@ -299,14 +299,23 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 break;
             case R.id.export_csv_incomes:
 
-                String[] headers = new String[]{"ID", "Máquina", "Nota", "Dinero Recoletado"};
+                String[] headers = new String[]{"ID", "Maquina", "Nota", "Dinero Recoletado"};
                 Iterator<Income> iterator2 = incomeList.iterator();
 
-                File file = new File(Environment.getExternalStorageDirectory(), "Base de Datos");
-                File exportFile = new File(file, "ingresos.csv");
+                File file = new File(Environment.getExternalStorageDirectory(), "/Maquinas");
+                File exportFile = new File(file, "Ingresos.csv");
 
                 if (!file.exists()) {
                     file.mkdir();
+                }
+
+                try {
+                    if (exportFile.exists()){
+                        exportFile.delete();
+                    }
+                    exportFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
                 try {

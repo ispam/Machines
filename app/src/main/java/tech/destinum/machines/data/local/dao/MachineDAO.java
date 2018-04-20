@@ -31,4 +31,5 @@ public interface MachineDAO {
     @Query("delete from machines where id = :id")
     int deleteByID(long id);
 
+
 }

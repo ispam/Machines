@@ -33,6 +33,7 @@ import com.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -247,22 +248,23 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.export_csv_machines:
 
-                String[] headers = new String[]{"ID", "Máquina", "Ingreso Total"};
+                String[] headers = new String[]{"ID", "Maquina", "Ingreso Total"};
                 Iterator<Machine> iterator2 = machineList.iterator();
 
-                File file = new File(Environment.getExternalStorageDirectory(), "/máquinas");
-                File exportFile = new File(file, "maquinas.csv");
+                File file = new File(Environment.getExternalStorageDirectory(), "/Maquinas");
+                File exportFile = new File(file, "Maquinas.csv");
 
                 if (!file.exists()) {
                     file.mkdirs();
                 }
 
-                if (!exportFile.exists()){
-                    try {
-                        exportFile.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                try {
+                    if (exportFile.exists()){
+                        exportFile.delete();
                     }
+                    exportFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
                 try {

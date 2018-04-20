@@ -36,4 +36,5 @@ public class MachineViewModel {
         return Completable.fromCallable(() -> machinesDB.getMachineDAO().updateMachineByID(id, total_income));
     }
 
+
 }
