@@ -29,7 +29,6 @@ public interface IncomeDAO {
     @Query("select * from incomes where machines_id = :machines_id order by _id desc")
     Flowable<List<Income>> getInfoOfMachine(long machines_id);
 
-
     @Query("select sum(money) from incomes")
     Flowable<Double> totalObtained();
 

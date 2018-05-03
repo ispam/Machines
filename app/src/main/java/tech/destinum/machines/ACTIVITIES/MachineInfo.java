@@ -24,9 +24,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +74,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private ImageView check;
     private Boolean showMenu = false;
     private List<Income> incomeList = new ArrayList<>();
+    private double value;
+    private String notes;
 
     private CompositeDisposable disposable = new CompositeDisposable();
 
@@ -95,6 +99,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         mName = findViewById(R.id.machine_info_name);
         mMoney = findViewById(R.id.machine_info_money);
 
+
         mRecyclerView = findViewById(R.id.rvNotes);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
@@ -103,6 +108,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_add_income, null, true);
+
+                Switch aSwitch = view.findViewById(R.id.aSwitch);
 
                 EditText editText = view.findViewById(R.id.dialog_info_et);
                 editText.addTextChangedListener(new NumberTextWatcher(editText));
@@ -127,10 +134,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 dialog.setNegativeButton("Cancelar", null)
                         .setPositiveButton("Agregar", (dialog1, which) -> {
 
-                            String notes = editText2.getText().toString();
+                            notes = editText2.getText().toString();
                             String money = editText.getText().toString();
 
-                            double value;
                             if(money.isEmpty() || money.equals("") || date == null || date.equals("")) {
                                 Toast.makeText(v.getContext(), "Fecha y Dinero SON OBLIGATORIOS", Toast.LENGTH_SHORT).show();
                                 hideSoftKeyboard(v);
@@ -141,12 +147,13 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                                 }
 
                                 value = Double.parseDouble(money);
+                                Log.d(TAG, "MachineInfo: " + String.valueOf(value));
                                 disposable.add(incomeViewModel.addIncome(date, notes, value, id)
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(
-                                                        () -> Log.d(TAG, "MachineInfo: INCOME ADDED"),
-                                                        throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(
+                                                () -> Log.d(TAG, "MachineInfo: INCOME ADDED"),
+                                                throwable -> Log.e(TAG, "MachineInfo: ", throwable)));
                             }
 
                             hideSoftKeyboard(v);
@@ -195,14 +202,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                                         .subscribe(
                                                 () -> Log.d(TAG, "MachineInfo: UPDATE COMPLETED"),
                                                 throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable )));
-
-
-//                                machineViewModel.updateByID(id, total_amount)
-//                                        .subscribeOn(Schedulers.io())
-//                                        .observeOn(Schedulers.io())
-//                                        .subscribe(
-//                                                () -> Log.d(TAG, "MachineInfo: UPDATE COMPLETED"),
-//                                                throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable ));
 
                                 DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                                 String formatted = formatter.format(total_amount);

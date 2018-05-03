@@ -13,7 +13,21 @@
         android:id="@+id/graph"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/activity_horizontal_margin">
-
     </com.github.mikephil.charting.charts.BarChart>
+
+    <!--<me.ithebk.barchart.BarChart-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:id="@+id/bar_chart_vertical"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:bar_show_animation="true"-->
+        <!--app:bar_show_auto_color="true"-->
+        <!--app:bar_show_value="true"-->
+        <!--app:bar_spaces="0dp"-->
+        <!--app:bar_text_color="#FFFFFF"-->
+        <!--app:bar_text_size="10sp"-->
+        <!--app:bar_type="vertical"-->
+        <!--app:bar_width="30dp"/>-->
 
 </RelativeLayout>

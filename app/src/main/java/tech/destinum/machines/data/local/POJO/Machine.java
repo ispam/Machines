@@ -20,10 +20,9 @@ public class Machine {
         this.total_income = total_income;
     }
 
-    public Machine(long id, String name, String total_amount) {
-        this.id = id;
+    @Ignore
+    public Machine(String name) {
         this.name = name;
-        this.total_amount = total_amount;
     }
 
     public double getTotal_income() {

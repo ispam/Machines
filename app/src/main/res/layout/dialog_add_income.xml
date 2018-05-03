@@ -14,6 +14,14 @@
         android:text="Nuevo Ingreso"
         android:textColor="@android:color/black"
         android:textSize="20sp"/>
+    <Switch
+        android:id="@+id/aSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_info_til"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="Egreso"/>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="wrap_content"
@@ -31,7 +39,7 @@
             android:ems="8"
             android:hint="$XXX.XXX"
             android:textColor="@color/colorPrimaryDark"
-            android:inputType="numberDecimal"
+            android:inputType="numberSigned|numberDecimal"
             android:gravity="center_horizontal"/>
 
     </android.support.design.widget.TextInputLayout>
@@ -40,9 +48,9 @@
         android:id="@+id/dialog_info_notes_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_info_til"
+        android:layout_below="@id/aSwitch"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:text="Notas"
         android:textColor="@android:color/black"
         android:textSize="20sp"/>
@@ -103,5 +111,7 @@
         android:layout_toEndOf="@+id/dialog_info_title"
         android:visibility="invisible"
         app:srcCompat="@drawable/ic_check_black_36dp"/>
+
+
 
 </RelativeLayout>

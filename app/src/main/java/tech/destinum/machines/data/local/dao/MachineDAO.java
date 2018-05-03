@@ -12,6 +12,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import tech.destinum.machines.data.local.POJO.Machine;
 import tech.destinum.machines.data.local.POJO.MachineWithIncomes;
@@ -30,6 +31,5 @@ public interface MachineDAO {
 
     @Query("delete from machines where id = :id")
     int deleteByID(long id);
-
 
 }

@@ -142,13 +142,13 @@ public class LineChart extends AppCompatActivity {
                             YAxis leftAxis = mLineChart.getAxisLeft();
                             leftAxis.setLabelCount(8, false);
                             leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-                            leftAxis.setSpaceTop(15f);
+                            leftAxis.setSpaceTop(10f);
                             leftAxis.setAxisMinimum(0f);
 
                             YAxis rightAxis = mLineChart.getAxisRight();
                             rightAxis.setDrawGridLines(false);
                             rightAxis.setLabelCount(8, false);
-                            rightAxis.setSpaceTop(15f);
+                            rightAxis.setSpaceTop(10f);
                             rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
 //                            Legend l = mLineChart.getLegend();

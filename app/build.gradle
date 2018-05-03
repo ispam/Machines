@@ -62,6 +62,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     implementation 'com.google.code.gson:gson:2.8.2'
 
+    //Barchart
+    implementation 'me.ithebk:barchart:0.9'
+
     //libs
     implementation files('libs/opencsv-4.1.jar')
 }

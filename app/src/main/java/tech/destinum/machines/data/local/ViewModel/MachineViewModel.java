@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.local.POJO.Machine;
@@ -35,6 +36,5 @@ public class MachineViewModel {
     public Completable updateByID(long id, double total_income){
         return Completable.fromCallable(() -> machinesDB.getMachineDAO().updateMachineByID(id, total_income));
     }
-
 
 }

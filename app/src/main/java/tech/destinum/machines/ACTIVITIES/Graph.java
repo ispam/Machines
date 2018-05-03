@@ -5,10 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -20,6 +24,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import tech.destinum.machines.R;
+import tech.destinum.machines.data.local.POJO.Machine;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
@@ -66,14 +71,32 @@ public class Graph extends AppCompatActivity {
                         .subscribe(cursor -> {
                             List<BarEntry> entries = new ArrayList<>();
 
+                            XAxis xAxis = mChart.getXAxis();
+                            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                            xAxis.setDrawGridLines(false);
+                            xAxis.setGranularityEnabled(true);
+                            xAxis.setGranularity(1f);
+
+                            List<Machine> xList = new ArrayList<>();
+
                             while (cursor.moveToNext()) {
                                 double total = cursor.getDouble(0);
                                 float id = cursor.getLong(1);
                                 float newTotal = (float) total;
 
+                                disposable.add(mMachineViewModel.getAllMachines()
+                                        .takeLast(1)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(machines -> {
+                                            xList.addAll(machines);
+                                            xAxis.setValueFormatter((value, axis) -> xList.get((int)value).getName());
+                                        }));
+
                                 entries.add(new BarEntry(id, newTotal));
                             }
                             cursor.close();
+
 
                             BarDataSet set = new BarDataSet(entries, "Maquinas");
                             BarData data = new BarData(set);
@@ -96,6 +119,8 @@ public class Graph extends AppCompatActivity {
                             rightAxis.setSpaceTop(15f);
                             rightAxis.setAxisMinimum(0f);
 
+
+                            mChart.getDescription().setEnabled(false);
                             mChart.setData(data);
                             mChart.invalidate();
                         }));
