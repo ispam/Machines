@@ -64,11 +64,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mInfoItems.get(position).getType();
     }
 
-    public void setnewList( List<InfoItems> itemsList){
-
-        mInfoItems = itemsList;
-        this.notifyDataSetChanged();
-    }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType){
@@ -162,7 +157,10 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
                     dialogg.setTitle(Html.fromHtml("<font color='black'>Confirmación</font>")).setMessage(Html.fromHtml("<font color='black'>Segura de <b>BORRAR</b> el ingreso: \n<b>" + formatted + "</b></font>"))
                             .setNegativeButton("No", null)
-                            .setPositiveButton("Si", (dialog, which) -> publishSubject.onNext(income.get_id()));
+                            .setPositiveButton("Si", (dialog, which) -> {
+                                publishSubject.onNext(income.get_id());
+                                notifyDataSetChanged();
+                            });
                     dialogg.create();
                     dialogg.show();
                 });
@@ -191,7 +189,10 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     disposable.add(incomeViewModel.updateIncomeByID(income.get_id(), income.getNote(), value)
                                             .observeOn(Schedulers.io())
                                             .subscribeOn(Schedulers.io())
-                                            .subscribe(() -> Log.d(TAG, "ListAdapter: INCOME UPDATED")));
+                                            .subscribe(() -> {
+                                                Log.d(TAG, "ListAdapter: INCOME UPDATED");
+                                                notifyDataSetChanged();
+                                            }));
 
                                     dialog1.dismiss();
                                 }

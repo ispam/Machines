@@ -1,4 +1,4 @@
-package tech.destinum.machines.data.local;
+package tech.destinum.machines.data.local.ViewModel;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;

@@ -5,9 +5,8 @@ import android.arch.lifecycle.ViewModelProvider;
 
 import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 import dagger.multibindings.IntoMap;
-import tech.destinum.machines.data.local.IncomeViewModelFactory;
+import tech.destinum.machines.data.local.ViewModel.IncomeViewModelFactory;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 

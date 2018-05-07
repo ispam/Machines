@@ -90,7 +90,12 @@ public class Graph extends AppCompatActivity {
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe(machines -> {
                                             xList.addAll(machines);
-                                            xAxis.setValueFormatter((value, axis) -> xList.get((int)value).getName());
+                                            xAxis.setValueFormatter((value, axis) -> {
+//                                                switch (xList.get((int) value)){
+//
+//                                                }
+                                                return xList.get((int)value).getName();
+                                            });
                                         }));
 
                                 entries.add(new BarEntry(id, newTotal));

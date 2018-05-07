@@ -5,7 +5,9 @@ import android.support.v7.util.DiffUtil;
 import java.util.List;
 
 import tech.destinum.machines.ADAPTERS.DateItem;
+import tech.destinum.machines.ADAPTERS.IncomeItem;
 import tech.destinum.machines.ADAPTERS.InfoItems;
+import tech.destinum.machines.data.local.POJO.Income;
 
 public class InfoItemCallback extends DiffUtil.Callback {
 
@@ -30,12 +32,22 @@ public class InfoItemCallback extends DiffUtil.Callback {
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
 
-        return false;
+        InfoItems currentItem = mOldList.get(oldItemPosition);
+        InfoItems nextItem = mNewList.get(newItemPosition);
+
+        return currentItem.getInfo_items_id() == nextItem.getInfo_items_id();
+
+//        DateItem dateItem = (DateItem) mOldList.get(oldItemPosition);
+//
+//        IncomeItem incomeItem = (IncomeItem) mOldList.get(oldItemPosition);
+//        Income income = incomeItem.getIncome();
 
     }
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        return mNewList.get(newItemPosition).equals(mOldList.get(oldItemPosition));
+        InfoItems currentItem = mOldList.get(oldItemPosition);
+        InfoItems nextItem = mNewList.get(newItemPosition);
+        return currentItem.equals(nextItem);
     }
 }
