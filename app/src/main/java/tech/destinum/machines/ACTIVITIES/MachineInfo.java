@@ -37,8 +37,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -222,35 +226,28 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     }
 
     private Map<String,List<Income>> toMap(List<Income> incomes) {
-        Map<String, List<Income>> map = new TreeMap<>();
+        Map<String, List<Income>> map = new TreeMap<>(Collections.reverseOrder());
 
         for (Income income : incomes){
-            List<Income> value = map.get(income.getDate());
+
+            Date date1 = null;
+            try {
+                date1 = new SimpleDateFormat("dd/MM/yyyy").parse(income.getDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
+            String format = sdf.format(date1);
+
+            List<Income> value = map.get(format);
             if (value == null){
                 value = new ArrayList<>();
-                map.put(income.getDate(), value);
+                map.put(format, value);
             }
             value.add(income);
         }
 
         return map;
-    }
-
-    private Observable<Map> getMap(List<Income> incomes){
-        Map<String, List<Income>> hashMap = toMap(incomes);
-
-        for (String date : hashMap.keySet()){
-            DateItem dateItem = new DateItem(date);
-            mInfoItems.add(dateItem);
-
-            for (Income income : hashMap.get(date)){
-                IncomeItem incomeItem = new IncomeItem(income);
-                mInfoItems.add(incomeItem);
-            }
-        }
-
-        return Observable.fromArray(hashMap);
-
     }
 
     private void getFABClick() {

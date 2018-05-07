@@ -109,6 +109,7 @@ public class LineChart extends AppCompatActivity {
                             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                             xAxis.setTypeface(Typeface.DEFAULT);
                             xAxis.setDrawGridLines(false);
+                            xAxis.setGranularityEnabled(true);
                             xAxis.setGranularity(1f); // only intervals of 1 day
                             xAxis.setLabelCount(5);
                             xAxis.setValueFormatter(xAxisFormatter);

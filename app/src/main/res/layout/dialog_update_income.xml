@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/dialog_edt_date"
             android:ems="10"
-            android:inputType="numberDecimal"
+            android:inputType="numberSigned|numberDecimal"
             android:hint="$XXX.XXX"
             android:textSize="22sp"
             android:gravity="center_horizontal|center_vertical"

@@ -32,6 +32,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import tech.destinum.machines.ACTIVITIES.MachineInfo;
+import tech.destinum.machines.UTILS.NumberTextWatcher;
 import tech.destinum.machines.data.local.POJO.Income;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
@@ -84,16 +85,17 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 DateItem dateItem = (DateItem) mInfoItems.get(position);
                 DateViewHolder dateViewHolder = (DateViewHolder) holder;
 
-                Date date1 = null;
-                try {
-                    date1 = new SimpleDateFormat("dd/MM/yyyy").parse(dateItem.getDate());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
-                String format = sdf.format(date1);
+//                Date date1 = null;
+//                try {
+//                    date1 = new SimpleDateFormat("dd/MM/yyyy").parse(dateItem.getDate());
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//                SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
+//                String format = sdf.format(date1);
 
-                dateViewHolder.mDate.setText(format);
+                dateViewHolder.mDate.setText(dateItem.getDate());
+                dateViewHolder.mTotalMonth.setText("");
 
                 break;
 
@@ -171,6 +173,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     View dialogView = inflater.inflate(R.layout.dialog_update_income, null, true);
                     EditText edt = dialogView.findViewById(R.id.dialog_edt_date);
+                    edt.addTextChangedListener(new NumberTextWatcher(edt));
                     TextView msg = dialogView.findViewById(R.id.dialog_tv_msg);
 
                     msg.setText(Html.fromHtml("Esta remplazando el ingreso de la fecha: \n<b><font size='18px'>" + income.getDate() + "</b></font>"));
@@ -189,10 +192,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     disposable.add(incomeViewModel.updateIncomeByID(income.get_id(), income.getNote(), value)
                                             .observeOn(Schedulers.io())
                                             .subscribeOn(Schedulers.io())
-                                            .subscribe(() -> {
-                                                Log.d(TAG, "ListAdapter: INCOME UPDATED");
-                                                notifyDataSetChanged();
-                                            }));
+                                            .subscribe(() -> Log.d(TAG, "ListAdapter: INCOME UPDATED")));
 
                                     dialog1.dismiss();
                                 }
@@ -244,12 +244,13 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public class DateViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView mDate;
+        private TextView mDate, mTotalMonth;
 
         public DateViewHolder(View view) {
             super(view);
 
             mDate = view.findViewById(R.id.format_date);
+            mTotalMonth = view.findViewById(R.id.format_date_total_month);
         }
     }
 }
