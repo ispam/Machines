@@ -1,5 +1,6 @@
 package tech.destinum.machines.data.local.dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -28,6 +29,9 @@ public interface IncomeDAO {
 
     @Query("select * from incomes where machines_id = :machines_id order by _id desc")
     Flowable<List<Income>> getInfoOfMachine(long machines_id);
+
+    @Query("select * from incomes where machines_id = :machines_id order by _id desc")
+    LiveData<List<Income>> getLiveDataList(long machines_id);
 
     @Query("select sum(money) from incomes")
     Flowable<Double> totalObtained();

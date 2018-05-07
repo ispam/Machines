@@ -1,15 +1,14 @@
 package tech.destinum.machines.ACTIVITIES;
 
 import android.app.DatePickerDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,11 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 
@@ -50,13 +49,14 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
+import tech.destinum.machines.ADAPTERS.DateItem;
+import tech.destinum.machines.ADAPTERS.IncomeItem;
+import tech.destinum.machines.ADAPTERS.InfoItems;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
 import tech.destinum.machines.UTILS.NumberTextWatcher;
-import tech.destinum.machines.data.ExportCSV;
+import tech.destinum.machines.data.local.IncomeViewModelFactory;
 import tech.destinum.machines.data.local.POJO.Income;
-import tech.destinum.machines.data.local.POJO.Machine;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
 
@@ -73,7 +73,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private long id;
     private ImageView check;
     private Boolean showMenu = false;
-    private List<Income> incomeList = new ArrayList<>();
+    private List<InfoItems> mInfoItems = new ArrayList<>();
+    private List<Income> mIncomeList = new ArrayList<>();
     private double value;
     private String notes;
 
@@ -85,6 +86,9 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     @Inject
     MachineViewModel machineViewModel;
 
+    @Inject
+    IncomeViewModelFactory mIncomeViewModelFactory;
+
     private static final String TAG = MachineInfo.class.getSimpleName();
 
     @Override
@@ -93,12 +97,12 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         setContentView(R.layout.activity_machine_info);
 
         ((App) getApplication()).getComponent().inject(this);
+        incomeViewModel = ViewModelProviders.of(this, mIncomeViewModelFactory).get(IncomeViewModel.class);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mName = findViewById(R.id.machine_info_name);
         mMoney = findViewById(R.id.machine_info_money);
-
 
         mRecyclerView = findViewById(R.id.rvNotes);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -108,8 +112,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                 LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_add_income, null, true);
-
-                Switch aSwitch = view.findViewById(R.id.aSwitch);
 
                 EditText editText = view.findViewById(R.id.dialog_info_et);
                 editText.addTextChangedListener(new NumberTextWatcher(editText));
@@ -147,7 +149,6 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                                 }
 
                                 value = Double.parseDouble(money);
-                                Log.d(TAG, "MachineInfo: " + String.valueOf(value));
                                 disposable.add(incomeViewModel.addIncome(date, notes, value, id)
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
@@ -157,6 +158,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             }
 
                             hideSoftKeyboard(v);
+
 
                         }).setView(view).show();
         });
@@ -214,27 +216,90 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             }
                         }, throwable -> Log.d(TAG, "MachineInfo 2: ERROR")));
 
-        disposable.add(incomeViewModel.getAllIncomesOfMachine(id)
-                .distinctUntilChanged()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(incomes -> {
-                    if (incomes != null){
-                        mAdapter = new ListAdapter(MachineInfo.this, incomes, machineViewModel, incomeViewModel, name);
-                        mRecyclerView.setAdapter(mAdapter);
 
-                        incomeList.addAll(incomes);
+        incomeViewModel.getLiveDataList(id).observe(this, list -> {
+            mIncomeList = list;
 
-                        disposable.add(mAdapter.clickEvent
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(Schedulers.io())
-                                .subscribe(income_id -> incomeViewModel.deleteIncomeByID(income_id)));
+            Map<String, List<Income>> hashMap = toMap(list);
 
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
+            for (String date : hashMap.keySet()){
+                DateItem dateItem = new DateItem(date);
+                mInfoItems.add(dateItem);
 
+                for (Income income : hashMap.get(date)){
+                    IncomeItem incomeItem = new IncomeItem(income);
+                    mInfoItems.add(incomeItem);
+                }
+            }
 
+            mAdapter = new ListAdapter(MachineInfo.this, mInfoItems, incomeViewModel, name);
+            mRecyclerView.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
+        });
+//
+//        disposable.add(incomeViewModel.getAllIncomesOfMachine(id)
+//                .distinctUntilChanged()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(incomes -> {
+//
+//                    mIncomeList = incomes;
+//
+//                    Map<String, List<Income>> hashMap = toMap(mIncomeList);
+//
+//                    for (String date : hashMap.keySet()){
+//                        DateItem dateItem = new DateItem(date);
+//                        mInfoItems.add(dateItem);
+//
+//                        for (Income income : hashMap.get(date)){
+//                            IncomeItem incomeItem = new IncomeItem(income);
+//                            mInfoItems.add(incomeItem);
+//                        }
+//                    }
+//
+//                    mAdapter = new ListAdapter(MachineInfo.this, mInfoItems, incomeViewModel, name);
+//                    mRecyclerView.setAdapter(mAdapter);
+//                    mAdapter.notifyDataSetChanged();
+//
+//                    disposable.add(mAdapter.clickEvent
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(Schedulers.io())
+//                            .subscribe(income_id -> incomeViewModel.deleteIncomeByID(income_id)));
+//
+//                }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)
+//                        , () -> mIncomeList.clear()));
+
+    }
+
+    private Map<String,List<Income>> toMap(List<Income> incomes) {
+        Map<String, List<Income>> map = new TreeMap<>();
+
+        for (Income income : incomes){
+            List<Income> value = map.get(income.getDate());
+            if (value == null){
+                value = new ArrayList<>();
+                map.put(income.getDate(), value);
+            }
+            value.add(income);
+        }
+
+        return map;
+    }
+
+    private Observable<Map> getMap(List<Income> incomes){
+        Map<String, List<Income>> hashMap = toMap(incomes);
+
+        for (String date : hashMap.keySet()){
+            DateItem dateItem = new DateItem(date);
+            mInfoItems.add(dateItem);
+
+            for (Income income : hashMap.get(date)){
+                IncomeItem incomeItem = new IncomeItem(income);
+                mInfoItems.add(incomeItem);
+            }
+        }
+
+        return Observable.fromArray(hashMap);
 
     }
 
@@ -299,7 +364,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
             case R.id.export_csv_incomes:
 
                 String[] headers = new String[]{"ID", "Maquina", "Nota", "Dinero Recoletado"};
-                Iterator<Income> iterator2 = incomeList.iterator();
+                Iterator<Income> iterator2 = mIncomeList.iterator();
 
                 File file = new File(Environment.getExternalStorageDirectory(), "/Maquinas");
                 File exportFile = new File(file, "Ingresos.csv");

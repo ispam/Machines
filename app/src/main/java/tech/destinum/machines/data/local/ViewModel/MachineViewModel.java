@@ -1,9 +1,12 @@
 package tech.destinum.machines.data.local.ViewModel;
 
+import android.arch.lifecycle.ViewModel;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.multibindings.IntoMap;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
@@ -12,11 +15,11 @@ import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.local.POJO.Machine;
 import tech.destinum.machines.data.local.POJO.MachineWithIncomes;
 
-public class MachineViewModel {
+public class MachineViewModel extends ViewModel {
+
+    private MachinesDB machinesDB;
 
     @Inject
-    MachinesDB machinesDB;
-
     public MachineViewModel(MachinesDB machinesDB) {
         this.machinesDB = machinesDB;
     }

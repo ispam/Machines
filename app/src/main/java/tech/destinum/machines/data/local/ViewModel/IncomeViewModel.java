@@ -1,5 +1,7 @@
 package tech.destinum.machines.data.local.ViewModel;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModel;
 import android.database.Cursor;
 
 
@@ -14,17 +16,16 @@ import io.reactivex.Single;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.local.POJO.Income;
 
-public class IncomeViewModel {
+public class IncomeViewModel extends ViewModel{
 
     private Income income;
 
-    @Inject
-    MachinesDB machinesDB;
+    private MachinesDB machinesDB;
 
+    @Inject
     public IncomeViewModel(MachinesDB machinesDB) {
         this.machinesDB = machinesDB;
     }
-
 
     public Flowable<Double> getIncomeOfMachine(long id){
         return machinesDB.getIncomeDAO().getIncomeOfMachine(id);
@@ -36,6 +37,10 @@ public class IncomeViewModel {
 
     public Flowable<List<Income>> getAllIncomesOfMachine(long machines_id){
         return machinesDB.getIncomeDAO().getInfoOfMachine(machines_id);
+    }
+
+    public LiveData<List<Income>> getLiveDataList(long machines_id){
+        return machinesDB.getIncomeDAO().getLiveDataList(machines_id);
     }
 
     public Single<Cursor> getCursor(){

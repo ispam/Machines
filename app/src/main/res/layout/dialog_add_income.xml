@@ -14,14 +14,7 @@
         android:text="Nuevo Ingreso"
         android:textColor="@android:color/black"
         android:textSize="20sp"/>
-    <Switch
-        android:id="@+id/aSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_info_til"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:text="Egreso"/>
+
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="wrap_content"
@@ -48,7 +41,7 @@
         android:id="@+id/dialog_info_notes_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/aSwitch"
+        android:layout_below="@id/dialog_info_til"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="Notas"

@@ -1,5 +1,6 @@
 package tech.destinum.machines.di;
 
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
@@ -8,15 +9,20 @@ import android.support.annotation.NonNull;
 
 import javax.inject.Singleton;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoMap;
 import tech.destinum.machines.ACTIVITIES.App;
 import tech.destinum.machines.data.MachinesDB;
+import tech.destinum.machines.data.local.IncomeViewModelFactory;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
+import tech.destinum.machines.data.local.dao.IncomeDAO;
+import tech.destinum.machines.data.local.dao.MachineDAO;
 
 
-@Module
+@Module(includes = ViewModelModule.class)
 public class AppModule {
 
     private App application;
@@ -27,29 +33,44 @@ public class AppModule {
         this.application = application;
     }
 
-    @Singleton
-    @Provides
+    @Singleton @Provides
     Context getApplication(){
         return application;
     }
 
-    @Singleton
-    @Provides
-    MachineViewModel getMachineViewModel(MachinesDB machinesDB){
-        return new MachineViewModel(machinesDB);
-    }
-
-    @Singleton
-    @Provides
-    IncomeViewModel getIncomeViewModel(MachinesDB machinesDB){
-        return new IncomeViewModel(machinesDB);
-    }
-
-    @Singleton
-    @Provides
+    @Singleton @Provides
     MachinesDB getDB(Context context) {
         return getInstance(context);
     }
+
+    @Singleton @Provides
+    MachineDAO provideMachineDAO(MachinesDB machinesDB){
+        return machinesDB.getMachineDAO();
+    }
+
+    @Singleton @Provides
+    IncomeDAO provideIncomeDAO(MachinesDB machinesDB){
+        return machinesDB.getIncomeDAO();
+    }
+
+//    @Provides
+//    @IntoMap
+//    @ViewModelKey(MachineViewModel.class)
+//    MachineViewModel getMachineViewModel(MachineViewModel machineViewModel){
+//        return machineViewModel;
+//    }
+//
+//    @Provides
+//    @IntoMap
+//    @ViewModelKey(IncomeViewModel.class)
+//    IncomeViewModel getIncomeViewModel(IncomeViewModel incomeViewModel){
+//        return incomeViewModel;
+//    }
+//
+//    @Provides
+//    ViewModelProvider.Factory bindViewModelFactory(IncomeViewModelFactory factory){
+//        return factory;
+//    }
 
     private static MachinesDB getInstance(Context context){
 
