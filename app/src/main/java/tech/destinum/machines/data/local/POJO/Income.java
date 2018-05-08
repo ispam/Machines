@@ -14,19 +14,19 @@ public class Income {
     private long _id;
 
     @ColumnInfo(name = "date")
-    private String date;
+    private long date;
 
     @ColumnInfo(name = "note")
     private String note;
 
     @ColumnInfo(name = "money")
-    private Double money = 0.0;
+    private Double money;
 
     @ColumnInfo(name = "machines_id")
     private long machines_id;
 
 
-    public Income(String date, String note, Double money, long machines_id) {
+    public Income(long date, String note, Double money, long machines_id) {
         this._id = _id;
         this.date = date;
         this.note = note;
@@ -43,11 +43,11 @@ public class Income {
         this._id = _id;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

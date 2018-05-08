@@ -38,7 +38,6 @@ public class LineChart extends AppCompatActivity {
     private CompositeDisposable disposable = new CompositeDisposable();
     private String name;
     private long id;
-    private long reference_timestamp;
 
 
     @Inject
@@ -94,14 +93,11 @@ public class LineChart extends AppCompatActivity {
                             while (cursor.moveToNext()) {
                                 double total = cursor.getDouble(0);
                                 float id = cursor.getLong(1);
-                                String dateString = cursor.getString(2);
-                                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-                                Date date = dateFormat.parse(dateString);
+                                long dateLong = cursor.getLong(2);
 
-                                long mili = date.getTime();
                                 float newTotal = (float) total;
-                                entries.add(new Entry(mili, newTotal));
+                                entries.add(new Entry(dateLong, newTotal));
                             }
 
 
@@ -109,9 +105,8 @@ public class LineChart extends AppCompatActivity {
                             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                             xAxis.setTypeface(Typeface.DEFAULT);
                             xAxis.setDrawGridLines(false);
-                            xAxis.setGranularityEnabled(true);
-                            xAxis.setGranularity(1f); // only intervals of 1 day
-                            xAxis.setLabelCount(5);
+                            xAxis.setGranularityEnabled(false);
+//                            xAxis.setGranularity(5f); // only intervals of 1 day
                             xAxis.setValueFormatter(xAxisFormatter);
 //                            xAxis.setValueFormatter((value, axis) -> {
 //                                DateFormat dateFormat = new SimpleDateFormat("dd/MM");

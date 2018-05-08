@@ -61,10 +61,17 @@ public class AppModule {
         return instance;
     }
 
-    private static final Migration MIGRATION8_9 = new Migration(8,9) {
+    private static final Migration MIGRATION10_11 = new Migration(10,11) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("alter table machines add column total_income real");
+            // create temportal table
+            database.execSQL("create table incomes_tmp (_id integer, date integer, note text, money real, machines_id integer)");
+            // copy data into
+            database.execSQL("insert into incomes_tmp (_id, date, note, money, machines_id) select _id, date, note, money, machines_id from incomes");
+            //remove old table
+            database.execSQL("drop table incomes");
+            //change the table name to the correct one
+            database.execSQL("alter table incomes_tmp rename to incomes");
 
         }
     };

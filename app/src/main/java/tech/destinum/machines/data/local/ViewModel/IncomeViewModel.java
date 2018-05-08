@@ -31,7 +31,7 @@ public class IncomeViewModel extends ViewModel{
         return machinesDB.getIncomeDAO().getIncomeOfMachine(id);
     }
 
-    public Completable addIncome(String date, String note, Double money, Long machines_id){
+    public Completable addIncome(long date, String note, Double money, Long machines_id){
         return Completable.fromAction(() -> machinesDB.getIncomeDAO().addIncome(new Income(date, note, money, machines_id)));
     }
 

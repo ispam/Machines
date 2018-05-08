@@ -85,17 +85,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 DateItem dateItem = (DateItem) mInfoItems.get(position);
                 DateViewHolder dateViewHolder = (DateViewHolder) holder;
 
-//                Date date1 = null;
-//                try {
-//                    date1 = new SimpleDateFormat("dd/MM/yyyy").parse(dateItem.getDate());
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
-//                String format = sdf.format(date1);
-
                 dateViewHolder.mDate.setText(dateItem.getDate());
-                dateViewHolder.mTotalMonth.setText("");
 
                 break;
 
@@ -109,7 +99,13 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 generalViewHolder.mNote.setText(income.getNote());
                 generalViewHolder.mMoney.setText(formatted);
-                generalViewHolder.mDate.setText(income.getDate());
+
+                long dateLong = income.getDate();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String dateString = sdf.format(new Date(dateLong));
+                generalViewHolder.mDate.setText(dateString);
+
+
 
                 generalViewHolder.mSwipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 //        generalViewHolder.mSwipeLayout.addDrag(SwipeLayout.DragEdge.Left, holder.mRelativeLayout);
@@ -147,17 +143,16 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 generalViewHolder.mShare.setOnClickListener(v -> {
 
-                    String date = income.getDate();
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     sendIntent.setType("text/plain");
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Maquina: " + name + "\nFecha: " + date + "\n" + "Recaudado: " + formatted);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Maquina: " + name + "\nFecha: " + dateString + "\n" + "Recaudado: " + formatted);
                     v.getContext().startActivity(Intent.createChooser(sendIntent, "Compartir"));
                 });
 
                 generalViewHolder.mDelete.setOnClickListener(v -> {
                     AlertDialog.Builder dialogg = new AlertDialog.Builder(mContext);
-                    dialogg.setTitle(Html.fromHtml("<font color='black'>Confirmación</font>")).setMessage(Html.fromHtml("<font color='black'>Segura de <b>BORRAR</b> el ingreso: \n<b>" + formatted + "</b></font>"))
+                    dialogg.setTitle(Html.fromHtml("<font color='black'>Confirmación</font>")).setMessage(Html.fromHtml("<font color='black'>Segura de <b>BORRAR</b> el ingreso: \n<font color='#7a0843'>" + formatted + "</font></font>"))
                             .setNegativeButton("No", null)
                             .setPositiveButton("Si", (dialog, which) -> {
                                 publishSubject.onNext(income.get_id());
@@ -176,7 +171,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     edt.addTextChangedListener(new NumberTextWatcher(edt));
                     TextView msg = dialogView.findViewById(R.id.dialog_tv_msg);
 
-                    msg.setText(Html.fromHtml("Esta remplazando el ingreso de la fecha: \n<b><font size='18px'>" + income.getDate() + "</b></font>"));
+                    msg.setText(Html.fromHtml("Esta remplazando el ingreso de la fecha: \n<font size='18px' color='#7a0843'>" + dateString + "</font>"));
 
                     dialog.setNegativeButton("Cancelar", null)
                             .setPositiveButton("Cambiar", (dialog1, which) -> {
