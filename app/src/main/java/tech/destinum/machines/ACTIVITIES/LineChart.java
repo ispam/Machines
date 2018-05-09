@@ -99,14 +99,14 @@ public class LineChart extends AppCompatActivity {
                                 float newTotal = (float) total;
                                 entries.add(new Entry(dateLong, newTotal));
                             }
-
+                            cursor.close();
 
                             XAxis xAxis = mLineChart.getXAxis();
                             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                             xAxis.setTypeface(Typeface.DEFAULT);
                             xAxis.setDrawGridLines(false);
                             xAxis.setGranularityEnabled(false);
-//                            xAxis.setGranularity(5f); // only intervals of 1 day
+//                            xAxis.setGranularity(1f); // only intervals of 1 day
                             xAxis.setValueFormatter(xAxisFormatter);
 //                            xAxis.setValueFormatter((value, axis) -> {
 //                                DateFormat dateFormat = new SimpleDateFormat("dd/MM");
@@ -161,7 +161,7 @@ public class LineChart extends AppCompatActivity {
                             mLineChart.setData(data);
                             mLineChart.invalidate();
 
-                            cursor.close();
+
                         }));
     }
 }

@@ -3,6 +3,15 @@ package tech.destinum.machines.ADAPTERS;
 public class DateItem extends InfoItems {
 
     private String date;
+    private int month;
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
 
     public DateItem(String date) {
         this.date = date;
@@ -15,6 +24,7 @@ public class DateItem extends InfoItems {
     public void setDate(String date) {
         this.date = date;
     }
+
 
     @Override
     public int getType() {

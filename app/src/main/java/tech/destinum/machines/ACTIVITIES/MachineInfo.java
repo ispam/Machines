@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -41,19 +40,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -62,7 +57,6 @@ import tech.destinum.machines.ADAPTERS.IncomeItem;
 import tech.destinum.machines.ADAPTERS.InfoItems;
 import tech.destinum.machines.ADAPTERS.ListAdapter;
 import tech.destinum.machines.R;
-import tech.destinum.machines.UTILS.InfoItemCallback;
 import tech.destinum.machines.UTILS.NumberTextWatcher;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModelFactory;
 import tech.destinum.machines.data.local.POJO.Income;
@@ -77,14 +71,14 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
     private ListAdapter mAdapter;
     private Calendar mCalendar;
     private TextView info_date;
-    private int mDay, mMonth, mYear, mDayFinal, mMonthFinal, mYearFinal;
+    private int mDay, mMonth, mYear;
     private String name, total_amount2;
     private long id, date;
     private ImageView check;
     private Boolean showMenu = false;
     private List<InfoItems> mInfoItems = new ArrayList<>();
     private List<Income> mIncomeList = new ArrayList<>();
-    private double value;
+    private double value, totalMonth;
     private String notes;
 
     private CompositeDisposable disposable = new CompositeDisposable();
@@ -178,17 +172,18 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
                     Map<String, List<Income>> hashMap = toMap(mIncomeList);
 
-                    for (String date : hashMap.keySet()){
-                        DateItem dateItem = new DateItem(date);
+                    for (String header : hashMap.keySet()){
+                        DateItem dateItem = new DateItem(header);
                         mInfoItems.add(dateItem);
 
-                        for (Income income : hashMap.get(date)){
+                        for (Income income : hashMap.get(header)){
                             IncomeItem incomeItem = new IncomeItem(income);
                             mInfoItems.add(incomeItem);
                         }
+
                     }
 
-                    mAdapter = new ListAdapter(MachineInfo.this, mInfoItems, incomeViewModel, name);
+                    mAdapter = new ListAdapter(MachineInfo.this, mInfoItems, incomeViewModel, name, id);
                     mRecyclerView.setAdapter(mAdapter);
 
                     disposable.add(mAdapter.clickEvent
@@ -206,25 +201,15 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
         for (Income income : incomes){
 
             long dateLong = income.getDate();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
             String dateString = sdf.format(new Date(dateLong));
 
-            Date date1 = null;
-            try {
-                date1 = sdf.parse(dateString);
-
-                SimpleDateFormat sdf2 = new SimpleDateFormat("MMMM");
-                String format = sdf2.format(date1);
-
-                List<Income> value = map.get(format);
-                if (value == null){
-                    value = new ArrayList<>();
-                    map.put(format, value);
-                }
-                value.add(income);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            List<Income> value = map.get(dateString);
+            if (value == null){
+                value = new ArrayList<>();
+                map.put(dateString, value);
             }
+            value.add(income);
 
         }
 
@@ -262,9 +247,11 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
                         notes = editText2.getText().toString();
                         String money = editText.getText().toString();
-                        String dateString = String.valueOf(date);
 
-                        if(money.isEmpty() || money.equals("") || dateString == null || dateString.equals("")) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                        String dateString = sdf.format(new Date(date));
+
+                        if(money.isEmpty() || money.equals("") || dateString == null || dateString.equals("31/12/1969")) {
                             Toast.makeText(v.getContext(), "Fecha y Dinero SON OBLIGATORIOS", Toast.LENGTH_SHORT).show();
                             hideSoftKeyboard(v);
                         } else {
@@ -274,7 +261,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                             }
 
                             value = Double.parseDouble(money);
-                            disposable.add(incomeViewModel.addIncome(date, notes, value, id)
+                            disposable.add(incomeViewModel.addIncome(date, notes, value, id, mMonth)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(
@@ -310,6 +297,8 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        mMonth = month + 1;
 
         Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
         date = calendar.getTimeInMillis();

@@ -25,15 +25,24 @@ public class Income {
     @ColumnInfo(name = "machines_id")
     private long machines_id;
 
+    private int month;
 
-    public Income(long date, String note, Double money, long machines_id) {
-        this._id = _id;
+
+    public Income(long date, String note, Double money, long machines_id, int month) {
         this.date = date;
         this.note = note;
         this.money = money;
         this.machines_id = machines_id;
+        this.month = month;
     }
 
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
 
     public long get_id() {
         return _id;

@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,41 +21,43 @@ import com.daimajia.swipe.SwipeLayout;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
-import tech.destinum.machines.ACTIVITIES.MachineInfo;
 import tech.destinum.machines.UTILS.NumberTextWatcher;
 import tech.destinum.machines.data.local.POJO.Income;
 import tech.destinum.machines.R;
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel;
-import tech.destinum.machines.data.local.ViewModel.MachineViewModel;
-
 
 
 public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private List<InfoItems> mInfoItems;
-    private List<Income> mIncomeArrayList;
     private CompositeDisposable disposable = new CompositeDisposable();
     private IncomeViewModel incomeViewModel;
     private PublishSubject<Long> publishSubject = PublishSubject.create();
     public Observable<Long> clickEvent = publishSubject;
     private String name;
+    private long id;
+    private PublishSubject<Integer> mPublishSubject = PublishSubject.create();
+    private Observable<Integer> mObservable = mPublishSubject;
+
+
 
     private static final String TAG = ListAdapter.class.getSimpleName();
 
-    public ListAdapter(Context context, List<InfoItems> infoItems, IncomeViewModel incomeViewModel, String name) {
+    public ListAdapter(Context context, List<InfoItems> infoItems, IncomeViewModel incomeViewModel, String name, long id) {
         mContext = context;
         mInfoItems = infoItems;
         this.incomeViewModel = incomeViewModel;
         this.name = name;
+        this.id = id;
     }
 
     @Override
@@ -85,6 +85,30 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 DateItem dateItem = (DateItem) mInfoItems.get(position);
                 DateViewHolder dateViewHolder = (DateViewHolder) holder;
 
+                String dateString = dateItem.getDate();
+                SimpleDateFormat sdf = new SimpleDateFormat("MMMM");
+
+                Date date1 = null;
+                try {
+                    date1 = sdf.parse(dateString);
+
+                    SimpleDateFormat numDate = new SimpleDateFormat("M");
+                    String format2 = numDate.format(date1);
+                    int month = Integer.parseInt(format2);
+
+                    disposable.add(incomeViewModel.getTotalMonth(id, month)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(total_month -> {
+                                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                                String format = formatter.format(total_month);
+                                dateViewHolder.mTotalMonth.setText(format);
+                            }));
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 dateViewHolder.mDate.setText(dateItem.getDate());
 
                 break;
@@ -92,7 +116,11 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case InfoItems.TYPE_GENERAL:
                 IncomeItem incomeItem = (IncomeItem) mInfoItems.get(position);
                 Income income = incomeItem.getIncome();
+
+                mPublishSubject.onNext(income.getMonth());
+
                 GeneralViewHolder generalViewHolder = (GeneralViewHolder) holder;
+
 
                 DecimalFormat formatter = new DecimalFormat("$#,##0.000");
                 String formatted = formatter.format(income.getMoney());
@@ -101,8 +129,8 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 generalViewHolder.mMoney.setText(formatted);
 
                 long dateLong = income.getDate();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String dateString = sdf.format(new Date(dateLong));
+                SimpleDateFormat sdf3 = new SimpleDateFormat("dd/MM/yyyy");
+                dateString = sdf3.format(new Date(dateLong));
                 generalViewHolder.mDate.setText(dateString);
 
 
@@ -185,8 +213,8 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     value = Double.parseDouble(edt.getText().toString());
 
                                     disposable.add(incomeViewModel.updateIncomeByID(income.get_id(), income.getNote(), value)
-                                            .observeOn(Schedulers.io())
                                             .subscribeOn(Schedulers.io())
+                                            .observeOn(Schedulers.io())
                                             .subscribe(() -> Log.d(TAG, "ListAdapter: INCOME UPDATED")));
 
                                     dialog1.dismiss();

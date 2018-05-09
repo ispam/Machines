@@ -101,9 +101,15 @@ public class MachinesAdapter extends RecyclerView.Adapter<MachinesAdapter.Machin
             mName.setText(machine.getName());
 
             Double total_amount = machine.getTotal_income();
-            DecimalFormat formatter = new DecimalFormat("$#,##0.000");
-            String formatted = formatter.format(total_amount);
-            mMoney.setText(formatted);
+
+            if (total_amount <= 0){
+                mMoney.setText("$0.0");
+            } else {
+                DecimalFormat formatter = new DecimalFormat("$#,##0.000");
+                String formatted = formatter.format(total_amount);
+                mMoney.setText(formatted);
+            }
+
 
         }
     }

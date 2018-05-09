@@ -157,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(machines -> {
                     if (machines != null) {
+                        machineList.clear();
+
                         mAdapter = new MachinesAdapter(machines, MainActivity.this);
                         mRecyclerView.setAdapter(mAdapter);
 
@@ -164,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                         disposable.add(mAdapter.clickEvent
-                                .observeOn(Schedulers.io())
                                 .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(machine -> machineViewModel.deleteByID(machine)));
 
                         mAdapter.notifyDataSetChanged();

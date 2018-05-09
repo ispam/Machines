@@ -13,6 +13,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
 import tech.destinum.machines.data.local.POJO.Income;
 
 @Dao
@@ -35,6 +36,9 @@ public interface IncomeDAO {
 
     @Query("select sum(money) from incomes")
     Flowable<Double> totalObtained();
+
+    @Query("select sum(money) from incomes where machines_id = :machines_id and month = :month")
+    Flowable<Double> getTotalMonth(long machines_id, int month);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addIncome(Income income);

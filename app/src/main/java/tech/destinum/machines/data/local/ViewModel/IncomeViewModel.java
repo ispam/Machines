@@ -12,13 +12,12 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import tech.destinum.machines.data.MachinesDB;
 import tech.destinum.machines.data.local.POJO.Income;
 
 public class IncomeViewModel extends ViewModel{
-
-    private Income income;
 
     private MachinesDB machinesDB;
 
@@ -31,8 +30,12 @@ public class IncomeViewModel extends ViewModel{
         return machinesDB.getIncomeDAO().getIncomeOfMachine(id);
     }
 
-    public Completable addIncome(long date, String note, Double money, Long machines_id){
-        return Completable.fromAction(() -> machinesDB.getIncomeDAO().addIncome(new Income(date, note, money, machines_id)));
+    public Completable addIncome(long date, String note, Double money, Long machines_id, int month){
+        return Completable.fromAction(() -> machinesDB.getIncomeDAO().addIncome(new Income(date, note, money, machines_id, month)));
+    }
+
+    public Flowable<Double> getTotalMonth(long machines_id, int month){
+        return machinesDB.getIncomeDAO().getTotalMonth(machines_id, month);
     }
 
     public Flowable<List<Income>> getAllIncomesOfMachine(long machines_id){
