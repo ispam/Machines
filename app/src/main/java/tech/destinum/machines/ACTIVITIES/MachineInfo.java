@@ -357,7 +357,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                 Iterator<Income> iterator2 = mIncomeList.iterator();
 
                 File file = new File(Environment.getExternalStorageDirectory(), "/Maquinas");
-                File exportFile = new File(file, "Ingresos.csv");
+                File exportFile = new File(file, name + " Ingresos.csv");
 
                 if (!file.exists()) {
                     file.mkdir();

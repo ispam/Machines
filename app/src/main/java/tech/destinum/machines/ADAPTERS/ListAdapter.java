@@ -45,8 +45,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public Observable<Long> clickEvent = publishSubject;
     private String name;
     private long id;
-    private PublishSubject<Integer> mPublishSubject = PublishSubject.create();
-    private Observable<Integer> mObservable = mPublishSubject;
 
 
 
@@ -116,8 +114,6 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case InfoItems.TYPE_GENERAL:
                 IncomeItem incomeItem = (IncomeItem) mInfoItems.get(position);
                 Income income = incomeItem.getIncome();
-
-                mPublishSubject.onNext(income.getMonth());
 
                 GeneralViewHolder generalViewHolder = (GeneralViewHolder) holder;
 

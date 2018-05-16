@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
                         disposable.add(mAdapter.clickEvent
                                 .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
+                                .observeOn(Schedulers.io())
                                 .subscribe(machine -> machineViewModel.deleteByID(machine)));
 
                         mAdapter.notifyDataSetChanged();
