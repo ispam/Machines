@@ -16,15 +16,16 @@
             android:name=".ACTIVITIES.SplashScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/Theme.Design.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity
             android:name=".ACTIVITIES.MainActivity"
             android:theme="@style/AppTheme">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+
+            <category android:name="android.intent.category.LAUNCHER"/>
+        </intent-filter>
         </activity>
         <activity
             android:name=".ACTIVITIES.MachineInfo"

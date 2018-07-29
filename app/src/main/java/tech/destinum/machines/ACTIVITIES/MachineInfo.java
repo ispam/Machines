@@ -114,6 +114,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
 
         getFABClick();
 
+
     }
 
 
@@ -186,7 +187,7 @@ public class MachineInfo extends AppCompatActivity implements DatePickerDialog.O
                     mAdapter = new ListAdapter(MachineInfo.this, mInfoItems, incomeViewModel, name, id);
                     mRecyclerView.setAdapter(mAdapter);
 
-                    disposable.add(mAdapter.clickEvent
+                    disposable.add(mAdapter.getClickEvent()
                             .subscribeOn(Schedulers.io())
                             .observeOn(Schedulers.io())
                             .subscribe(income_id -> incomeViewModel.deleteIncomeByID(income_id)));
