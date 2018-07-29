@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        (application as App).component.inject(this)
+        App.component.inject(this)
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
 
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                     .setPositiveButton("Crear") { dialog, which ->
 
                         val machine = mEditText.text.toString()
-                        disposable.add(machineViewModel!!.addMachine(machine, 0.0)
+                        disposable.add(machineViewModel.addMachine(machine, 0.0)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(
