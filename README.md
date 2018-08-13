@@ -24,7 +24,7 @@ separate branch.
 |     Name     | Completion |    Date    |    Branch    |
 |:------------:|:----------:|:----------:|:------------:|
 |    Refactor  |    :+1:    | 04/16/2018 |   refactor   |
-|    Kotlin    |    :-1:    |  XX/XX/XX  |    kotlin    |
+|    Kotlin    |    :+1:    |  07/29/2018  |    kotlin    |
 |     Tests    |    :-1:    |  XX/XX/XX  |     tests    |
 
 ## License

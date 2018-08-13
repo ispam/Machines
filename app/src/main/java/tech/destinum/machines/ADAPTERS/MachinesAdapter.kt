@@ -9,13 +9,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxrelay2.PublishRelay
 
 
 import java.text.DecimalFormat
 
 import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.schedulers.Schedulers
 import tech.destinum.machines.ACTIVITIES.MachineInfo
 import tech.destinum.machines.data.local.POJO.Machine
 import tech.destinum.machines.R
@@ -27,7 +31,7 @@ class MachinesAdapter(private val machinesList: List<Machine>?, private val mCon
     }
 
     private val disposable = CompositeDisposable()
-    private val clickSubject = PublishSubject.create<Long>()
+    private val clickSubject: PublishRelay<Long> = PublishRelay.create()
     var clickEvent: Observable<Long> = clickSubject
 
 
@@ -46,23 +50,26 @@ class MachinesAdapter(private val machinesList: List<Machine>?, private val mCon
         val machine = machinesList!![position]
         holder.populate(machine)
 
-        holder.itemView.setOnClickListener { v ->
-            val intent = Intent(v.context, MachineInfo::class.java)
-            intent.putExtra("id", machine.id)
-            intent.putExtra("name", machine.name)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            v.context.startActivity(intent)
-        }
+        RxView.clicks(holder.itemView)
+                .doOnNext {
+                    val intent = Intent(mContext, MachineInfo::class.java)
+                    intent.putExtra("id", machine.id)
+                    intent.putExtra("name", machine.name)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    mContext.startActivity(intent)
+                }.subscribe()
 
-        holder.itemView.setOnLongClickListener { v ->
-            val dialogg = AlertDialog.Builder(mContext)
-            dialogg.setTitle(Html.fromHtml("<font color='black'>Confirmación</font>")).setMessage(Html.fromHtml("<font color='black'>Segura de <b>BORRAR</b> la maquina: <b>" + machinesList[position].name + "</b></font>"))
-                    .setNegativeButton("No", null)
-                    .setPositiveButton("Si") { dialog, which -> clickSubject.onNext(machine.id) }
-            dialogg.create()
-            dialogg.show()
-            true
-        }
+        RxView.longClicks(holder.itemView)
+                .doOnNext {
+                    val dialogg = AlertDialog.Builder(mContext)
+                    dialogg.setTitle(Html.fromHtml("<font color='black'>Confirmación</font>")).setMessage(Html.fromHtml("<font color='black'>Segura de <b>BORRAR</b> la maquina: <b>" + machinesList[position].name + "</b></font>"))
+                            .setNegativeButton("No", null)
+                            .setPositiveButton("Si") { dialog, which -> clickSubject.accept(machine.id) }
+                    dialogg.create()
+                    dialogg.show()
+                }
+                .subscribe()
+
     }
 
     override fun getItemCount(): Int {
@@ -86,8 +93,6 @@ class MachinesAdapter(private val machinesList: List<Machine>?, private val mCon
                 val formatted = formatter.format(total_amount)
                 mMoney.text = formatted
             }
-
-
         }
     }
 

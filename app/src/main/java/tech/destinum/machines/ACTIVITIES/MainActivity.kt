@@ -28,41 +28,54 @@ import android.widget.TextView
 import android.widget.Toast
 
 import com.opencsv.CSVWriter
+import io.reactivex.Observable
 
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.text.DecimalFormat
-import java.util.ArrayList
 
 import javax.inject.Inject
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subscribers.DisposableSubscriber
 import tech.destinum.machines.ADAPTERS.MachinesAdapter
 import tech.destinum.machines.R
+import tech.destinum.machines.UTILS.MoneyFormatter
 import tech.destinum.machines.data.local.POJO.Machine
 import tech.destinum.machines.data.local.ViewModel.IncomeViewModel
 import tech.destinum.machines.data.local.ViewModel.MachineViewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
-    private var mFAB: FloatingActionButton? = null
-    private var mRecyclerView: RecyclerView? = null
-    private var mAdapter: MachinesAdapter? = null
+
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
+        private const val PERMISSION_WRITE_EXTERNAL_STORAGE = 112
+    }
+
     private val disposable = CompositeDisposable()
+
+    private lateinit var mFAB: FloatingActionButton
+    private lateinit var mTotal: TextView
+    private lateinit var mTotalText: TextView
+    private lateinit var mMonth: TextView
+    private lateinit var mTotalMonth: TextView
+
+    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mAdapter: MachinesAdapter
+
     private val machineList = ArrayList<Machine>()
-    private val context: Context? = null
-    private var mTotal: TextView? = null
-    private var mTotalText: TextView? = null
 
     @Inject
     lateinit var machineViewModel: MachineViewModel
 
     @Inject
     lateinit var incomeViewModel: IncomeViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,18 +87,85 @@ class MainActivity : AppCompatActivity() {
 
         mTotal = findViewById(R.id.total_obtain)
         mTotalText = findViewById(R.id.dinero_total)
+        mMonth = findViewById(R.id.main_month)
+        mTotalMonth = findViewById(R.id.main_total_month)
 
         mRecyclerView = findViewById(R.id.recycler_view_main)
-        mRecyclerView!!.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        mRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         mFAB = findViewById(R.id.fabAddMachine)
-        mFAB!!.setOnClickListener { v ->
+
+        setUpFAB()
+        getDbInfo()
+
+    }
+
+    private fun getDbInfo() {
+        val cal: Calendar = Calendar.getInstance()
+        val month = cal.time.month
+        val monthText = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
+
+        mMonth.text = monthText
+
+        disposable.add(machineViewModel.allMachines
+                .subscribeOn(Schedulers.io())
+                .switchIfEmpty {
+                    val emptyList = mutableListOf<Machine>()
+                    Observable.just(emptyList)
+                }
+                .filter { it.isNotEmpty() }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError { Log.e("allMachines", it.message)}
+                .doOnNext {
+                    machineList.clear()
+                    mAdapter = MachinesAdapter(it, this@MainActivity)
+                    mRecyclerView.adapter = mAdapter
+                    machineList.addAll(it)
+                    deleteByID(mAdapter)
+                    mAdapter.notifyDataSetChanged()
+                }
+                .subscribeOn(Schedulers.io())
+                .flatMap { incomeViewModel.totalObtained() }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { it ->
+                    mTotal.visibility = View.VISIBLE
+                    mTotalText.visibility = View.VISIBLE
+                    mTotal.text = MoneyFormatter.moneyFormat(it)
+                }
+                .doOnComplete { Log.d(TAG, "getDbInfo: COMPLETED") }
+                .doOnError { e -> Log.e("getDbInfo", e.message) }
+                .subscribe ())
+
+        disposable.add(incomeViewModel.getTotalMonth(month)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess {
+                    println(month)
+                    mMonth.visibility = View.VISIBLE
+                    mTotalMonth.visibility = View.VISIBLE
+                    mTotalMonth.text = MoneyFormatter.moneyFormat(it)
+                    println(it)
+                }
+                .subscribe ())
+
+    }
+
+    private fun deleteByID(mAdapter: MachinesAdapter) {
+        disposable.add(mAdapter.clickEvent
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .doOnNext { machineViewModel.deleteByID(it) }
+                .subscribe ())
+    }
+
+    private fun setUpFAB() {
+        mFAB.setOnClickListener { v ->
 
             val inflater = v.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = inflater.inflate(R.layout.dialog_add_machine, null, true)
             val mEditText = view.findViewById<EditText>(R.id.dialog_et)
-
             val alertDialog = AlertDialog.Builder(v.context)
+
             alertDialog
                     .setNegativeButton("Cancelar", null)
                     .setPositiveButton("Crear") { dialog, which ->
@@ -94,16 +174,14 @@ class MainActivity : AppCompatActivity() {
                         disposable.add(machineViewModel.addMachine(machine, 0.0)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(
-                                        { mAdapter!!.notifyDataSetChanged() }
-                                ) { throwable -> Log.e(TAG, "MachineInfo: ", throwable) })
+                                .doOnError { e -> Log.e(TAG,  e.message) }
+                                .subscribe { mAdapter.notifyDataSetChanged() })
                     }.setView(view).show()
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_WRITE_EXTERNAL_STORAGE)
         }
-
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -111,67 +189,11 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             PERMISSION_WRITE_EXTERNAL_STORAGE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "MainActivity: PERMISSION GRANTED")
-
             } else {
-                Toast.makeText(context, "SIN ESTE PERMISO NO PUEDE FUNCIONAR ADECUADAMENTE LA APP", Toast.LENGTH_SHORT).show()
-
+                Toast.makeText(this, "SIN ESTE PERMISO NO PUEDE FUNCIONAR ADECUADAMENTE LA APP", Toast.LENGTH_SHORT).show()
                 Handler().postDelayed({ onDestroy() }, 3000)
-
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        //        disposable.add(machineViewModel.getAllMachines()
-        //                .zipWith(incomeViewModel.getAllMachinesIncome(), Pair::new)
-        //                .subscribeOn(Schedulers.io())
-        //                .observeOn(AndroidSchedulers.mainThread())
-        //                .subscribe(machinesAndIncomePair -> {
-        //                    List<Machine> machines = machinesAndIncomePair.first;
-        //                    List<Double> incomes = machinesAndIncomePair.second;
-        //                    if (machines != null && incomes != null) {
-        //                        mAdapter = new MachinesAdapter(machines, incomes, MainActivity.this);
-        //                        mRecyclerView.setAdapter(mAdapter);
-        //                    }
-        //                }, throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable)));
-
-        disposable.add(machineViewModel!!.allMachines
-                .distinctUntilChanged()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ machines ->
-                    if (machines != null) {
-                        machineList.clear()
-
-                        mAdapter = MachinesAdapter(machines, this@MainActivity)
-                        mRecyclerView!!.adapter = mAdapter
-
-                        machineList.addAll(machines)
-
-
-                        disposable.add(mAdapter!!.clickEvent
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(Schedulers.io())
-                                .subscribe { machine -> machineViewModel!!.deleteByID(machine!!) })
-
-                        mAdapter!!.notifyDataSetChanged()
-                    }
-                }) { throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable) })
-
-        disposable.add(incomeViewModel!!.totalObtained()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ success ->
-                    mTotal!!.visibility = View.VISIBLE
-                    mTotalText!!.visibility = View.VISIBLE
-                    val formatter = DecimalFormat("$#,##0.000")
-                    val formatted = formatter.format(success)
-                    mTotal!!.text = formatted
-                }, { throwable -> Log.e(TAG, "MainActivity: ERROR") }
-                ) { Log.d(TAG, "MainActivity: COMPLETED") })
-
     }
 
     override fun onStop() {
@@ -284,11 +306,6 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    companion object {
 
-        private val TAG = MainActivity::class.java!!.getSimpleName()
-
-        private val PERMISSION_WRITE_EXTERNAL_STORAGE = 112
-    }
 
 }

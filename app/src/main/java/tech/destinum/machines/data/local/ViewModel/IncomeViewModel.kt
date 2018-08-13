@@ -50,7 +50,7 @@ constructor(private val machinesDB: MachinesDB) : ViewModel() {
         return Completable.fromCallable { machinesDB.incomeDAO.updateIncomeByID(id, note, money) }
     }
 
-    fun totalObtained(): Flowable<Double> {
-        return machinesDB.incomeDAO.totalObtained()
-    }
+    fun totalObtained(): Flowable<Double> =  machinesDB.incomeDAO.totalObtained()
+
+    fun getTotalMonth(month: Int): Single<Double> = machinesDB.incomeDAO.getTotalMonth(month)
 }

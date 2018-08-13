@@ -70,7 +70,7 @@ class ListAdapter(private val mContext: Context, private val mInfoItems: List<In
                 val income = mInfoItems!![position] as IncomeItem
                 val generalViewHolder = holder as GeneralViewHolder
 
-                generalViewHolder.bind(income as Income)
+                generalViewHolder.bind(income.income)
 
             }
             else -> throw IllegalStateException("Unsupported item Type")

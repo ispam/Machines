@@ -135,43 +135,34 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
 
         disposable.add(incomeViewModel.getIncomeOfMachine(id)
-                .defaultIfEmpty(0.0)
                 .subscribeOn(Schedulers.io())
+                .defaultIfEmpty(0.0)
+                .doOnError { e -> Log.e("getIncomeOfMachine", e.message) }
+                .doOnNext { Log.v("getIncomeOfMachine", it.toString()) }
+                .flatMapCompletable {
+                    Log.v("getIncomeOfMachine", it.toString())
+                    val formatter = DecimalFormat("$#,##0.000")
+                    val formatted = formatter.format(it)
+                    mMoney.text = formatted
+                    total_amount2 = formatted
+                    showMenu = true
+                    machineViewModel.updateByID(id, it)
+                }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ total_amount ->
-                    if (total_amount != null) {
-
-                        disposable.add(machineViewModel.updateByID(id, total_amount)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(Schedulers.io())
-                                .subscribe(
-                                        { Log.d(TAG, "MachineInfo: UPDATE COMPLETED") },
-                                        { throwable -> Log.e(TAG, "MachineInfo: ERROR", throwable) }))
-
-                        val formatter = DecimalFormat("$#,##0.000")
-                        val formatted = formatter.format(total_amount)
-                        mMoney.text = formatted
-
-                        total_amount2 = formatted
-                        showMenu = true
-                    } else {
-                        mMoney.text = "$0.0"
-                    }
-                }, { throwable -> Log.d(TAG, "MachineInfo 2: ERROR") }))
+                .subscribe())
 
 
         disposable.add(incomeViewModel.getAllIncomesOfMachine(id)
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ incomes ->
-
+                .doOnError { e -> Log.e("getAllIncomesOfMachine", e.localizedMessage) }
+                .doOnNext {
                     mInfoItems.clear()
                     mIncomeList.clear()
-                    mIncomeList = incomes as ArrayList<Income>
+                    mIncomeList = it as ArrayList<Income>
 
                     val hashMap = toMap(mIncomeList) as HashMap<String, Any>
-
                     for (header in hashMap.keys) {
                         val dateItem = DateItem(header)
                         mInfoItems.add(dateItem)
@@ -182,7 +173,6 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                         }
 
                     }
-
                     mAdapter = ListAdapter(this@MachineInfo, mInfoItems, incomeViewModel, name, id)
                     mRecyclerView.adapter = mAdapter
 
@@ -190,8 +180,8 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                             .subscribeOn(Schedulers.io())
                             .observeOn(Schedulers.io())
                             .subscribe { income_id -> incomeViewModel.deleteIncomeByID(income_id!!) })
-
-                }, { throwable -> Log.e(TAG, "onCreate: Unable to get machines", throwable) }))
+                }
+                .subscribe())
 
     }
 
@@ -228,7 +218,7 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             val editText2 = view.findViewById<EditText>(R.id.dialog_info_notes_et)
             info_date = view.findViewById(R.id.dialog_info_date_tv)
             val button = view.findViewById<Button>(R.id.dialog_info_date_btn)
-            button.setOnClickListener { button1 ->
+            button.setOnClickListener {
 
                 mCalendar = Calendar.getInstance()
                 mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
@@ -296,6 +286,7 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     override fun onDateSet(view: DatePicker, year: Int, month: Int, dayOfMonth: Int) {
 
         mMonth = month + 1
+        println(month)
 
         val calendar = GregorianCalendar(year, month, dayOfMonth)
         date = calendar.timeInMillis

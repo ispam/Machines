@@ -12,6 +12,7 @@ import android.database.Cursor
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.Single
 import tech.destinum.machines.data.local.POJO.Income
 
 @Dao
@@ -20,7 +21,7 @@ interface IncomeDAO {
     @get:Query("select sum(money), machines_id from incomes group by machines_id")
     val cursor: Cursor
 
-    @Query("select sum(money) from incomes where machines_id = :machines_id group by :machines_id limit 1")
+    @Query("select sum(money) from incomes where machines_id = :machines_id group by machines_id")
     fun getIncomeOfMachine(machines_id: Long): Flowable<Double>
 
     @Query("select money, _id, date from incomes where machines_id = :machines_id")
@@ -46,4 +47,7 @@ interface IncomeDAO {
 
     @Query("update incomes set note = :note, money = :money where _id = :id")
     fun updateIncomeByID(id: Long, note: String, money: Double): Int
+
+    @Query("select sum(money) from incomes where month = :month")
+    fun getTotalMonth(month: Int): Single<Double>
 }

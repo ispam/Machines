@@ -19,9 +19,7 @@ constructor(private val machinesDB: MachinesDB) : ViewModel() {
         return Completable.fromAction { machinesDB.machineDAO.addMachine(Machine(name, total_amount)) }
     }
 
-    fun deleteByID(id: Long): Long {
-        return machinesDB.machineDAO.deleteByID(id).toLong()
-    }
+    fun deleteByID(id: Long) = machinesDB.machineDAO.deleteByID(id)
 
     fun updateByID(id: Long, total_income: Double): Completable {
         return Completable.fromCallable { machinesDB.machineDAO.updateMachineByID(id, total_income) }

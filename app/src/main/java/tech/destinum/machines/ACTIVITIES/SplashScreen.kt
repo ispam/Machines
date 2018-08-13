@@ -14,7 +14,6 @@ import io.reactivex.schedulers.Schedulers
 import tech.destinum.machines.R
 
 class SplashScreen : AppCompatActivity() {
-    private val disposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +23,7 @@ class SplashScreen : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        disposable.add(Completable.timer(4, TimeUnit.SECONDS)
+        Completable.timer(4, TimeUnit.SECONDS)
                 .observeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .doOnError { e -> Log.e(TAG, "SplashScreen: ERROR", e) }
@@ -33,14 +32,7 @@ class SplashScreen : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 }
-                .subscribe())
-    }
-
-    override fun onStop() {
-        if (!disposable.isDisposed) {
-            disposable.clear()
-        }
-        super.onStop()
+                .subscribe()
     }
 
     companion object {
