@@ -4,10 +4,7 @@ import android.support.v7.util.DiffUtil;
 
 import java.util.List;
 
-import tech.destinum.machines.ADAPTERS.DateItem;
-import tech.destinum.machines.ADAPTERS.IncomeItem;
-import tech.destinum.machines.ADAPTERS.InfoItems;
-import tech.destinum.machines.data.local.POJO.Income;
+import tech.destinum.machines.Adapters.InfoItems;
 
 public class InfoItemCallback extends DiffUtil.Callback {
 

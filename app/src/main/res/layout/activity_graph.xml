@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tech.destinum.machines.ACTIVITIES.Graph">
+    tools:context="tech.destinum.machines.Activities.Graph">
 
     <com.github.mikephil.charting.charts.BarChart
         android:layout_width="match_parent"
