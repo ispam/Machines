@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getDbInfo() {
         val cal: Calendar = Calendar.getInstance()
-        val month = cal.time.month
+        val month = (cal.time.month) + 1
         val monthText = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
 
         mMonth.text = monthText

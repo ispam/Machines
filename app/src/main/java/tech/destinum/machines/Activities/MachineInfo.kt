@@ -116,6 +116,10 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
         getFABClick()
 
+        val calendar = Calendar.getInstance()
+        val sdf = SimpleDateFormat("dd/MM/yyyy")
+        val date = calendar.time
+        Log.v("calendar", "${sdf.format(date)}")
     }
 
     override fun onStart() {
@@ -257,11 +261,8 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                                     .doOnError { throwable -> Log.e(TAG, "MachineInfo: ", throwable) }
                                     .doOnComplete { Log.d(TAG, "MachineInfo: INCOME ADDED") }
                                     .subscribe())
+                            hideSoftKeyboard(v)
                         }
-
-                        hideSoftKeyboard(v)
-
-
                     }.setView(view).show()
         }
     }
@@ -341,7 +342,7 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 val iterator2 = mIncomeList.iterator()
 
                 val file = File(Environment.getExternalStorageDirectory(), "/Maquinas")
-                val exportFile = File(file, "$name Ingresos.csv")
+                val exportFile = File(file, "Ingresos - $name.csv")
 
                 if (!file.exists()) {
                     file.mkdir()

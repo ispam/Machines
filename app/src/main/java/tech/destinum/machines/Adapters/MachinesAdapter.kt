@@ -83,13 +83,9 @@ class MachinesAdapter(private val machinesList: List<Machine>?, private val mCon
 
             val total_amount = machine.total_income
 
-            if (total_amount <= 0) {
-                mMoney.text = "$0.0"
-            } else {
-                val formatter = DecimalFormat("$#,##0.000")
-                val formatted = formatter.format(total_amount)
-                mMoney.text = formatted
-            }
+            val formatter = DecimalFormat("$#,##0.000")
+            val formatted = formatter.format(total_amount)
+            mMoney.text = formatted
         }
     }
 

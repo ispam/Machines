@@ -35,6 +35,7 @@ class AppModule(private val application: App) {
                 context.applicationContext,
                 MachinesDB::class.java,
                 DB_NAME)
+                .fallbackToDestructiveMigration()
 //                .addMigrations(MIGRATION_12_13)
                 .build()
     }
