@@ -1,6 +1,7 @@
 package tech.destinum.machines.Activities
 
 import android.Manifest
+import android.arch.persistence.room.util.StringUtil
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -105,7 +106,8 @@ class MainActivity : AppCompatActivity() {
         val month = (cal.time.month) + 1
         val monthText = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
 
-        mMonth.text = monthText
+//        mMonth.text = camelCase(monthText)
+        mMonth.text = monthText.capitalize()
 
         disposable.add(machineViewModel.allMachines
                 .subscribeOn(Schedulers.io())

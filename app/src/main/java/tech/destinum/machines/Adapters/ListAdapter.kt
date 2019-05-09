@@ -5,6 +5,7 @@ import android.content.Intent
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.text.Html
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -231,9 +232,7 @@ class ListAdapter(private val mContext: Context, private val mInfoItems: List<In
                 e.printStackTrace()
             }
 
-            mDate.text = dateItem.date
+            mDate.text = dateItem.date.capitalize()
         }
     }
-
-
 }

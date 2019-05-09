@@ -38,7 +38,7 @@ class MachinesAdapter(private val machinesList: List<Machine>?, private val mCon
     //        notifyDataSetChanged();
     //    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MachinesAdapter.MachineViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MachineViewHolder {
         return MachineViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.machines_list, parent, false))
     }
 

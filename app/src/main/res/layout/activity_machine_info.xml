@@ -23,9 +23,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@+id/machine_info_money"
             android:text="Ubicación"
             android:textColor="@android:color/black"
-            android:textSize="26sp"
+            android:textSize="19sp"
             android:textStyle="bold"/>
 
         <TextView
@@ -35,7 +37,7 @@
             android:layout_alignParentEnd="true"
             android:text="$0.0"
             android:textColor="@android:color/black"
-            android:textSize="25sp"/>
+            android:textSize="19sp"/>
 
         <TextView
             android:id="@+id/tvNotes"
@@ -46,7 +48,7 @@
             android:layout_marginTop="10dp"
             android:text="Notas"
             android:textColor="@android:color/black"
-            android:textSize="25sp"/>
+            android:textSize="19sp"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabAddIncome"

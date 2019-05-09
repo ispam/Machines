@@ -133,7 +133,9 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             name = location
             mName.text = location
         } else {
-            finish()
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
         }
 
 
@@ -397,7 +399,4 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         return super.onOptionsItemSelected(item)
     }
 
-
-
 }
-

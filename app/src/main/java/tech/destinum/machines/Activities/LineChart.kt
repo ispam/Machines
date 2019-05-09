@@ -3,6 +3,8 @@ package tech.destinum.machines.Activities
 import android.graphics.Typeface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
+import com.github.mikephil.charting.charts.LineChart
 
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -26,7 +28,7 @@ import tech.destinum.machines.Data.Local.ViewModel.IncomeViewModel
 class LineChart : AppCompatActivity() {
 
     private val disposable = CompositeDisposable()
-    private lateinit var mLineChart: com.github.mikephil.charting.charts.LineChart
+    private lateinit var mLineChart: LineChart
     private var name: String = ""
     private var id: Long = 0
 
@@ -42,7 +44,7 @@ class LineChart : AppCompatActivity() {
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        mLineChart = findViewById(R.id.line_chart)
+        mLineChart = findViewById(R.id.line_chart) as LineChart
         mLineChart.description.isEnabled = false
 
     }
@@ -150,5 +152,15 @@ class LineChart : AppCompatActivity() {
 
 
                         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+        when (item?.itemId) {
+            android.R.id.home -> onBackPressed()
+        }
+
+        return super.onOptionsItemSelected(item)
+
     }
 }
