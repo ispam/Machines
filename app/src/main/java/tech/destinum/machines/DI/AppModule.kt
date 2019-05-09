@@ -1,7 +1,9 @@
 package tech.destinum.machines.DI
 
-import android.arch.persistence.room.Room
 import android.content.Context
+import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
 import javax.inject.Singleton
 
@@ -11,10 +13,6 @@ import tech.destinum.machines.Activities.App
 import tech.destinum.machines.Data.MachinesDB
 import tech.destinum.machines.Data.Local.DAOs.IncomeDAO
 import tech.destinum.machines.Data.Local.DAOs.MachineDAO
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.migration.Migration
-
-
 
 
 @Module(includes = arrayOf(ViewModelModule::class))

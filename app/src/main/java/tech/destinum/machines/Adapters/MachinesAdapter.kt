@@ -2,16 +2,15 @@ package tech.destinum.machines.Adapters
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxrelay2.PublishRelay
-
 
 import java.text.DecimalFormat
 

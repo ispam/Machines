@@ -1,8 +1,8 @@
 package tech.destinum.machines.Data
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
 
+import androidx.room.Database
+import androidx.room.RoomDatabase
 import tech.destinum.machines.Data.Local.Entities.Income
 import tech.destinum.machines.Data.Local.Entities.Machine
 import tech.destinum.machines.Data.Local.DAOs.IncomeDAO

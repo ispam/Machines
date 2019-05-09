@@ -1,8 +1,8 @@
 package tech.destinum.machines.Data.Local.ViewModel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.ViewModel
 import android.database.Cursor
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 
 import javax.inject.Inject
 

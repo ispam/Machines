@@ -1,9 +1,9 @@
 package tech.destinum.machines.UTILS;
 
-import android.support.v7.util.DiffUtil;
 
 import java.util.List;
 
+import androidx.recyclerview.widget.DiffUtil;
 import tech.destinum.machines.Adapters.InfoItems;
 
 public class InfoItemCallback extends DiffUtil.Callback {

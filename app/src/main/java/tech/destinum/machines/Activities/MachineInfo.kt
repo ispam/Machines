@@ -1,18 +1,12 @@
 package tech.destinum.machines.Activities
 
 import android.app.DatePickerDialog
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
@@ -27,6 +21,12 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 import com.opencsv.CSVWriter

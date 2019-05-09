@@ -1,15 +1,9 @@
 package tech.destinum.machines.Activities
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-
-import java.util.concurrent.TimeUnit
-
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 import tech.destinum.machines.R
 
 class SplashScreen : AppCompatActivity() {
@@ -22,20 +16,12 @@ class SplashScreen : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        Completable.timer(4, TimeUnit.SECONDS)
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnError { e -> Log.e(TAG, "SplashScreen: ERROR", e) }
-                .doOnComplete {
-                    val intent = Intent(this@SplashScreen, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-                .subscribe()
+        Handler().postDelayed({
+            val intent = Intent(this@SplashScreen, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 2500)
+
     }
 
-    companion object {
-
-        private val TAG = SplashScreen::class.java.simpleName
-    }
 }

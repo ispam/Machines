@@ -1,7 +1,6 @@
 package tech.destinum.machines.Data.Local.ViewModel
 
-import android.arch.lifecycle.ViewModel
-
+import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
 import io.reactivex.Completable

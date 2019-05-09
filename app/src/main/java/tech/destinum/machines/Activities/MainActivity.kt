@@ -1,24 +1,17 @@
 package tech.destinum.machines.Activities
 
 import android.Manifest
-import android.arch.persistence.room.util.StringUtil
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
+import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import android.text.SpannableString
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,29 +19,29 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.opencsv.CSVWriter
 import io.reactivex.Observable
-
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
+import tech.destinum.machines.Adapters.MachinesAdapter
+import tech.destinum.machines.Data.Local.Entities.Machine
+import tech.destinum.machines.Data.Local.ViewModel.IncomeViewModel
+import tech.destinum.machines.Data.Local.ViewModel.MachineViewModel
+import tech.destinum.machines.R
+import tech.destinum.machines.UTILS.MoneyFormatter
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.text.DecimalFormat
-
-import javax.inject.Inject
-
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import tech.destinum.machines.Adapters.MachinesAdapter
-import tech.destinum.machines.R
-import tech.destinum.machines.UTILS.MoneyFormatter
-import tech.destinum.machines.Data.Local.Entities.Machine
-import tech.destinum.machines.Data.Local.ViewModel.IncomeViewModel
-import tech.destinum.machines.Data.Local.ViewModel.MachineViewModel
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
@@ -60,16 +53,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val disposable = CompositeDisposable()
-
-    private lateinit var mFAB: FloatingActionButton
-    private lateinit var mTotal: TextView
-    private lateinit var mTotalText: TextView
-    private lateinit var mMonth: TextView
-    private lateinit var mTotalMonth: TextView
-
-    private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mAdapter: MachinesAdapter
-
     private val machineList = ArrayList<Machine>()
 
     @Inject
@@ -85,16 +68,7 @@ class MainActivity : AppCompatActivity() {
         App.component.inject(this)
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-
-        mTotal = findViewById(R.id.total_obtain)
-        mTotalText = findViewById(R.id.dinero_total)
-        mMonth = findViewById(R.id.main_month)
-        mTotalMonth = findViewById(R.id.main_total_month)
-
-        mRecyclerView = findViewById(R.id.recycler_view_main)
-        mRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
-        mFAB = findViewById(R.id.fabAddMachine)
+        recycler_view_main.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         setUpFAB()
         getDbInfo()
@@ -106,8 +80,7 @@ class MainActivity : AppCompatActivity() {
         val month = (cal.time.month) + 1
         val monthText = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
 
-//        mMonth.text = camelCase(monthText)
-        mMonth.text = monthText.capitalize()
+        main_month.text = monthText.capitalize()
 
         disposable.add(machineViewModel.allMachines
                 .subscribeOn(Schedulers.io())
@@ -117,26 +90,27 @@ class MainActivity : AppCompatActivity() {
                 }
                 .filter { it.isNotEmpty() }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError { Log.e("allMachines", it.message)}
-                .doOnNext {
+                .doOnError { Log.e("allMachines", it.message) }
+                .map {
                     machineList.clear()
-                    mAdapter = MachinesAdapter(it, this@MainActivity)
-                    mRecyclerView.adapter = mAdapter
+                    val adapter = MachinesAdapter(it, this@MainActivity)
+                    recycler_view_main.adapter = adapter
                     machineList.addAll(it)
-                    deleteByID(mAdapter)
-                    mAdapter.notifyDataSetChanged()
-                }
+                    deleteByID(adapter)
+                    adapter.notifyDataSetChanged()
+                }.subscribe())
+
+        disposable.add(incomeViewModel.totalObtained()
                 .subscribeOn(Schedulers.io())
-                .flatMap { incomeViewModel.totalObtained() }
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { it ->
-                    mTotal.visibility = View.VISIBLE
-                    mTotalText.visibility = View.VISIBLE
-                    mTotal.text = MoneyFormatter.moneyFormat(it)
+                .map {
+                    total_obtain.visibility = View.VISIBLE
+                    dinero_total.visibility = View.VISIBLE
+                    total_obtain.text = MoneyFormatter.moneyFormat(it)
                 }
                 .doOnComplete { Log.d(TAG, "getDbInfo: COMPLETED") }
                 .doOnError { e -> Log.e("getDbInfo", e.message) }
-                .subscribe ())
+                .subscribe())
 
         disposable.add(incomeViewModel.getTotalMonth(month)
                 .subscribeOn(Schedulers.io())
@@ -144,13 +118,11 @@ class MainActivity : AppCompatActivity() {
                 .doOnError { e -> Log.e("getTotalMonth", e.message) }
                 .onErrorReturnItem(0.0)
                 .doOnSuccess {
-                    println(month)
-                    mMonth.visibility = View.VISIBLE
-                    mTotalMonth.visibility = View.VISIBLE
-                    mTotalMonth.text = MoneyFormatter.moneyFormat(it)
-                    println(it)
+                    main_month.visibility = View.VISIBLE
+                    main_total_month.visibility = View.VISIBLE
+                    main_total_month.text = MoneyFormatter.moneyFormat(it)
                 }
-                .subscribe ())
+                .subscribe())
 
     }
 
@@ -159,11 +131,11 @@ class MainActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .doOnNext { machineViewModel.deleteByID(it) }
-                .subscribe ())
+                .subscribe())
     }
 
     private fun setUpFAB() {
-        mFAB.setOnClickListener { v ->
+        fabAddMachine.setOnClickListener { v ->
 
             val inflater = v.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = inflater.inflate(R.layout.dialog_add_machine, null, true)
@@ -178,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                         disposable.add(machineViewModel.addMachine(machine, 0.0)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .doOnError { e -> Log.e(TAG,  e.message) }
+                                .doOnError { e -> Log.e(TAG, e.message) }
                                 .subscribe { getDbInfo() })
                     }.setView(view).show()
         }
@@ -309,7 +281,6 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
 
 }
