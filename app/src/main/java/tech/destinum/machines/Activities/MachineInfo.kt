@@ -47,6 +47,7 @@ import javax.inject.Inject
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_machine_info.*
 import tech.destinum.machines.Adapters.DateItem
 import tech.destinum.machines.Adapters.IncomeItem
 import tech.destinum.machines.Adapters.InfoItems
@@ -64,26 +65,22 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         private val TAG = MachineInfo::class.java.simpleName
     }
 
-    private lateinit var mName: TextView
-    private lateinit var mMoney: TextView
-    private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mFAB: FloatingActionButton
     private lateinit var mAdapter: ListAdapter
     private lateinit var mCalendar: Calendar
+    private lateinit var name: String
+    private lateinit var check: ImageView
     private lateinit var info_date: TextView
     private var mDay: Int = 0
     private var mMonth: Int = 0
     private var mYear: Int = 0
-    private lateinit var name: String
     private var total_amount2: String? = null
     private var id: Long = 0
     private var date: Long = 0
-    private lateinit var check: ImageView
     private var showMenu: Boolean? = false
     private val mInfoItems = ArrayList<InfoItems>()
     private var mIncomeList = ArrayList<Income>()
-    private var value: Double = 0.toDouble()
-    private val totalMonth: Double = 0.toDouble()
+    private var value: Double = 0.0
+    private val totalMonth: Double = 0.0
     private var notes: String? = null
 
     private val disposable = CompositeDisposable()
@@ -106,13 +103,7 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        mName = findViewById(R.id.machine_info_name)
-        mMoney = findViewById(R.id.machine_info_money)
-
-        mRecyclerView = findViewById(R.id.rvNotes)
-        mRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
-        mFAB = findViewById(R.id.fabAddIncome)
+        rvNotes.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         getFABClick()
 
@@ -131,7 +122,7 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             val id = bundle.getLong("id")
             this.id = id
             name = location
-            mName.text = location
+            machine_info_name.text = location
         } else {
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -148,7 +139,7 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                     Log.v("getIncomeOfMachine", it.toString())
                     val formatter = DecimalFormat("$#,##0.000")
                     val formatted = formatter.format(it)
-                    mMoney.text = formatted
+                    machine_info_money.text = formatted
                     total_amount2 = formatted
                     showMenu = true
                 }
@@ -180,7 +171,7 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
                     }
                     mAdapter = ListAdapter(this@MachineInfo, mInfoItems, incomeViewModel, name, id)
-                    mRecyclerView.adapter = mAdapter
+                    rvNotes.adapter = mAdapter
 
                     disposable.add(mAdapter.clickEvent
                             .subscribeOn(Schedulers.io())
@@ -213,7 +204,7 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun getFABClick() {
-        mFAB.setOnClickListener { v ->
+        fabAddIncome.setOnClickListener { v ->
             val dialog = AlertDialog.Builder(v.context)
             val inflater = v.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = inflater.inflate(R.layout.dialog_add_income, null, true)
@@ -289,7 +280,6 @@ class MachineInfo : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     override fun onDateSet(view: DatePicker, year: Int, month: Int, dayOfMonth: Int) {
 
         mMonth = month + 1
-        println(month)
 
         val calendar = GregorianCalendar(year, month, dayOfMonth)
         date = calendar.timeInMillis
